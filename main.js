@@ -214,7 +214,7 @@ async function init() {
     // get vertices
     const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
-    const testVertices = await getVertices(gl, cubeProgram, testPath + "test.obj");
+    const testVertices = await getVertices(gl, cubeProgram, testPath + "table_tri.obj");
 
     // create framebuffer 
     let texture = getTextureForFramebuffer();
@@ -234,7 +234,6 @@ async function init() {
         
 
         // teapot
-        
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
         const teapotPosition = new Position(null, teapotCamRotation, [0, 0, 0], [1, 1, 1], [0, 1, 7])
@@ -246,7 +245,7 @@ async function init() {
         gl.clearColor(0., 1., 0., 1.);
         const cubeCamRotation = new Rotation(0, counter, 0)
         const cubePosition = new Position(null, cubeCamRotation, [0, 0.5, 0], [0.5, 0.5, 0.5], [0, 0, 2])
-        const cube = new DrawableObject(cubeProgram, texture, cubePosition, cubePath + "box.obj", cubeVertices, null, true, true)
+        const cube = new DrawableObject(cubeProgram, texture, cubePosition, cubePath + "box.obj", cubeVertices, fb, true, true)
         await cube.draw()
         
          
@@ -254,7 +253,7 @@ async function init() {
         // test 
         const scaleFactor = 0.1;
         const testPosition = new Position(null, null, [0, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 2])
-        const test = new DrawableObject(testProgram, null, testPosition, testPath + "test.obj", testVertices, null, false, false)
+        const test = new DrawableObject(testProgram, null, testPosition, testPath + "table_tri.obj", testVertices, null, false)
         await test.draw()
     }
 

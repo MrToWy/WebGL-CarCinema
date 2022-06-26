@@ -40,8 +40,8 @@ class DrawableObject {
         
         if(this.texture !== null) {
             if(this.getTextureFromFramebuffer){
-                const attachmentPoint = gl.COLOR_ATTACHMENT0;
-                gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, this.texture, level);
+                gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, level);
                 gl.bindFramebuffer(gl.FRAMEBUFFER, null)
             }
             
