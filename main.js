@@ -214,7 +214,7 @@ async function init() {
     // get vertices
     const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
-    const testVertices = await getVertices(gl, cubeProgram, testPath + "table_tri.obj");
+    const testVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
 
     // create framebuffer 
     let texture = getTextureForFramebuffer();
@@ -247,14 +247,23 @@ async function init() {
         const cubePosition = new Position(null, cubeCamRotation, [0, 0.5, 0], [0.5, 0.5, 0.5], [0, 0, 2])
         const cube = new DrawableObject(cubeProgram, texture, cubePosition, cubePath + "box.obj", cubeVertices, fb, true, true)
         await cube.draw()
-        
-         
 
+
+        // table 
+        const tableScaleFactor = 0.002;
+        const tableCamRotation = new Rotation(0, counter, 0)
+        const tablePosition = new Position(null, tableCamRotation, [0, 0.0, 0], [tableScaleFactor, tableScaleFactor, tableScaleFactor], [0, 0, 2])
+        const table = new DrawableObject(testProgram, null, tablePosition, testPath + "table_tex.obj", testVertices, null, false)
+        await table.draw()
+
+        /*
         // test 
-        const scaleFactor = 0.1;
-        const testPosition = new Position(null, null, [0, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 2])
-        const test = new DrawableObject(testProgram, null, testPosition, testPath + "table_tri.obj", testVertices, null, false)
+        const scaleFactor = 0.002;
+        const testCamRotation = new Rotation(0, counter, 0)
+        const testPosition = new Position(null, testCamRotation, [0, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 2])
+        const test = new DrawableObject(testProgram, null, testPosition, testPath + "table_tex.obj", testVertices, null, false)
         await test.draw()
+         */
     }
 
     requestAnimationFrame(loop);
