@@ -33,6 +33,9 @@ class DrawableObject {
     }
 
     async draw() {
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        
         gl.useProgram(this.program);
         
         if(this.texture !== null) {
