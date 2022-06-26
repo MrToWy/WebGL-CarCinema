@@ -156,7 +156,7 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     gl.uniformMatrix4fv(viewLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(projLocation, gl.FALSE, projMatrix);
     gl.uniformMatrix4fv(translLocation, gl.FALSE, translateMatrix);
-    gl.uniformMatrix4fv(scaleLocation, gl.FALSE, translateMatrix);
+    gl.uniformMatrix4fv(scaleLocation, gl.FALSE, scaleMatrix);
 }
 
 const level = 0;
