@@ -2,6 +2,7 @@
 
 const teapotPath = "teapot/"
 const cubePath = "cube/"
+const testPath = "tests/"
 
 let tolerance = 0.01;
 let updateId;
@@ -208,10 +209,12 @@ async function init() {
     // compile programs
     const teapotProgram = await getProgram(teapotPath, gl)
     const cubeProgram = await getProgram(cubePath, gl)
+    const testProgram = await getProgram(testPath, gl)
 
     // get vertices
     const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
+    const testVertices = await getVertices(gl, cubeProgram, testPath + "test.obj");
 
     // create framebuffer 
     let texture = getTextureForFramebuffer();
@@ -231,6 +234,8 @@ async function init() {
         
 
         // teapot
+        
+        gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
         const teapotPosition = new Position(null, teapotCamRotation, [0, 0, 0], [1, 1, 1], [0, 1, 7])
         const teapot = new DrawableObject(teapotProgram, null, teapotPosition, teapotPath + "teapot.obj", teapotVertices, fb, true)
@@ -238,11 +243,19 @@ async function init() {
         
         
         // cube
-        gl.clearColor(0., 0., 0., 1.);
+        gl.clearColor(0., 1., 0., 1.);
         const cubeCamRotation = new Rotation(0, counter, 0)
-        const cubePosition = new Position(null, cubeCamRotation, [0, 0, 0], [1, 1, 1], [0, 0, 2])
-        const cube = new DrawableObject(cubeProgram, texture, cubePosition, cubePath + "box.obj", cubeVertices, null, false, true)
+        const cubePosition = new Position(null, cubeCamRotation, [0, 0.5, 0], [0.5, 0.5, 0.5], [0, 0, 2])
+        const cube = new DrawableObject(cubeProgram, texture, cubePosition, cubePath + "box.obj", cubeVertices, null, true, true)
         await cube.draw()
+        
+         
+
+        // test 
+        const scaleFactor = 0.1;
+        const testPosition = new Position(null, null, [0, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 2])
+        const test = new DrawableObject(testProgram, null, testPosition, testPath + "test.obj", testVertices, null, false, false)
+        await test.draw()
     }
 
     requestAnimationFrame(loop);
