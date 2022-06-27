@@ -85,7 +85,7 @@ async function bindParameters(gl, program, name){
     gl.enableVertexAttribArray(teapotPositionAttributeLocation);
 
 
-    if(name === "teapot/teapot.obj"){
+
         const teapotColorAttributeLocation = gl.getAttribLocation(program, "normals");
 
         gl.vertexAttribPointer(teapotColorAttributeLocation,
@@ -94,9 +94,9 @@ async function bindParameters(gl, program, name){
             5 * Float32Array.BYTES_PER_ELEMENT);
 
         gl.enableVertexAttribArray(teapotColorAttributeLocation);
-    }
 
-    if(name === "cube/box.obj"){
+
+
         const texCoordAttributeLocation = gl.getAttribLocation(program, "textureCoordinate");
 
         gl.vertexAttribPointer(texCoordAttributeLocation,
@@ -105,7 +105,7 @@ async function bindParameters(gl, program, name){
             3 * Float32Array.BYTES_PER_ELEMENT);
 
         gl.enableVertexAttribArray(texCoordAttributeLocation);
-    }
+
 }
 
 async function draw(gl, vertices){
@@ -134,6 +134,7 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     let translLocation = gl.getUniformLocation(program, 'mTranslate');
     let scaleLocation = gl.getUniformLocation(program, 'mScale');
     let rotateLocation = gl.getUniformLocation(program, 'mRotate');
+    let normalLocation = gl.getUniformLocation(program,'mNormale');
 
     let identityMatrix = new Float32Array(16);
     let viewMatrix = new Float32Array(16);
@@ -141,6 +142,8 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     let translateMatrix = new Float32Array(16);
     let scaleMatrix = new Float32Array(16);
     let rotateMatrix = new Float32Array(16);
+    let normalMatrix = new Float32Array(9);
+    var viewWorldMatrix = new Float32Array(16);
 
     identity(identityMatrix);
     identity(viewMatrix);
@@ -148,6 +151,7 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     identity(translateMatrix);
     identity(scaleMatrix);
     identity(rotateMatrix);
+    identity(normalMatrix);
 
     lookAt(viewMatrix, eye, [0, 0, 0], [0, 1, 0]);
     rotateY(rotateMatrix, rotateMatrix, objRotationAngle * Math.PI / 180);
@@ -156,11 +160,16 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
 
     perspective(projMatrix, 45 * Math.PI / 180, canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
+    multiply(viewWorldMatrix, scaleMatrix,rotateMatrix);
+    multiply(viewWorldMatrix, viewWorldMatrix,translateMatrix);
+    normalFromMat4(normalMatrix, viewWorldMatrix);
+
     gl.uniformMatrix4fv(viewLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(projLocation, gl.FALSE, projMatrix);
     gl.uniformMatrix4fv(translLocation, gl.FALSE, translateMatrix);
     gl.uniformMatrix4fv(scaleLocation, gl.FALSE, scaleMatrix);
     gl.uniformMatrix4fv(rotateLocation, gl.FALSE, rotateMatrix);
+    gl.uniformMatrix3fv(normalLocation,gl.FALSE,normalMatrix);
 }
 
 const level = 0;
@@ -238,7 +247,7 @@ async function init() {
         }
 
         counter -= 0.3;
-        
+
 
         // teapot
         gl.clearColor(1., 0., 0., 1.);
@@ -262,6 +271,8 @@ async function init() {
         const tablePosition = new Position(tableCamRotation, null, [input.value/1000, 0.0, 0], [tableScaleFactor, tableScaleFactor, tableScaleFactor], [0, 0, 10])
         const table = new DrawableObject(tableProgram, null, tablePosition, tablePath + "table_tex.obj", tableVertices, null, false)
         await table.draw()
+
+
 
         // house 
         const scaleFactor = 1;

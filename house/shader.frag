@@ -1,15 +1,22 @@
 precision mediump float;
+
 varying vec3 fragColor;
-
-uniform vec3 cameraPosition;
-
-// Passed in from the vertex shader.
-varying vec3 worldPosition;
-varying vec3 worldNormal;
-
-// The texture.
-uniform samplerCube u_texture;
+varying vec2 texCoord;
+varying vec3 fNormal;
+varying vec3 fLightDir;
 
 void main(){
-    gl_FragColor = vec4(fragColor, 1.); //textureCube(u_texture, direction);
+    float alpha = 10.;
+    vec3 cAmbient = vec3(0.5,0.0,0.0);
+    vec3 cDiffuse = vec3(1.,1.,1.);
+    vec3 cSpecular = vec3(0.1,0.1,0.1);
+
+    vec3 lightDir = normalize(fLightDir);
+    vec3 normalDir = normalize(fNormal);
+    vec3 eyeDir = vec3(0.,0.,1.);
+    vec3 light = cAmbient;
+    light += cDiffuse * max(dot(normalDir,lightDir),0.);
+    light += cSpecular * pow(max(dot(reflect(-lightDir,normalDir),eyeDir),0.),alpha);
+
+    gl_FragColor = vec4(fragColor, 1.)*vec4(light,1.);
 }
