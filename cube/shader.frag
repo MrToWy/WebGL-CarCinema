@@ -1,12 +1,10 @@
 precision mediump float;
-uniform samplerCube skybox;
-
 // Passed in from the vertex shader.
-varying vec2 TexCoord;
+varying vec2 texCoord;
 
 // The texture.
-uniform sampler2D u_texture;
+uniform sampler2D texture;
 
 void main() {
-    gl_FragColor = texture2D(u_texture, TexCoord);
+    gl_FragColor = texture2D(texture, texCoord);
 }

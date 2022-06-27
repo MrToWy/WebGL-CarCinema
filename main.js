@@ -86,7 +86,7 @@ async function bindParameters(gl, program, name){
 
 
 
-        const teapotColorAttributeLocation = gl.getAttribLocation(program, "normals");
+        const teapotColorAttributeLocation = gl.getAttribLocation(program, "vertNormal");
 
         gl.vertexAttribPointer(teapotColorAttributeLocation,
             3, gl.FLOAT, gl.FALSE,
@@ -97,7 +97,7 @@ async function bindParameters(gl, program, name){
 
 
 
-        const texCoordAttributeLocation = gl.getAttribLocation(program, "textureCoordinate");
+        const texCoordAttributeLocation = gl.getAttribLocation(program, "vertTexCoord");
 
         gl.vertexAttribPointer(texCoordAttributeLocation,
             2, gl.FLOAT, false,
