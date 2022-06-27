@@ -10,6 +10,7 @@ uniform mat4 mView;
 uniform mat4 mProj;
 uniform mat4 mTranslate;
 uniform mat4 mScale;
+uniform mat4 mRotate;
 
 varying vec3 fragColor;
 
@@ -21,5 +22,5 @@ void main(){
     vec4 position = vec4(vertPosition, 1.0);
 
     fragColor = vec3(1., 1., 0.);
-    gl_Position = mProj * mView * mTranslate * mScale * mWorld * position;
+    gl_Position = mProj * mView * mTranslate * mRotate * mScale * mWorld * position;
 }
