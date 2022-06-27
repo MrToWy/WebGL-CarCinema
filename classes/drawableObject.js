@@ -18,8 +18,6 @@ class Position{
 }
 
 
-
-
 class DrawableObject {
     constructor(program, texture, position, objectPath, vertices, framebuffer, clear, getTextureFromFramebuffer) {
         this.program = program;
