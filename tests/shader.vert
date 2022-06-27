@@ -5,7 +5,6 @@ attribute vec3 vertColor;
 attribute vec2 textureCoordinate;
 attribute vec3 normals;
 
-uniform mat4 mWorld;
 uniform mat4 mView;
 uniform mat4 mProj;
 uniform mat4 mTranslate;
@@ -22,5 +21,5 @@ void main(){
     vec4 position = vec4(vertPosition, 1.0);
 
     fragColor = vec3(1., 1., 0.);
-    gl_Position = mProj * mView * mTranslate * mRotate * mScale * mWorld * position;
+    gl_Position = mProj * mView * mTranslate * mRotate * mScale * position;
 }

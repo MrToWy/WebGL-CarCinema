@@ -129,7 +129,6 @@ async function handleFPS(currentDelta, loop){
 }
 
 async function position(gl, program, objRotationAngle, cameraRotationAngle, translateVector3, scaleVector3, canvas, eye){
-    let worldLocation = gl.getUniformLocation(program, 'mWorld');
     let viewLocation = gl.getUniformLocation(program, 'mView');
     let projLocation = gl.getUniformLocation(program, 'mProj');
     let translLocation = gl.getUniformLocation(program, 'mTranslate');
@@ -137,7 +136,6 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     let rotateLocation = gl.getUniformLocation(program, 'mRotate');
 
     let identityMatrix = new Float32Array(16);
-    let worldMatrix = new Float32Array(16);
     let viewMatrix = new Float32Array(16);
     let projMatrix = new Float32Array(16);
     let translateMatrix = new Float32Array(16);
@@ -145,7 +143,6 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     let rotateMatrix = new Float32Array(16);
 
     identity(identityMatrix);
-    identity(worldMatrix);
     identity(viewMatrix);
     identity(projMatrix);
     identity(translateMatrix);
@@ -159,7 +156,6 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
 
     perspective(projMatrix, 45 * Math.PI / 180, canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
-    gl.uniformMatrix4fv(worldLocation, gl.FALSE, worldMatrix);
     gl.uniformMatrix4fv(viewLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(projLocation, gl.FALSE, projMatrix);
     gl.uniformMatrix4fv(translLocation, gl.FALSE, translateMatrix);
