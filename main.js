@@ -2,7 +2,10 @@
 
 const teapotPath = "teapot/"
 const cubePath = "cube/"
+const tablePath = "table/"
+const housePath = "house/"
 const testPath = "tests/"
+const input = document.getElementById("input")
 
 let tolerance = 0.01;
 let updateId;
@@ -213,12 +216,16 @@ async function init() {
     // compile programs
     const teapotProgram = await getProgram(teapotPath, gl)
     const cubeProgram = await getProgram(cubePath, gl)
+    const tableProgram = await getProgram(tablePath, gl)
+    const houseProgram = await getProgram(housePath, gl)
     const testProgram = await getProgram(testPath, gl)
 
     // get vertices
     const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
-    const testVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
+    const tableVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
+    const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
+    const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
 
     // create framebuffer 
     let texture = getTextureForFramebuffer();
@@ -240,7 +247,7 @@ async function init() {
         // teapot
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
-        const teapotPosition = new Position(null, teapotCamRotation, [0, 0, 0], [1, 1, 1], [0, 1, 7])
+        const teapotPosition = new Position(teapotCamRotation, null, [0, 0, 0], [1, 1, 1], [0, 1, 7])
         const teapot = new DrawableObject(teapotProgram, null, teapotPosition, teapotPath + "teapot.obj", teapotVertices, fb, true)
         await teapot.draw()
         
@@ -248,7 +255,7 @@ async function init() {
         // cube
         gl.clearColor(0., 1., 0., 1.);
         const cubeCamRotation = new Rotation(0, counter, 0)
-        const cubePosition = new Position(null, cubeCamRotation, [0, 0.5, 0], [0.5, 0.5, 0.5], [0, 0, 2])
+        const cubePosition = new Position(cubeCamRotation, null, [input.value/1000, 0.5, 0], [0.5, 0.5, 0.5], [0, 0, 10])
         const cube = new DrawableObject(cubeProgram, texture, cubePosition, cubePath + "box.obj", cubeVertices, fb, true, true)
         await cube.draw()
 
@@ -256,18 +263,27 @@ async function init() {
         // table 
         const tableScaleFactor = 0.002;
         const tableCamRotation = new Rotation(0, counter, 0)
-        const tablePosition = new Position(null, tableCamRotation, [0, 0.0, 0], [tableScaleFactor, tableScaleFactor, tableScaleFactor], [0, 0, 2])
-        const table = new DrawableObject(testProgram, null, tablePosition, testPath + "table_tex.obj", testVertices, null, false)
+        const tablePosition = new Position(tableCamRotation, null, [input.value/1000, 0.0, 0], [tableScaleFactor, tableScaleFactor, tableScaleFactor], [0, 0, 10])
+        const table = new DrawableObject(tableProgram, null, tablePosition, tablePath + "table_tex.obj", tableVertices, null, false)
         await table.draw()
 
+        // house 
+        const scaleFactor = 1;
+        const houseCamRotation = new Rotation(0, 0, 0)
+        const housePosition = new Position(houseCamRotation, null, [-1, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 10])
+        const house = new DrawableObject(houseProgram, null, housePosition, housePath + "house.obj", houseVertices, null, false)
+        await house.draw()
+        
         /*
         // test 
-        const scaleFactor = 0.002;
-        const testCamRotation = new Rotation(0, counter, 0)
-        const testPosition = new Position(null, testCamRotation, [0, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 2])
-        const test = new DrawableObject(testProgram, null, testPosition, testPath + "table_tex.obj", testVertices, null, false)
+        const scaleFactor = 1;
+        const testCamRotation = new Rotation(0, 0, 0)
+        const testPosition = new Position(testCamRotation, null, [-1, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 10])
+        const test = new DrawableObject(testProgram, null, testPosition, testPath + "house.obj", testVertices, null, false)
         await test.draw()
+        
          */
+         
     }
 
     requestAnimationFrame(loop);
