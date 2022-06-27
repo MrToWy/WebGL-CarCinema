@@ -4,6 +4,7 @@ const teapotPath = "teapot/"
 const cubePath = "cube/"
 const tablePath = "table/"
 const housePath = "house/"
+const skyboxPath = "skybox/"
 const testPath = "tests/"
 const input = document.getElementById("input")
 
@@ -215,7 +216,68 @@ function printError(gl){
         console.log(error)
 }
 
+function loadSkybox(){
+    // texture
+    let topImage = document.getElementById("top")
+    let bottomImage = document.getElementById("bottom")
+    let backImage = document.getElementById("back")
+    let frontImage = document.getElementById("front")
+    let leftImage = document.getElementById("left")
+    let rightImage = document.getElementById("right")
+
+    const cubeMapFaces = [
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+            img: rightImage,
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+            img: topImage,
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+            img: frontImage,
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+            img: leftImage,
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            img: bottomImage,
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+            img: backImage,
+        },
+    ];
+
+    let texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture)
+
+
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const format = gl.RGBA;
+    const type = gl.UNSIGNED_BYTE;
+
+    cubeMapFaces.forEach((cubeMapFace) =>{
+
+        const {target, img} = cubeMapFace;
+
+        // fill with img
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+        gl.texImage2D(target, level, internalFormat, format, type, img);
+        gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+    })
+
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+}
+
 async function init() {
+
+    loadSkybox();
+    
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
     // compile programs
@@ -223,6 +285,7 @@ async function init() {
     const cubeProgram = await getProgram(cubePath, gl)
     const tableProgram = await getProgram(tablePath, gl)
     const houseProgram = await getProgram(housePath, gl)
+    const skyboxProgram = await getProgram(skyboxPath, gl)
     const testProgram = await getProgram(testPath, gl)
 
     // get vertices
@@ -230,6 +293,7 @@ async function init() {
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
     const tableVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
     const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
+    const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "box.obj");
     const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
 
     // create framebuffer 
@@ -247,7 +311,6 @@ async function init() {
         }
 
         counter -= 0.3;
-
 
         // teapot
         gl.clearColor(1., 0., 0., 1.);
@@ -280,6 +343,17 @@ async function init() {
         const housePosition = new Position(houseCamRotation, null, [-1, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 10])
         const house = new DrawableObject(houseProgram, null, housePosition, housePath + "house.obj", houseVertices, null, false)
         await house.draw()
+        
+ 
+
+        
+        // skybox 
+        const skyboxScaleFactor = 1000;
+        const skyboxRotation = new Rotation(0, 0, 0)
+        const skyboxPosition = new Position(skyboxRotation, null, [0, 0.0, 0], [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], [0, 0, 10])
+        const skybox = new DrawableObject(skyboxProgram, null, skyboxPosition, skyboxPath + "box.obj", skyboxVertices, null, false, null)
+        await skybox.draw();
+        
         
         /*
         // test 
