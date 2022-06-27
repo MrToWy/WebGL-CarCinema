@@ -1,11 +1,11 @@
 'use strict';
 
-const teapotPath = "teapot/"
-const cubePath = "cube/"
-const tablePath = "table/"
-const housePath = "house/"
-const skyboxPath = "skybox/"
-const testPath = "tests/"
+const teapotPath = "objects/teapot/"
+const cubePath = "objects/cube/"
+const tablePath = "objects/table/"
+const housePath = "objects/house/"
+const skyboxPath = "objects/skybox/"
+const testPath = "objects/tests/"
 const input = document.getElementById("input")
 
 let tolerance = 0.01;
