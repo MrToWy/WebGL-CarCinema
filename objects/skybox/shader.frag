@@ -6,5 +6,8 @@ varying vec3 skyboxCoord;
 uniform samplerCube skybox;
 
 void main(){
+    float s = -atan(skyboxCoord.z, skyboxCoord.x) / (2.0 * 3.141) + 0.5;
+    float t = -asin(skyboxCoord.y) / 3.141 + 0.5;
+
     gl_FragColor = textureCube(skybox, skyboxCoord);
 }

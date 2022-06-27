@@ -225,6 +225,8 @@ function loadSkybox(){
     let leftImage = document.getElementById("left")
     let rightImage = document.getElementById("right")
 
+    let skyboxImage = document.getElementById("skybox")
+
     const cubeMapFaces = [
         {
             target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -293,7 +295,7 @@ async function init() {
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
     const tableVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
     const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
-    const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "box.obj");
+    const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
     const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
 
     // create framebuffer 
@@ -312,6 +314,7 @@ async function init() {
 
         counter -= 0.3;
 
+        /*
         // teapot
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
@@ -344,6 +347,8 @@ async function init() {
         const house = new DrawableObject(houseProgram, null, housePosition, housePath + "house.obj", houseVertices, null, false)
         await house.draw()
         
+        
+         */
  
 
         
@@ -351,7 +356,7 @@ async function init() {
         const skyboxScaleFactor = 1000;
         const skyboxRotation = new Rotation(0, 0, 0)
         const skyboxPosition = new Position(skyboxRotation, null, [0, 0.0, 0], [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], [0, 0, 10])
-        const skybox = new DrawableObject(skyboxProgram, null, skyboxPosition, skyboxPath + "box.obj", skyboxVertices, null, false, null)
+        const skybox = new DrawableObject(skyboxProgram, null, skyboxPosition, skyboxPath + "sphere.obj", skyboxVertices, null, false, null)
         await skybox.draw();
         
         
