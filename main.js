@@ -216,70 +216,19 @@ function printError(gl){
         console.log(error)
 }
 
-function loadSkybox(){
-    // texture
-    let topImage = document.getElementById("top")
-    let bottomImage = document.getElementById("bottom")
-    let backImage = document.getElementById("back")
-    let frontImage = document.getElementById("front")
-    let leftImage = document.getElementById("left")
-    let rightImage = document.getElementById("right")
-
-    let skyboxImage = document.getElementById("skybox")
-
-    const cubeMapFaces = [
-        {
-            target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-            img: rightImage,
-        },
-        {
-            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-            img: topImage,
-        },
-        {
-            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-            img: frontImage,
-        },
-        {
-            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-            img: leftImage,
-        },
-        {
-            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-            img: bottomImage,
-        },
-        {
-            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
-            img: backImage,
-        },
-    ];
-
-    let texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture)
-
-
-    const level = 0;
-    const internalFormat = gl.RGBA;
-    const format = gl.RGBA;
-    const type = gl.UNSIGNED_BYTE;
-
-    cubeMapFaces.forEach((cubeMapFace) =>{
-
-        const {target, img} = cubeMapFace;
-
-        // fill with img
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-        gl.texImage2D(target, level, internalFormat, format, type, img);
-        gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-    })
-
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+function getSkyboxTexture(){
+    const skyboxTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, skyboxTexture);
+    let textureImage = document.getElementById("skybox")
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
+    gl.generateMipmap(gl.TEXTURE_2D)
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    
+    return skyboxTexture;
 }
 
 async function init() {
 
-    loadSkybox();
-    
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
     // compile programs
@@ -302,6 +251,9 @@ async function init() {
     let texture = getTextureForFramebuffer();
     let fb = getFramebuffer(texture);
 
+    // skybox
+    let skyboxTexture = getSkyboxTexture();
+    
     gl.enable(gl.DEPTH_TEST);
 
     let counter = 0;
@@ -353,10 +305,10 @@ async function init() {
 
         
         // skybox 
-        const skyboxScaleFactor = 1000;
-        const skyboxRotation = new Rotation(0, 0, 0)
+        const skyboxScaleFactor = 100;
+        const skyboxRotation = new Rotation(0, counter, 0)
         const skyboxPosition = new Position(skyboxRotation, null, [0, 0.0, 0], [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], [0, 0, 10])
-        const skybox = new DrawableObject(skyboxProgram, null, skyboxPosition, skyboxPath + "sphere.obj", skyboxVertices, null, false, null)
+        const skybox = new DrawableObject(skyboxProgram, skyboxTexture, skyboxPosition, skyboxPath + "sphere.obj", skyboxVertices, null, false, null)
         await skybox.draw();
         
         
