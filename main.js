@@ -5,13 +5,13 @@ const cubePath = "objects/cube/"
 const tablePath = "objects/table/"
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
-const testPath = "objects/tests/"
+const carPath = "objects/car/"
 const input = document.getElementById("input")
 
 let tolerance = 0.01;
 let updateId;
 let previousDelta = 0;
-let fpsLimit = 1;
+let fpsLimit = 30;
 const targetTextureWidth = 1024;
 const targetTextureHeight = targetTextureWidth;
 let camRotation = -45;
@@ -307,20 +307,20 @@ async function init() {
     const tableProgram = await getProgram(tablePath, gl)
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
-    const testProgram = await getProgram(testPath, gl)
+    const carProgram = await getProgram(carPath, gl)
 
     // get vertices
     const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
-    const tableVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
+    const tableVertices = await getVertices(gl, cubeProgram, carPath + "table_tex.obj");
     const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "box.obj");
-    const testVertices = await getVertices(gl, testProgram, testPath + "carInside.obj");
-    const cardoorLFVertices = await getVertices(gl, testProgram, testPath + "car_leftFront.obj");
-    const cardoorRFVertices = await getVertices(gl, testProgram, testPath + "car_rightFront.obj");
-    const cardoorLFWVertices = await getVertices(gl, testProgram, testPath + "car_leftFrontWindow.obj");
+    const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
+    const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
+    const carDoorRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_right_front.obj");
+    const carDoorWindowLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_left_front.obj");
 
-    // create framebuffer 
+    // create framebuffer
     let texture = getTextureForFramebuffer();
     let fb = getFramebuffer(texture);
 
@@ -382,42 +382,33 @@ async function init() {
         await skybox.draw();
 
          */
-        
-        
+
 
         // car
+        const scaleFactorCar = 0.05;
         gl.clearColor(0., 1., 0., 1.);
-        const scaleFactorTest = 0.05;
-        const testCamRotation = new Rotation(-90, 0, camRotation)
-        const testPosition = new Position(testCamRotation, null, [0.6, -.5, 0], [scaleFactorTest, scaleFactorTest, scaleFactorTest], [0, 0, 2])
-        const test = new DrawableObject(testProgram, null, testPosition, testPath + "carInside.obj", testVertices, null, true)
-        await test.draw()
 
-        // car door right front
-        const scaleFactorcardoorRF = 0.05;
-        const cardoorRFCamRotation = new Rotation(-90, 0, camRotation)
-        const cardoorRFPosition = new Position(cardoorRFCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorRF, scaleFactorcardoorRF, scaleFactorcardoorRF], [0, 0, 2])
-        const cardoorRF = new DrawableObject(testProgram, null, cardoorRFPosition, testPath + "car_rightFront.obj", cardoorRFVertices, null, false)
-        await cardoorRF.draw()
+        // Inside
+        const carCamRotation = new Rotation(-90, 0, camRotation);
+        const carInsidePosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
+        const car = new DrawableObject(carProgram, null, carInsidePosition, carPath + "car_inside.obj", carInsideVertices, null, true)
+        await car.draw()
 
-        // door left front
-        const scaleFactorcardoorLF = 0.05;
-        const cardoorLFCamRotation = new Rotation(-90, 0, camRotation)
-        const cardoorLFPosition = new Position(cardoorLFCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorLF, scaleFactorcardoorLF, scaleFactorcardoorLF], [0, 0, 2])
-        const cardoorLF = new DrawableObject(testProgram, null, cardoorLFPosition, testPath + "car_leftFront.obj", cardoorLFVertices, null, false)
-        await cardoorLF.draw()
+        // Door Right Front
+        const carDoorRightFrontPosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
+        const carDoorRightFront = new DrawableObject(carProgram, null, carDoorRightFrontPosition, carPath + "car_door_right_front.obj", carDoorRightFrontVertices, null, false)
+        await carDoorRightFront.draw()
 
-        // door left front window
-        const scaleFactorcardoorLFW = 0.05;
-        const cardoorLFWCamRotation = new Rotation(-90, 0, camRotation)
-        const cardoorLFWPosition = new Position(cardoorLFWCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorLFW, scaleFactorcardoorLFW, scaleFactorcardoorLFW], [0, 0, 2])
-        const cardoorLFW = new DrawableObject(testProgram, null, cardoorLFWPosition, testPath + "car_leftFront.obj", cardoorLFWVertices, null, false)
-        await cardoorLFW.draw()
+        // Door Left Front
+        const carDoorLeftFrontPosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
+        const carDoorLeftFront = new DrawableObject(carProgram, null, carDoorLeftFrontPosition, carPath + "car_door_left_front.obj", carDoorLeftFrontVertices, null, false)
+        await carDoorLeftFront.draw()
 
+        // Door Window Right Front
+        const carDoorWindowLeftFrontPosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
+        const carDoorWindowLeftFront = new DrawableObject(carProgram, null, carDoorWindowLeftFrontPosition, carPath + "car_door_left_front.obj", carDoorWindowLeftFrontVertices, null, false)
+        await carDoorWindowLeftFront.draw()
 
-        
-
-         
     }
 
     requestAnimationFrame(loop);
