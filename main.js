@@ -298,7 +298,10 @@ async function init() {
     const tableVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
     const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "box.obj");
-    const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
+    const testVertices = await getVertices(gl, testProgram, testPath + "carInside.obj");
+    const cardoorLFVertices = await getVertices(gl, testProgram, testPath + "car_leftFront.obj");
+    const cardoorRFVertices = await getVertices(gl, testProgram, testPath + "car_rightFront.obj");
+    const cardoorLFWVertices = await getVertices(gl, testProgram, testPath + "car_leftFrontWindow.obj");
 
     // create framebuffer 
     let texture = getTextureForFramebuffer();
@@ -316,6 +319,7 @@ async function init() {
 
         counter -= 0.3;
 
+        /*
         // teapot
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
@@ -357,17 +361,43 @@ async function init() {
         const skyboxPosition = new Position(skyboxRotation, null, [0, 0.0, 0], [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], [0, 0, 10])
         const skybox = new DrawableObject(skyboxProgram, null, skyboxPosition, skyboxPath + "box.obj", skyboxVertices, null, false, null)
         await skybox.draw();
-        
-        
-        /*
-        // test 
-        const scaleFactor = 1;
-        const testCamRotation = new Rotation(0, 0, 0)
-        const testPosition = new Position(testCamRotation, null, [-1, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 10])
-        const test = new DrawableObject(testProgram, null, testPosition, testPath + "house.obj", testVertices, null, false)
-        await test.draw()
-        
+
          */
+        
+        
+
+        // car
+        gl.clearColor(0., 1., 0., 1.);
+        const scaleFactorTest = 0.05;
+        const testCamRotation = new Rotation(-90, 0, 0)
+        const testPosition = new Position(testCamRotation, null, [0.6, -.5, 0], [scaleFactorTest, scaleFactorTest, scaleFactorTest], [0, 0, 2])
+        const test = new DrawableObject(testProgram, null, testPosition, testPath + "carInside.obj", testVertices, null, true)
+        await test.draw()
+
+        // car door right front
+        const scaleFactorcardoorRF = 0.05;
+        const cardoorRFCamRotation = new Rotation(-90, 0, 0)
+        const cardoorRFPosition = new Position(cardoorRFCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorRF, scaleFactorcardoorRF, scaleFactorcardoorRF], [0, 0, 2])
+        const cardoorRF = new DrawableObject(testProgram, null, cardoorRFPosition, testPath + "car_rightFront.obj", cardoorRFVertices, null, false)
+        await cardoorRF.draw()
+
+        // door left front
+        const scaleFactorcardoorLF = 0.05;
+        const cardoorLFCamRotation = new Rotation(-90, 0, 0)
+        const cardoorLFPosition = new Position(cardoorLFCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorLF, scaleFactorcardoorLF, scaleFactorcardoorLF], [0, 0, 2])
+        const cardoorLF = new DrawableObject(testProgram, null, cardoorLFPosition, testPath + "car_leftFront.obj", cardoorLFVertices, null, false)
+        await cardoorLF.draw()
+
+        // door left front window
+        const scaleFactorcardoorLFW = 0.05;
+        const cardoorLFWCamRotation = new Rotation(-90, 0, 0)
+        const cardoorLFWPosition = new Position(cardoorLFWCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorLFW, scaleFactorcardoorLFW, scaleFactorcardoorLFW], [0, 0, 2])
+        const cardoorLFW = new DrawableObject(testProgram, null, cardoorLFWPosition, testPath + "car_leftFront.obj", cardoorLFWVertices, null, false)
+        await cardoorLFW.draw()
+
+
+        
+
          
     }
 

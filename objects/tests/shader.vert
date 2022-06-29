@@ -1,25 +1,30 @@
 precision mediump float;
 
 attribute vec3 vertPosition;
-attribute vec3 vertColor;
-attribute vec2 textureCoordinate;
-attribute vec3 normals;
+attribute vec2 vertTexCoord;
+attribute vec3 vertNormal;
 
-uniform mat4 mView;
-uniform mat4 mProj;
-uniform mat4 mTranslate;
+varying vec2 texCoord;
+varying vec3 fragColor;
+varying vec3 fragNormal;
+varying vec3 fragLightDir;
+
 uniform mat4 mScale;
 uniform mat4 mRotate;
-
-varying vec3 fragColor;
-
-varying vec3 worldPosition;
-varying vec3 worldNormal;
+uniform mat4 mTranslate;
+uniform mat4 mView;
+uniform mat4 mProj;
+uniform mat3 mNormale;
 
 
 void main(){
-    vec4 position = vec4(vertPosition, 1.0);
+    vec3 lightDir = vec3(5.,7.,7.) ;
 
-    fragColor = vec3(1., 1., 0.);
-    gl_Position = mProj * mView * mTranslate * mRotate * mScale * position;
+    fragColor = vec3(1., 1., 1.);
+    texCoord = vertTexCoord;
+    fragNormal = mNormale * vertNormal;
+    fragLightDir = (mView * vec4(lightDir,0.0)).xyz;
+
+    gl_Position = mProj * mView * mTranslate * mRotate * mScale * vec4(vertPosition, 1.0);
+
 }
