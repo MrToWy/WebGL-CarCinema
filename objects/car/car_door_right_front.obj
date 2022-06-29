@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib car_rightFront.mtl
+mtllib car_door_right_front.mtl
 g default
 v 29.869900 13.457890 6.965720
 v 29.869841 13.526790 6.961250
