@@ -11,9 +11,11 @@ const input = document.getElementById("input")
 let tolerance = 0.01;
 let updateId;
 let previousDelta = 0;
-let fpsLimit = 120;
+let fpsLimit = 1;
 const targetTextureWidth = 1024;
 const targetTextureHeight = targetTextureWidth;
+let camRotation = -45;
+const keyRotationStrength = 1;
 
 
 const fpsLabel = document.getElementById("fps");
@@ -22,6 +24,21 @@ const gl = canvas.getContext("webgl");
 
 const VBO = gl.createBuffer();
 
+document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    e = e || window.event;
+    
+    if (e.keyCode == '37') {
+        // left arrow
+        camRotation -= keyRotationStrength;
+    }
+    else if (e.keyCode == '39') {
+        // right arrow
+        camRotation += keyRotationStrength;
+    }
+}
 
 async function getShader(shaderPath, glContext){
     let response = await fetch(shaderPath);
@@ -318,6 +335,8 @@ async function init() {
         }
 
         counter -= 0.3;
+        
+        
 
         /*
         // teapot
@@ -369,28 +388,28 @@ async function init() {
         // car
         gl.clearColor(0., 1., 0., 1.);
         const scaleFactorTest = 0.05;
-        const testCamRotation = new Rotation(-90, 0, 0)
+        const testCamRotation = new Rotation(-90, 0, camRotation)
         const testPosition = new Position(testCamRotation, null, [0.6, -.5, 0], [scaleFactorTest, scaleFactorTest, scaleFactorTest], [0, 0, 2])
         const test = new DrawableObject(testProgram, null, testPosition, testPath + "carInside.obj", testVertices, null, true)
         await test.draw()
 
         // car door right front
         const scaleFactorcardoorRF = 0.05;
-        const cardoorRFCamRotation = new Rotation(-90, 0, 0)
+        const cardoorRFCamRotation = new Rotation(-90, 0, camRotation)
         const cardoorRFPosition = new Position(cardoorRFCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorRF, scaleFactorcardoorRF, scaleFactorcardoorRF], [0, 0, 2])
         const cardoorRF = new DrawableObject(testProgram, null, cardoorRFPosition, testPath + "car_rightFront.obj", cardoorRFVertices, null, false)
         await cardoorRF.draw()
 
         // door left front
         const scaleFactorcardoorLF = 0.05;
-        const cardoorLFCamRotation = new Rotation(-90, 0, 0)
+        const cardoorLFCamRotation = new Rotation(-90, 0, camRotation)
         const cardoorLFPosition = new Position(cardoorLFCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorLF, scaleFactorcardoorLF, scaleFactorcardoorLF], [0, 0, 2])
         const cardoorLF = new DrawableObject(testProgram, null, cardoorLFPosition, testPath + "car_leftFront.obj", cardoorLFVertices, null, false)
         await cardoorLF.draw()
 
         // door left front window
         const scaleFactorcardoorLFW = 0.05;
-        const cardoorLFWCamRotation = new Rotation(-90, 0, 0)
+        const cardoorLFWCamRotation = new Rotation(-90, 0, camRotation)
         const cardoorLFWPosition = new Position(cardoorLFWCamRotation, null, [0.6, -.5, 0], [scaleFactorcardoorLFW, scaleFactorcardoorLFW, scaleFactorcardoorLFW], [0, 0, 2])
         const cardoorLFW = new DrawableObject(testProgram, null, cardoorLFWPosition, testPath + "car_leftFront.obj", cardoorLFWVertices, null, false)
         await cardoorLFW.draw()
