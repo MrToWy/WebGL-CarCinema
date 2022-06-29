@@ -155,7 +155,11 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     identity(normalMatrix);
 
     lookAt(viewMatrix, eye, [0, 0, 0], [0, 1, 0]);
-    rotateY(rotateMatrix, rotateMatrix, objRotationAngle * Math.PI / 180);
+
+    rotateX(rotateMatrix, rotateMatrix, objRotationAngle.x * Math.PI / 180);
+    rotateY(rotateMatrix, rotateMatrix, objRotationAngle.y * Math.PI / 180);
+    rotateZ(rotateMatrix, rotateMatrix, objRotationAngle.z * Math.PI / 180);
+
     translate(translateMatrix, translateMatrix, translateVector3)
     scale(scaleMatrix, scaleMatrix, scaleVector3);
 
