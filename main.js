@@ -305,7 +305,7 @@ async function init() {
 
         
         // skybox 
-        const skyboxScaleFactor = 100;
+        const skyboxScaleFactor = 11;
         const skyboxRotation = new Rotation(0, counter, 0)
         const skyboxPosition = new Position(skyboxRotation, null, [0, 0.0, 0], [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], [0, 0, 10])
         const skybox = new DrawableObject(skyboxProgram, skyboxTexture, skyboxPosition, skyboxPath + "sphere.obj", skyboxVertices, null, false, null)
