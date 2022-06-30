@@ -266,7 +266,7 @@ async function init() {
 
         counter -= 0.3;
 
-        /*
+
         // teapot
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
@@ -299,9 +299,6 @@ async function init() {
         const house = new DrawableObject(houseProgram, null, housePosition, housePath + "house.obj", houseVertices, null, false)
         await house.draw()
         
-        
-         */
- 
 
         
         // skybox 
