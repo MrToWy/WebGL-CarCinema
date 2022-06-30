@@ -30,11 +30,11 @@ function checkKey(e) {
 
     e = e || window.event;
     
-    if (e.keyCode == '37') {
+    if (e.keyCode === '37') {
         // left arrow
         camRotation -= keyRotationStrength;
     }
-    else if (e.keyCode == '39') {
+    else if (e.keyCode === '39') {
         // right arrow
         camRotation += keyRotationStrength;
     }
