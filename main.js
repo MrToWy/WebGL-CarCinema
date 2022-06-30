@@ -285,23 +285,25 @@ async function init() {
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const carProgram = await getProgram(carPath, gl)
-    const carMirrorProgram = await getProgram(carMirrorPath, gl);
+    //const carMirrorProgram = await getProgram(carMirrorPath, gl);
 
     // get vertices
     /*
     const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
     const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
-    const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "box.obj");
+   
 
      */
+
+    const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
     const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
     const carDoorRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_right_front.obj");
     const carDoorWindowLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_left_front.obj");
     const carWindscreenVertices = await getVertices(gl, carProgram, carPath + "car_windscreen.obj");
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
-    const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror.obj");
+    //const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
 
 
@@ -332,7 +334,7 @@ async function init() {
         
         initFogForProgram(houseProgram);
         
-        
+        /*
         // teapot
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
@@ -374,6 +376,8 @@ async function init() {
         await skybox.draw();
 
         */
+
+        
         // car
         const scaleFactorCar = 0.1;
         const position = [0,-0.,0.0];
