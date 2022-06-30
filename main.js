@@ -262,7 +262,22 @@ async function init() {
     let skyboxTexture = getSkyboxTexture();
     
     //movie screen
+    gl.useProgram(movieProgram)
     let movieTexture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0)
+    gl.bindTexture(gl.TEXTURE_2D, movieTexture)
+
+    // select TEXTURE1 as texture
+    const textureSelector = gl.getUniformLocation(movieProgram, "textureSelector");
+    gl.uniform1i(textureSelector, 0);
+
+    let textureImage = document.getElementById("videoTexture")
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
+    gl.generateMipmap(gl.TEXTURE_2D)
+
+    gl.bindTexture(gl.TEXTURE_2D, null)
+    
+    
     
     gl.enable(gl.DEPTH_TEST);
 
@@ -319,27 +334,13 @@ async function init() {
         await skybox.draw();
 
 
-
-
-        gl.activeTexture(gl.TEXTURE1)
-        gl.bindTexture(gl.TEXTURE_2D, movieTexture)
-
-        // select TEXTURE1 as texture
-        gl.uniform1i(textureSelector, 1);
-
-        textureImage = document.getElementById("videoTexture")
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
-        gl.generateMipmap(gl.TEXTURE_2D)
-
-        gl.bindTexture(gl.TEXTURE_2D, movieTexture)
-        
         
         
         // movie 
         const movieScaleFactor = 1;
         const movieRotation = new Rotation(0, counter, 0)
         const moviePosition = new Position(movieRotation, null, [0, 0.0, 0], [movieScaleFactor, movieScaleFactor, movieScaleFactor], [0, 0, 10])
-        const movie = new DrawableObject(movieProgram, null, moviePosition, moviePath + "sphere.obj", movieVertices, null, false, null)
+        const movie = new DrawableObject(movieProgram, movieTexture, moviePosition, moviePath + "sphere.obj", movieVertices, null, false, null)
         await movie.draw();
 
 
