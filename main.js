@@ -333,6 +333,11 @@ async function init() {
 
         
         initFogForProgram(houseProgram);
+        const scaleFactorCar = 0.1;
+        const position = [0,0.0,0.0];
+        const eye = [0,1.0,2];
+        const look = [0,1,0]
+        const carCamRotation = new Rotation(-90, 0, camRotation);
         
         /*
         // teapot
@@ -368,23 +373,20 @@ async function init() {
         await house.draw()
         
 
+
+
+
         // skybox 
-        const skyboxScaleFactor = 11;
+        const skyboxScaleFactor = 100;
         const skyboxRotation = new Rotation(0, counter, 0)
-        const skyboxPosition = new Position(skyboxRotation, null, [0, 0.0, 0], [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], [0, 0, 10])
-        const skybox = new DrawableObject(skyboxProgram, skyboxTexture, skyboxPosition, skyboxPath + "sphere.obj", skyboxVertices, null, false, null)
+        const skyboxPosition = new Position(skyboxRotation, null, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
+        const skybox = new DrawableObject(skyboxProgram, skyboxPosition,  false)
+        skybox.setTexture(skyboxTexture);
         await skybox.draw();
 
         */
-
         
         // car
-        const scaleFactorCar = 0.1;
-        const position = [0,-0.,0.0];
-        const eye = [0,1.0,2];
-        const look = [0,1,0]
-        const carCamRotation = new Rotation(-90, 0, camRotation);
-
         gl.clearColor(0., 1., 0., 1.);
         gl.depthMask(true);
         gl.disable(gl.BLEND);
