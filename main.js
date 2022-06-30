@@ -1,8 +1,5 @@
 'use strict';
 
-const teapotPath = "objects/teapot/"
-const cubePath = "objects/cube/"
-const tablePath = "objects/table/"
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
@@ -279,22 +276,11 @@ async function init() {
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
     // compile programs
-    const teapotProgram = await getProgram(teapotPath, gl)
-    const cubeProgram = await getProgram(cubePath, gl)
-    const tableProgram = await getProgram(tablePath, gl)
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const carProgram = await getProgram(carPath, gl)
     //const carMirrorProgram = await getProgram(carMirrorPath, gl);
 
-    // get vertices
-    /*
-    const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
-    const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
-    const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
-   
-
-     */
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
@@ -338,62 +324,22 @@ async function init() {
         const eye = [0,1.0,2];
         const look = [0,1,0]
         const carCamRotation = new Rotation(-90, 0, camRotation);
-        
-        /*
-        // teapot
-        gl.clearColor(1., 0., 0., 1.);
-        const teapotCamRotation = new Rotation(0, counter*-1, 0)
-        const teapotPosition = new Position(teapotCamRotation, null, [0, 0, 0], [1, 1, 1], [0, 1, 7])
-        const teapot = new DrawableObject(teapotProgram, null, teapotPosition, teapotPath + "teapot.obj", teapotVertices, fb, true)
-        await teapot.draw()
-        
-        
-        // cube
-        gl.clearColor(0., 1., 0., 1.);
-        const cubeCamRotation = new Rotation(0, counter, 0)
-        const cubePosition = new Position(cubeCamRotation, null, [input.value/1000, 0.5, 0], [0.5, 0.5, 0.5], [0, 0, 10])
-        const cube = new DrawableObject(cubeProgram, texture, cubePosition, cubePath + "box.obj", cubeVertices, fb, true, true)
-        await cube.draw()
-
-
-        // table 
-        const tableScaleFactor = 0.002;
-        const tableCamRotation = new Rotation(0, counter, 0)
-        const tablePosition = new Position(tableCamRotation, null, [input.value/1000, 0.0, 0], [tableScaleFactor, tableScaleFactor, tableScaleFactor], [0, 0, 10])
-        const table = new DrawableObject(tableProgram, null, tablePosition, tablePath + "table_tex.obj", tableVertices, null, false)
-        await table.draw()
-
-
-
-        // house 
-        const scaleFactor = 1;
-        const houseCamRotation = new Rotation(0, 0, 0)
-        const housePosition = new Position(houseCamRotation, null, [-1, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 10])
-        const house = new DrawableObject(houseProgram, null, housePosition, housePath + "house.obj", houseVertices, null, false)
-        await house.draw()
-        
-
-
-
-
-        // skybox 
-        const skyboxScaleFactor = 100;
-        const skyboxRotation = new Rotation(0, counter, 0)
-        const skyboxPosition = new Position(skyboxRotation, null, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
-        const skybox = new DrawableObject(skyboxProgram, skyboxPosition,  false)
-        skybox.setTexture(skyboxTexture);
-        await skybox.draw();
-
-        */
-        
-        // car
         gl.clearColor(0., 1., 0., 1.);
         gl.depthMask(true);
         gl.disable(gl.BLEND);
 
+        // skybox 
+        const skyboxScaleFactor = 100;
+        const skyboxRotation = new Rotation(0, camRotation, 0);
+        const skyboxPosition = new Position(skyboxRotation, null, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
+        const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices,false)
+        skybox.setTexture(skyboxTexture);
+        await skybox.draw();
+
+        // Car
         // Inside
         const carInsidePosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices, true)
+        const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices, false)
         car.setTexture(null) // you could insert a texture here
         await car.draw()
 
@@ -412,16 +358,18 @@ async function init() {
         const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices, false)
         await carDoorLeftFront.draw()
 
-        /*
+/*
         // Rear Mirror
         const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices, false)
         await carRearMirror.draw()
 
-         */
+
+ */
+
 
         gl.depthMask(false);
-        gl.blendColor(0.0,0.0,0.0,0.5);
+        gl.blendColor(0.0,0.0,0.0,0.8);
         gl.blendEquationSeparate(gl.FUNC_ADD,gl.FUNC_ADD);
         gl.blendFuncSeparate(gl.SRC_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA);
         gl.enable(gl.BLEND);
