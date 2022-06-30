@@ -19,11 +19,10 @@ class Position{
 
 
 class DrawableObject {
-    constructor(program, texture, position, objectPath, vertices, framebuffer, clear, getTextureFromFramebuffer) {
+    constructor(program, texture, position, vertices, framebuffer, clear, getTextureFromFramebuffer) {
         this.program = program;
         this.texture = texture;
         this.position = position;
-        this.objectPath = objectPath;
         this.vertices = vertices;
         this.framebuffer = framebuffer;
         this.clear = clear;
@@ -51,7 +50,7 @@ class DrawableObject {
         }
         
         await position(gl, this.program, this.position.objectRotation, this.position.cameraRotation, this.position.position, this.position.scale, canvas, this.position.eye)
-        await bindParameters(gl, this.program, this.objectPath)
+        await bindParameters(gl, this.program)
 
         if(this.clear)
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
