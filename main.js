@@ -393,12 +393,20 @@ async function init() {
         const position = [0,-0.5,0.0];
         const eye = [0,0,2];
         const carCamRotation = new Rotation(-90, 0, camRotation);
+
         gl.clearColor(0., 1., 0., 1.);
+        gl.depthMask(true);
+        gl.disable(gl.BLEND);
 
         // Inside
         const carInsidePosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
         const car = new DrawableObject(carProgram, null, carInsidePosition, carPath + "car_inside.obj", carInsideVertices, null, true)
         await car.draw()
+
+        // Airing
+        const carAiringPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
+        const carAiring = new DrawableObject(carProgram, null, carAiringPosition, carPath + "car_airing.obj", carAiringVertices, null, false)
+        await carAiring.draw()
 
         // Door Right Front
         const carDoorRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
@@ -410,6 +418,23 @@ async function init() {
         const carDoorLeftFront = new DrawableObject(carProgram, null, carDoorLeftFrontPosition, carPath + "car_door_left_front.obj", carDoorLeftFrontVertices, null, false)
         await carDoorLeftFront.draw()
 
+        // Rear Mirror
+        const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
+        const carRearMirror = new DrawableObject(carProgram, null, carRearMirrorPosition, carPath + "car_rear_mirror.obj", carRearMirrorVertices, null, false)
+        await carRearMirror.draw()
+
+
+        gl.depthMask(false);
+        gl.blendColor(0.0,0.0,0.0,0.5);
+        gl.blendEquationSeparate(gl.FUNC_ADD,gl.FUNC_ADD);
+        gl.blendFuncSeparate(gl.SRC_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA);
+        gl.enable(gl.BLEND);
+
+        // Windscreen
+        const carWindscreenPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
+        const carWindscreen = new DrawableObject(carProgram, null, carWindscreenPosition, carPath + "car_windscreen.obj", carWindscreenVertices, null, false)
+        await carWindscreen.draw()
+
         // Door Window Left Front
         const carDoorWindowLeftFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
         const carDoorWindowLeftFront = new DrawableObject(carProgram, null, carDoorWindowLeftFrontPosition, carPath + "car_door_window_left_front.obj", carDoorWindowLeftFrontVertices, null, false)
@@ -419,21 +444,6 @@ async function init() {
         const carDoorWindowRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
         const carDoorWindowRightFront = new DrawableObject(carProgram, null, carDoorWindowRightFrontPosition, carPath + "car_door_window_right_front.obj", carDoorWindowRightFrontVertices, null, false)
         await carDoorWindowRightFront.draw()
-
-        // Windscreen
-        const carWindscreenPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carWindscreen = new DrawableObject(carProgram, null, carWindscreenPosition, carPath + "car_windscreen.obj", carWindscreenVertices, null, false)
-        await carWindscreen.draw()
-
-        // Rear Mirror
-        const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carRearMirror = new DrawableObject(carProgram, null, carRearMirrorPosition, carPath + "car_rear_mirror.obj", carRearMirrorVertices, null, false)
-        await carRearMirror.draw()
-
-        // Airing
-        const carAiringPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carAiring = new DrawableObject(carProgram, null, carAiringPosition, carPath + "car_airing.obj", carAiringVertices, null, false)
-        await carAiring.draw()
     }
 
     requestAnimationFrame(loop);
