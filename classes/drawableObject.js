@@ -8,12 +8,13 @@ class Rotation{
 
 
 class Position{
-    constructor(objectRotation, cameraRotation, position, scale, eye) {
+    constructor(objectRotation, cameraRotation, position, scale, eye ,look) {
         this.objectRotation = objectRotation;
         this.cameraRotation = cameraRotation;
         this.position = position;
         this.scale = scale;
         this.eye = eye;
+        this.look = look;
     }
 }
 
@@ -55,7 +56,7 @@ class DrawableObject {
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         }
         
-        await position(gl, this.program, this.position.objectRotation, this.position.cameraRotation, this.position.position, this.position.scale, canvas, this.position.eye)
+        await position(gl, this.program, this.position.objectRotation, this.position.cameraRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look)
         await bindParameters(gl, this.program)
 
         if(this.clear)
