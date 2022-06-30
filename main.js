@@ -335,6 +335,13 @@ async function init() {
 
 
         
+        gl.bindTexture(gl.TEXTURE_2D, movieTexture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
+        gl.generateMipmap(gl.TEXTURE_2D)
+        gl.bindTexture(gl.TEXTURE_2D, null)
+        
+        
+        
         
         // movie 
         const movieScaleFactor = 1;
@@ -344,6 +351,12 @@ async function init() {
         await movie.draw();
 
 
+        
+        
+        
+        
+        
+        
         /*
         // test 
         const scaleFactor = 1;
