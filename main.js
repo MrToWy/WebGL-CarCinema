@@ -80,36 +80,35 @@ async function bindParameters(gl, program, name){
     gl.useProgram(program);
 
     const teapotPositionAttributeLocation = gl.getAttribLocation(program, "vertPosition");
+    const teapotColorAttributeLocation = gl.getAttribLocation(program, "vertNormal");
+    const texCoordAttributeLocation = gl.getAttribLocation(program, "vertTexCoord");
 
-    gl.vertexAttribPointer(teapotPositionAttributeLocation,
-        3, gl.FLOAT, false,
-        8 * Float32Array.BYTES_PER_ELEMENT,
-        0);
+    if(teapotPositionAttributeLocation >= 0){
+        gl.vertexAttribPointer(teapotPositionAttributeLocation,
+            3, gl.FLOAT, false,
+            8 * Float32Array.BYTES_PER_ELEMENT,
+            0);
 
-    gl.enableVertexAttribArray(teapotPositionAttributeLocation);
+        gl.enableVertexAttribArray(teapotPositionAttributeLocation);
+    }
 
-
-
-        const teapotColorAttributeLocation = gl.getAttribLocation(program, "vertNormal");
-
+    if(teapotColorAttributeLocation >= 0){
         gl.vertexAttribPointer(teapotColorAttributeLocation,
             3, gl.FLOAT, gl.FALSE,
             8 * Float32Array.BYTES_PER_ELEMENT,
             5 * Float32Array.BYTES_PER_ELEMENT);
 
         gl.enableVertexAttribArray(teapotColorAttributeLocation);
+    }
 
-
-
-        const texCoordAttributeLocation = gl.getAttribLocation(program, "vertTexCoord");
-
+    if(texCoordAttributeLocation >= 0){
         gl.vertexAttribPointer(texCoordAttributeLocation,
             2, gl.FLOAT, false,
             8 * Float32Array.BYTES_PER_ELEMENT,
             3 * Float32Array.BYTES_PER_ELEMENT);
 
         gl.enableVertexAttribArray(texCoordAttributeLocation);
-
+    }
 }
 
 async function draw(gl, vertices){
