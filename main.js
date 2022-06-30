@@ -234,6 +234,18 @@ function getSkyboxTexture(){
     return skyboxTexture;
 }
 
+function initFogForProgram(program){
+    gl.useProgram(program);
+    let fogNear = gl.getUniformLocation(program, 'fogNear');
+    let fogFar = gl.getUniformLocation(program, 'fogFar');
+
+    let fogNearValue = fogNearInput.value/1000.;
+    let fogFarValue = fogFarInput.value/1000.;
+
+    gl.uniform1f(fogNear, fogNearValue);
+    gl.uniform1f(fogFar, fogFarValue);
+}
+
 async function init() {
 
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -275,15 +287,8 @@ async function init() {
 
         fpsLimit = fpsSlider.value;
 
-        gl.useProgram(houseProgram);
-        let fogNear = gl.getUniformLocation(houseProgram, 'fogNear');
-        let fogFar = gl.getUniformLocation(houseProgram, 'fogFar');
         
-        let fogNearValue = fogNearInput.value/1000.;
-        let fogFarValue = fogFarInput.value/1000.;
-
-        gl.uniform1f(fogNear, fogNearValue);
-        gl.uniform1f(fogFar, fogFarValue);
+        initFogForProgram(houseProgram);
         
         
         // teapot
