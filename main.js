@@ -274,6 +274,20 @@ function initFogForProgram(program){
     gl.uniform1f(fogFar, fogFarValue);
 }
 
+function enableTransperency(alpha, gl) {
+    gl.depthMask(false);
+    gl.blendColor(0.0,0.0,0.0,alpha);
+    gl.blendEquationSeparate(gl.FUNC_ADD,gl.FUNC_ADD);
+    gl.blendFuncSeparate(gl.SRC_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA);
+    gl.enable(gl.BLEND);
+}
+
+function disableTransperency(gl) {
+    gl.depthMask(true);
+    gl.disable(gl.BLEND);
+}
+
+
 async function init() {
 
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -330,9 +344,9 @@ async function init() {
         const eye = [0,1.0,2];
         const look = [0,1,0]
         const carCamRotation = new Rotation(-90, 0, camRotation);
-        gl.clearColor(0., 1., 0., 1.);
-        gl.depthMask(true);
-        gl.disable(gl.BLEND);
+
+        // draw opaque objects
+        disableTransperency(gl);
 
         // skybox 
         const skyboxScaleFactor = 100;
@@ -384,14 +398,8 @@ async function init() {
         await carRearMirror.draw()
 
 
-
-
-        gl.depthMask(false);
-        gl.blendColor(0.0,0.0,0.0,0.8);
-        gl.blendEquationSeparate(gl.FUNC_ADD,gl.FUNC_ADD);
-        gl.blendFuncSeparate(gl.SRC_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA);
-        gl.enable(gl.BLEND);
-
+        // draw transperent objects
+        enableTransperency(0.8,gl);
 
         // Windscreen
         const carWindscreenPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
