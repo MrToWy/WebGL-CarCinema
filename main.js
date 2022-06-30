@@ -390,8 +390,9 @@ async function init() {
 
         // car
         const scaleFactorCar = 0.1;
-        const position = [0,-0.5,0.0];
-        const eye = [0,0,2];
+        const position = [0,-0.,0.0];
+        const eye = [0,1.0,2];
+        const look = [0,1,0]
         const carCamRotation = new Rotation(-90, 0, camRotation);
 
         gl.clearColor(0., 1., 0., 1.);
