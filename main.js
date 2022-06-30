@@ -7,6 +7,8 @@ const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const testPath = "objects/tests/"
 const input = document.getElementById("input")
+const fogNearInput = document.getElementById("fogNear")
+const fogFarInput = document.getElementById("fogFar")
 
 let tolerance = 0.01;
 let updateId;
@@ -17,6 +19,7 @@ const targetTextureHeight = targetTextureWidth;
 
 
 const fpsLabel = document.getElementById("fps");
+const fpsSlider = document.getElementById("fpsSlider");
 const canvas = document.getElementById("canvas")
 const gl = canvas.getContext("webgl");
 
@@ -231,6 +234,18 @@ function getSkyboxTexture(){
     return skyboxTexture;
 }
 
+function initFogForProgram(program){
+    gl.useProgram(program);
+    let fogNear = gl.getUniformLocation(program, 'fogNear');
+    let fogFar = gl.getUniformLocation(program, 'fogFar');
+
+    let fogNearValue = fogNearInput.value/1000.;
+    let fogFarValue = fogFarInput.value/1000.;
+
+    gl.uniform1f(fogNear, fogNearValue);
+    gl.uniform1f(fogFar, fogFarValue);
+}
+
 async function init() {
 
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -270,7 +285,12 @@ async function init() {
 
         counter -= 0.3;
 
+        fpsLimit = fpsSlider.value;
 
+        
+        initFogForProgram(houseProgram);
+        
+        
         // teapot
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
