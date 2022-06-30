@@ -8,6 +8,8 @@ const skyboxPath = "objects/skybox/"
 const moviePath = "objects/movie/"
 const testPath = "objects/tests/"
 const input = document.getElementById("input")
+const fogNearInput = document.getElementById("fogNear")
+const fogFarInput = document.getElementById("fogFar")
 
 let tolerance = 0.01;
 let updateId;
@@ -18,6 +20,7 @@ const targetTextureHeight = targetTextureWidth;
 
 
 const fpsLabel = document.getElementById("fps");
+const fpsSlider = document.getElementById("fpsSlider");
 const canvas = document.getElementById("canvas")
 const gl = canvas.getContext("webgl");
 
@@ -78,36 +81,35 @@ async function bindParameters(gl, program, name){
     gl.useProgram(program);
 
     const teapotPositionAttributeLocation = gl.getAttribLocation(program, "vertPosition");
+    const teapotColorAttributeLocation = gl.getAttribLocation(program, "vertNormal");
+    const texCoordAttributeLocation = gl.getAttribLocation(program, "vertTexCoord");
 
-    gl.vertexAttribPointer(teapotPositionAttributeLocation,
-        3, gl.FLOAT, false,
-        8 * Float32Array.BYTES_PER_ELEMENT,
-        0);
+    if(teapotPositionAttributeLocation >= 0){
+        gl.vertexAttribPointer(teapotPositionAttributeLocation,
+            3, gl.FLOAT, false,
+            8 * Float32Array.BYTES_PER_ELEMENT,
+            0);
 
-    gl.enableVertexAttribArray(teapotPositionAttributeLocation);
+        gl.enableVertexAttribArray(teapotPositionAttributeLocation);
+    }
 
-
-
-        const teapotColorAttributeLocation = gl.getAttribLocation(program, "vertNormal");
-
+    if(teapotColorAttributeLocation >= 0){
         gl.vertexAttribPointer(teapotColorAttributeLocation,
             3, gl.FLOAT, gl.FALSE,
             8 * Float32Array.BYTES_PER_ELEMENT,
             5 * Float32Array.BYTES_PER_ELEMENT);
 
         gl.enableVertexAttribArray(teapotColorAttributeLocation);
+    }
 
-
-
-        const texCoordAttributeLocation = gl.getAttribLocation(program, "vertTexCoord");
-
+    if(texCoordAttributeLocation >= 0){
         gl.vertexAttribPointer(texCoordAttributeLocation,
             2, gl.FLOAT, false,
             8 * Float32Array.BYTES_PER_ELEMENT,
             3 * Float32Array.BYTES_PER_ELEMENT);
 
         gl.enableVertexAttribArray(texCoordAttributeLocation);
-
+    }
 }
 
 async function draw(gl, vertices){
@@ -232,6 +234,18 @@ function getSkyboxTexture(){
     return skyboxTexture;
 }
 
+function initFogForProgram(program){
+    gl.useProgram(program);
+    let fogNear = gl.getUniformLocation(program, 'fogNear');
+    let fogFar = gl.getUniformLocation(program, 'fogFar');
+
+    let fogNearValue = fogNearInput.value/1000.;
+    let fogFarValue = fogFarInput.value/1000.;
+
+    gl.uniform1f(fogNear, fogNearValue);
+    gl.uniform1f(fogFar, fogFarValue);
+}
+
 async function init() {
 
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -291,7 +305,12 @@ async function init() {
 
         counter -= 0.3;
 
+        fpsLimit = fpsSlider.value;
 
+        
+        initFogForProgram(houseProgram);
+        
+        
         // teapot
         gl.clearColor(1., 0., 0., 1.);
         const teapotCamRotation = new Rotation(0, counter*-1, 0)
