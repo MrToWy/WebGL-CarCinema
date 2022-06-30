@@ -5,6 +5,7 @@ const cubePath = "objects/cube/"
 const tablePath = "objects/table/"
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
+const moviePath = "objects/movie/"
 const testPath = "objects/tests/"
 const input = document.getElementById("input")
 
@@ -241,6 +242,7 @@ async function init() {
     const tableProgram = await getProgram(tablePath, gl)
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
+    const movieProgram = await getProgram(skyboxPath, gl)
     const testProgram = await getProgram(testPath, gl)
 
     // get vertices
@@ -249,6 +251,7 @@ async function init() {
     const tableVertices = await getVertices(gl, cubeProgram, testPath + "table_tex.obj");
     const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
+    const movieVertices = await getVertices(gl, movieProgram, moviePath + "box.obj");
     const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
 
     // create framebuffer 
@@ -257,6 +260,9 @@ async function init() {
 
     // skybox
     let skyboxTexture = getSkyboxTexture();
+    
+    //movie screen
+    let movieTexture = gl.createTexture();
     
     gl.enable(gl.DEPTH_TEST);
 
@@ -302,17 +308,41 @@ async function init() {
         const housePosition = new Position(houseCamRotation, null, [-1, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 10])
         const house = new DrawableObject(houseProgram, null, housePosition, housePath + "house.obj", houseVertices, null, false)
         await house.draw()
-        
 
-        
+
+
         // skybox 
         const skyboxScaleFactor = 11;
         const skyboxRotation = new Rotation(0, counter, 0)
         const skyboxPosition = new Position(skyboxRotation, null, [0, 0.0, 0], [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], [0, 0, 10])
         const skybox = new DrawableObject(skyboxProgram, skyboxTexture, skyboxPosition, skyboxPath + "sphere.obj", skyboxVertices, null, false, null)
         await skybox.draw();
+
+
+
+
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, movieTexture)
+
+        // select TEXTURE1 as texture
+        gl.uniform1i(textureSelector, 1);
+
+        textureImage = document.getElementById("videoTexture")
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
+        gl.generateMipmap(gl.TEXTURE_2D)
+
+        gl.bindTexture(gl.TEXTURE_2D, movieTexture)
         
         
+        
+        // movie 
+        const movieScaleFactor = 1;
+        const movieRotation = new Rotation(0, counter, 0)
+        const moviePosition = new Position(movieRotation, null, [0, 0.0, 0], [movieScaleFactor, movieScaleFactor, movieScaleFactor], [0, 0, 10])
+        const movie = new DrawableObject(movieProgram, null, moviePosition, moviePath + "sphere.obj", movieVertices, null, false, null)
+        await movie.draw();
+
+
         /*
         // test 
         const scaleFactor = 1;
