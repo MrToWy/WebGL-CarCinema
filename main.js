@@ -6,6 +6,7 @@ const tablePath = "objects/table/"
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
+const carMirrorPath = "objects/car/rear_mirror/"
 const input = document.getElementById("input")
 
 let tolerance = 0.01;
@@ -193,6 +194,15 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     gl.uniformMatrix4fv(scaleLocation, gl.FALSE, scaleMatrix);
     gl.uniformMatrix4fv(rotateLocation, gl.FALSE, rotateMatrix);
     gl.uniformMatrix3fv(normalLocation,gl.FALSE,normalMatrix);
+
+    let camLocation = gl.getUniformLocation(program,'camDir');
+    var inverseMat = new Float32Array(16);
+    const camDir = new Float32Array(3);
+    identity(inverseMat);
+    inverseMat = mat3FromMat4(viewMatrix);
+    inverseMat = invert3x3(inverseMat);
+    vec3MulMat3(camDir, [0,0,1], inverseMat);
+    gl.uniform3fv(camLocation, camDir);
 }
 
 const level = 0;
@@ -309,19 +319,23 @@ async function init() {
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const carProgram = await getProgram(carPath, gl)
+    const carMirrorProgram = await getProgram(carMirrorPath, gl);
 
     // get vertices
+    /*
     const teapotVertices = await getVertices(gl, teapotProgram, teapotPath + "teapot.obj")
     const cubeVertices = await getVertices(gl, cubeProgram, cubePath + "box.obj");
     const houseVertices = await getVertices(gl, houseProgram, housePath + "house.obj");
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "box.obj");
+
+     */
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
     const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
     const carDoorRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_right_front.obj");
     const carDoorWindowLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_left_front.obj");
     const carWindscreenVertices = await getVertices(gl, carProgram, carPath + "car_windscreen.obj");
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
-    const carRearMirrorVertices = await getVertices(gl, carProgram, carPath + "car_rear_mirror.obj");
+    const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
 
 
@@ -385,9 +399,7 @@ async function init() {
         const skybox = new DrawableObject(skyboxProgram, null, skyboxPosition, skyboxPath + "box.obj", skyboxVertices, null, false, null)
         await skybox.draw();
 
-         */
-
-
+        */
         // car
         const scaleFactorCar = 0.1;
         const position = [0,-0.,0.0];
@@ -420,11 +432,13 @@ async function init() {
         const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices, false)
         await carDoorLeftFront.draw()
 
+        /*
         // Rear Mirror
-        const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carRearMirror = new DrawableObject(carProgram, carRearMirrorPosition, carRearMirrorVertices, false)
+        const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices, false)
         await carRearMirror.draw()
 
+         */
 
         gl.depthMask(false);
         gl.blendColor(0.0,0.0,0.0,0.5);
@@ -446,7 +460,6 @@ async function init() {
         const carDoorWindowRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
         await carDoorWindowRightFront.draw()
-
     }
 
     requestAnimationFrame(loop);
