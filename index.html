@@ -15,18 +15,22 @@ FPS: <l id="fps"></l>
 Obj Position:
 <input type="range" min="-2600" max="2500" value="-2250" class="slider" id="input">
 
+FPS-Limit:
+<input type="range" min="1" max="100" value="1" class="slider" id="fpsSlider">
+
+
+Fog Near:
+<input type="range" min="900" max="1000" value="900" class="slider" id="fogNear">
+Fog Far:
+<input type="range" min="900" max="1000" value="1000" class="slider" id="fogFar">
+
 <br>
 
 <canvas width="1024" height="1024" id="canvas">
 
 </canvas>
 
-<img id="back" src="objects/skybox/back.jpg" alt="crate texture for box" width="0">
-<img id="bottom" src="objects/skybox/bottom.jpg" alt="crate texture for box" width="0">
-<img id="front" src="objects/skybox/front.jpg" alt="crate texture for box" width="0">
-<img id="left" src="objects/skybox/left.jpg" alt="crate texture for box" width="0">
-<img id="right" src="objects/skybox/right.jpg" alt="crate texture for box" width="0">
-<img id="top" src="objects/skybox/top.jpg" alt="crate texture for box" width="0">
+<img id="skybox" src="objects/skybox/sphere.jpg" alt="crate texture for box" width="0">
 
 
 <script src="lib/matrix.js"></script>
