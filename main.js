@@ -400,27 +400,28 @@ async function init() {
 
         // Inside
         const carInsidePosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const car = new DrawableObject(carProgram, null, carInsidePosition, carInsideVertices, null, true)
+        const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices, true)
+        car.setTexture(null) // you could insert a texture here
         await car.draw()
 
         // Airing
         const carAiringPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carAiring = new DrawableObject(carProgram, null, carAiringPosition, carAiringVertices, null, false)
+        const carAiring = new DrawableObject(carProgram, carAiringPosition, carAiringVertices, false)
         await carAiring.draw()
 
         // Door Right Front
         const carDoorRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carDoorRightFront = new DrawableObject(carProgram, null, carDoorRightFrontPosition, carDoorRightFrontVertices, null, false)
+        const carDoorRightFront = new DrawableObject(carProgram, carDoorRightFrontPosition, carDoorRightFrontVertices, false)
         await carDoorRightFront.draw()
 
         // Door Left Front
         const carDoorLeftFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carDoorLeftFront = new DrawableObject(carProgram, null, carDoorLeftFrontPosition, carDoorLeftFrontVertices, null, false)
+        const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices, false)
         await carDoorLeftFront.draw()
 
         // Rear Mirror
         const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carRearMirror = new DrawableObject(carProgram, null, carRearMirrorPosition, carRearMirrorVertices, null, false)
+        const carRearMirror = new DrawableObject(carProgram, carRearMirrorPosition, carRearMirrorVertices, false)
         await carRearMirror.draw()
 
 
@@ -432,17 +433,17 @@ async function init() {
 
         // Windscreen
         const carWindscreenPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carWindscreen = new DrawableObject(carProgram, null, carWindscreenPosition, carWindscreenVertices, null, false)
+        const carWindscreen = new DrawableObject(carProgram, carWindscreenPosition, carWindscreenVertices, false)
         await carWindscreen.draw()
 
         // Door Window Left Front
         const carDoorWindowLeftFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carDoorWindowLeftFront = new DrawableObject(carProgram, null, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices, null, false)
+        const carDoorWindowLeftFront = new DrawableObject(carProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices, false)
         await carDoorWindowLeftFront.draw()
 
         // Door Window Right Front
         const carDoorWindowRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye)
-        const carDoorWindowRightFront = new DrawableObject(carProgram, null, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, null, false)
+        const carDoorWindowRightFront = new DrawableObject(carProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
         await carDoorWindowRightFront.draw()
 
     }

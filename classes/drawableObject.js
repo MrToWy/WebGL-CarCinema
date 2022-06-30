@@ -19,16 +19,22 @@ class Position{
 
 
 class DrawableObject {
-    constructor(program, texture, position, vertices, framebuffer, clear, getTextureFromFramebuffer) {
+    constructor(program, position, vertices, clear, getTextureFromFramebuffer) {
         this.program = program;
-        this.texture = texture;
         this.position = position;
         this.vertices = vertices;
-        this.framebuffer = framebuffer;
         this.clear = clear;
         this.getTextureFromFramebuffer = getTextureFromFramebuffer;
     }
-
+    
+    setTexture(texture){
+        this.texture = texture;
+    }
+    
+    setFramebuffer(framebuffer){
+        this.framebuffer = framebuffer;
+    }
+    
     async draw() {
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
