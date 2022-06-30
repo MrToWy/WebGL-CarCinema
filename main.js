@@ -319,6 +319,11 @@ async function init() {
     const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
     const carDoorRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_right_front.obj");
     const carDoorWindowLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_left_front.obj");
+    const carWindscreenVertices = await getVertices(gl, carProgram, carPath + "car_windscreen.obj");
+    const carDoorWindowLeftBackVertices = await getVertices(gl, carProgram, carPath + "car_door_window_left_back.obj");
+    const carDoorLeftBackVertices = await getVertices(gl, carProgram, carPath + "car_door_left_back.obj");
+
+
 
     // create framebuffer
     let texture = getTextureForFramebuffer();
@@ -371,9 +376,7 @@ async function init() {
         const house = new DrawableObject(houseProgram, null, housePosition, housePath + "house.obj", houseVertices, null, false)
         await house.draw()
         
- 
 
-        
         // skybox 
         const skyboxScaleFactor = 1000;
         const skyboxRotation = new Rotation(0, 0, 0)
@@ -404,10 +407,25 @@ async function init() {
         const carDoorLeftFront = new DrawableObject(carProgram, null, carDoorLeftFrontPosition, carPath + "car_door_left_front.obj", carDoorLeftFrontVertices, null, false)
         await carDoorLeftFront.draw()
 
-        // Door Window Right Front
+        // Door Window Left Front
         const carDoorWindowLeftFrontPosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
-        const carDoorWindowLeftFront = new DrawableObject(carProgram, null, carDoorWindowLeftFrontPosition, carPath + "car_door_left_front.obj", carDoorWindowLeftFrontVertices, null, false)
+        const carDoorWindowLeftFront = new DrawableObject(carProgram, null, carDoorWindowLeftFrontPosition, carPath + "car_door_window_left_front.obj", carDoorWindowLeftFrontVertices, null, false)
         await carDoorWindowLeftFront.draw()
+
+        // Windscreen
+        const carWindscreenPosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
+        const carWindscreen = new DrawableObject(carProgram, null, carWindscreenPosition, carPath + "car_windscreen.obj", carWindscreenVertices, null, false)
+        await carWindscreen.draw()
+
+        // Door Left Back
+        const carDoorLeftBackPosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
+        const carDoorLeftBack = new DrawableObject(carProgram, null, carDoorLeftBackPosition, carPath + "car_door_left_back.obj", carDoorLeftBackVertices, null, false)
+        await carDoorLeftBack.draw()
+
+        // Door Window Left Back
+        const carDoorWindowLeftBackPosition = new Position(carCamRotation, null, [0.6, -.5, 0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], [0, 0, 2])
+        const carDoorWindowLeftBack = new DrawableObject(carProgram, null, carDoorWindowLeftBackPosition, carPath + "car_door_window_left_back.obj", carDoorWindowLeftBackVertices, null, false)
+        await carDoorWindowLeftBack.draw()
 
     }
 

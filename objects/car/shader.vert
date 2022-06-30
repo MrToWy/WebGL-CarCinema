@@ -18,7 +18,7 @@ uniform mat3 mNormale;
 
 
 void main(){
-    vec3 lightDir = vec3(5.,7.,7.) ;
+    vec3 lightDir = vec3(-5.,0.,7.) ;
 
     fragColor = vec3(1., 1., 1.);
     texCoord = vertTexCoord;
