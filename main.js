@@ -300,15 +300,13 @@ async function init() {
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
 
-    const cubeVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
-
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
     const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
     const carDoorRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_right_front.obj");
     const carDoorWindowLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_left_front.obj");
     const carWindscreenVertices = await getVertices(gl, carProgram, carPath + "car_windscreen.obj");
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
-    const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror.obj");
+    const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
 
 
@@ -357,14 +355,6 @@ async function init() {
         await skybox.draw();
 
 
-        const cubeScaleFactor = 0.1;
-        const cubeRotation = new Rotation(0, camRotation, 0);
-        const cubePosition = new Position(carCamRotation, null, position, [cubeScaleFactor, cubeScaleFactor, cubeScaleFactor], eye, look)
-        const cube = new DrawableObject(carMirrorProgram, cubePosition,cubeVertices,false)
-        cube.setTexture(skyboxTexture);
-        await cube.draw();
-
-
 
 
         // Car
@@ -392,6 +382,7 @@ async function init() {
         gl.useProgram(carMirrorProgram);
         var textureLocation = gl.getUniformLocation(carMirrorProgram, "u_texture");
         gl.uniform1i(textureLocation, 0);
+
 
         // Rear Mirror
         const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
