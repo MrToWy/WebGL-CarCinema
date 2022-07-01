@@ -3,7 +3,6 @@
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
-const cubePath = "objects/teapot/"
 const carMirrorPath = "objects/car/rear_mirror/"
 const input = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
@@ -301,7 +300,7 @@ async function init() {
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
 
-    //const cubeVertices = await getVertices(gl, carMirrorProgram, skyboxPath + "sphere.obj");
+    const cubeVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
 
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
     const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
@@ -357,15 +356,15 @@ async function init() {
         skybox.setTexture(skyboxTexture);
         await skybox.draw();
 
-        /*
-        const cubeScaleFactor = 0.2;
+
+        const cubeScaleFactor = 0.1;
         const cubeRotation = new Rotation(0, camRotation, 0);
-        const cubePosition = new Position(cubeRotation, null, position, [cubeScaleFactor, cubeScaleFactor, cubeScaleFactor], eye, look)
+        const cubePosition = new Position(carCamRotation, null, position, [cubeScaleFactor, cubeScaleFactor, cubeScaleFactor], eye, look)
         const cube = new DrawableObject(carMirrorProgram, cubePosition,cubeVertices,false)
         cube.setTexture(skyboxTexture);
         await cube.draw();
 
-         */
+
 
 
         // Car
