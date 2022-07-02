@@ -19,6 +19,7 @@ const keyRotationStrength = 1;
 
 
 const fpsLabel = document.getElementById("fps");
+const fpsAvgLabel = document.getElementById("fpsAvg");
 const fpsSlider = document.getElementById("fpsSlider");
 const canvas = document.getElementById("canvas")
 const gl = canvas.getContext("webgl");
@@ -133,18 +134,27 @@ async function draw(gl, vertices){
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 8);
 }
 
+let fpsHistory = []
+
 async function handleFPS(currentDelta, loop){
 
     // fps
     updateId = requestAnimationFrame(loop);
     const delta = currentDelta - previousDelta;
     const fps = 1000 / delta;
-
+    
+    
+    
     if (fpsLimit && delta < (1000 / fpsLimit) - tolerance)
         return true;
 
+    fpsHistory.push(fps);
+    if(fpsHistory.length > 100) fpsHistory.shift()
+    const fpsAvg = fpsHistory.reduce((a, b) => a + b) / fpsHistory.length;
+
     previousDelta = currentDelta;
     fpsLabel.textContent = fps.toFixed(1);
+    fpsAvgLabel.textContent = fpsAvg.toFixed(1);
 }
 
 async function position(gl, program, objRotationAngle, cameraRotationAngle, translateVector3, scaleVector3, canvas, eye, look){
