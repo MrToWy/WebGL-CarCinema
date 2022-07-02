@@ -4,6 +4,7 @@ const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
+const carWindowPath = "objects/car/window/"
 const input = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
@@ -306,6 +307,7 @@ async function init() {
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const carProgram = await getProgram(carPath, gl)
     const carMirrorProgram = await getProgram(carMirrorPath, gl);
+    const carWindowProgram = await  getProgram(carWindowPath, gl);
 
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
@@ -365,8 +367,6 @@ async function init() {
         await skybox.draw();
 
 
-
-
         // Car
         // Inside
         const carInsidePosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
@@ -389,6 +389,7 @@ async function init() {
         const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices, false)
         await carDoorLeftFront.draw()
 
+
         gl.useProgram(carMirrorProgram);
         var textureLocation = gl.getUniformLocation(carMirrorProgram, "u_texture");
         gl.uniform1i(textureLocation, 0);
@@ -406,17 +407,17 @@ async function init() {
 
         // Windscreen
         const carWindscreenPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carWindscreen = new DrawableObject(carProgram, carWindscreenPosition, carWindscreenVertices, false)
+        const carWindscreen = new DrawableObject(carWindowProgram, carWindscreenPosition, carWindscreenVertices, false)
         await carWindscreen.draw()
 
         // Door Window Left Front
         const carDoorWindowLeftFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorWindowLeftFront = new DrawableObject(carProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices, false)
+        const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices, false)
         await carDoorWindowLeftFront.draw()
 
         // Door Window Right Front
         const carDoorWindowRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorWindowRightFront = new DrawableObject(carProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
+        const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
         await carDoorWindowRightFront.draw()
 
     }
