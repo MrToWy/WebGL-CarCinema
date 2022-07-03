@@ -5,7 +5,6 @@ const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
 const carWindowPath = "objects/car/window/"
-const lookatInput = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 
@@ -16,7 +15,7 @@ let fpsLimit = 15;
 const targetTextureWidth = 1024;
 const targetTextureHeight = targetTextureWidth;
 let camRotation = 0;
-const keyRotationStrength = 1;
+const keyRotationStrength = 10;
 
 
 const fpsLabel = document.getElementById("fps");
@@ -158,7 +157,7 @@ async function handleFPS(currentDelta, loop){
     fpsAvgLabel.textContent = fpsAvg.toFixed(1);
 }
 
-async function position(gl, program, objRotationAngle, cameraRotationAngle, translateVector3, scaleVector3, canvas, eye, look){
+async function position(gl, program, objRotationAngle, translateVector3, scaleVector3, canvas, eye, look){
     gl.useProgram(program);
     let viewLocation = gl.getUniformLocation(program, 'mView');
     let projLocation = gl.getUniformLocation(program, 'mProj');
@@ -184,12 +183,6 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     identity(rotateMatrix);
     identity(normalMatrix);
 
-    if(cameraRotationAngle !== null){
-        rotateX(viewMatrix, viewMatrix, cameraRotationAngle.x * Math.PI / 180);
-        rotateY(viewMatrix, viewMatrix, cameraRotationAngle.y * Math.PI / 180);
-        rotateZ(viewMatrix, viewMatrix, cameraRotationAngle.z * Math.PI / 180);
-    }
-    
     lookAt(viewMatrix, eye, look, [0, 1, 0]);
 
     if(objRotationAngle !== null){
@@ -206,8 +199,6 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     multiply(worldMatrix, scaleMatrix,rotateMatrix);
     multiply(worldMatrix, worldMatrix,translateMatrix);
     normalFromMat4(normalMatrix, worldMatrix);
-
-
 
     gl.uniformMatrix4fv(viewLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(projLocation, gl.FALSE, projMatrix);
@@ -349,33 +340,24 @@ async function init() {
         }
 
         counter -= 0.3;
-        
-        
-
         fpsLimit = fpsSlider.value;
 
-        
         initFogForProgram(houseProgram);
 
-        const cameraRotation = lookatInput.value/1000;
-        const sin = Math.sin(cameraRotation);
-        const cos = Math.cos(cameraRotation);
-        const lookAtX = sin;
-        const lookAtZ = -cos;
-
+        const cameraRotation = camRotation/1000;
         const scaleFactorCar = 0.1;
         const position = [0, 0.0, -2.0];
         const eye = [0, 1.0, 0];
-        const look = [lookAtX, 1, lookAtZ]
-        const carCamRotation = new Rotation(-90, 0, camRotation);
+        const look = [Math.sin(cameraRotation), 1, - Math.cos(cameraRotation)]
+        const carRotation = new Rotation(-90, 0, 0);
 
         // draw opaque objects
         disableTransperency(gl);
 
         // skybox 
         const skyboxScaleFactor = 100;
-        const skyboxRotation = new Rotation(0, camRotation, 0);
-        const skyboxPosition = new Position(skyboxRotation, null, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
+        const skyboxRotation = new Rotation(0, 0, 0);
+        const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices,false)
         skybox.setTexture(skyboxTexture);
         await skybox.draw();
@@ -383,22 +365,22 @@ async function init() {
 
         // Car
         // Inside
-        const carInsidePosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carInsidePosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices, false)
         await car.draw()
         
         // Airing
-        const carAiringPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carAiringPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carAiring = new DrawableObject(carProgram, carAiringPosition, carAiringVertices, false)
         await carAiring.draw()
 
         // Door Right Front
-        const carDoorRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorRightFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorRightFront = new DrawableObject(carProgram, carDoorRightFrontPosition, carDoorRightFrontVertices, false)
         await carDoorRightFront.draw()
 
         // Door Left Front
-        const carDoorLeftFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorLeftFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices, false)
         await carDoorLeftFront.draw()
 
@@ -409,7 +391,7 @@ async function init() {
 
 
         // Rear Mirror
-        const carRearMirrorPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carRearMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices, false)
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw()
@@ -419,17 +401,17 @@ async function init() {
         enableTransperency(0.8,gl);
 
         // Windscreen
-        const carWindscreenPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carWindscreenPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carWindscreen = new DrawableObject(carWindowProgram, carWindscreenPosition, carWindscreenVertices, false)
         await carWindscreen.draw()
 
         // Door Window Left Front
-        const carDoorWindowLeftFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorWindowLeftFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices, false)
         await carDoorWindowLeftFront.draw()
 
         // Door Window Right Front
-        const carDoorWindowRightFrontPosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorWindowRightFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
         await carDoorWindowRightFront.draw()
 

@@ -8,9 +8,8 @@ class Rotation{
 
 
 class Position{
-    constructor(objectRotation, cameraRotation, position, scale, eye ,look) {
+    constructor(objectRotation, position, scale, eye ,look) {
         this.objectRotation = objectRotation;
-        this.cameraRotation = cameraRotation;
         this.position = position;
         this.scale = scale;
         this.eye = eye;
