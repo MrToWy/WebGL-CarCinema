@@ -160,13 +160,6 @@ async function handleFPS(currentDelta, loop){
 
 async function position(gl, program, objRotationAngle, translateVector3, scaleVector3, canvas, eye, look){
     gl.useProgram(program);
-    let viewLocation = gl.getUniformLocation(program, 'mView');
-    let projLocation = gl.getUniformLocation(program, 'mProj');
-    let translLocation = gl.getUniformLocation(program, 'mTranslate');
-    let scaleLocation = gl.getUniformLocation(program, 'mScale');
-    let rotateLocation = gl.getUniformLocation(program, 'mRotate');
-    let normalLocation = gl.getUniformLocation(program,'mNormale');
-
     let identityMatrix = new Float32Array(16);
     let viewMatrix = new Float32Array(16);
     let projMatrix = new Float32Array(16);
@@ -174,7 +167,9 @@ async function position(gl, program, objRotationAngle, translateVector3, scaleVe
     let scaleMatrix = new Float32Array(16);
     let rotateMatrix = new Float32Array(16);
     let normalMatrix = new Float32Array(9);
-    var worldMatrix = new Float32Array(16);
+    let worldMatrix = new Float32Array(16);
+    var inverseMat = new Float32Array(16);
+    const camDir = new Float32Array(3);
 
     identity(identityMatrix);
     identity(viewMatrix);
@@ -183,6 +178,7 @@ async function position(gl, program, objRotationAngle, translateVector3, scaleVe
     identity(scaleMatrix);
     identity(rotateMatrix);
     identity(normalMatrix);
+    identity(inverseMat);
 
     lookAt(viewMatrix, eye, look, [0, 1, 0]);
 
@@ -201,21 +197,18 @@ async function position(gl, program, objRotationAngle, translateVector3, scaleVe
     multiply(worldMatrix, worldMatrix,translateMatrix);
     normalFromMat4(normalMatrix, worldMatrix);
 
-    gl.uniformMatrix4fv(viewLocation, gl.FALSE, viewMatrix);
-    gl.uniformMatrix4fv(projLocation, gl.FALSE, projMatrix);
-    gl.uniformMatrix4fv(translLocation, gl.FALSE, translateMatrix);
-    gl.uniformMatrix4fv(scaleLocation, gl.FALSE, scaleMatrix);
-    gl.uniformMatrix4fv(rotateLocation, gl.FALSE, rotateMatrix);
-    gl.uniformMatrix3fv(normalLocation,gl.FALSE,normalMatrix);
-
-    let camLocation = gl.getUniformLocation(program,'camDir');
-    var inverseMat = new Float32Array(16);
-    const camDir = new Float32Array(3);
-    identity(inverseMat);
     inverseMat = mat3FromMat4(viewMatrix);
     inverseMat = invert3x3(inverseMat);
     vec3MulMat3(camDir, [0,0,1], inverseMat);
-    gl.uniform3fv(camLocation, camDir);
+
+    setMat4Uniform(program,viewMatrix,'mView',gl);
+    setMat4Uniform(program,projMatrix,'mProj',gl);
+    setMat4Uniform(program,translateMatrix,'mTranslate',gl);
+    setMat4Uniform(program,scaleMatrix,'mScale',gl);
+    setMat4Uniform(program,rotateMatrix,'mRotate',gl);
+    setMat3Uniform(program,normalMatrix,'mNormale',gl);
+    setVec3Uniform(program,camDir,'camDir',gl);
+
 }
 
 const level = 0;
@@ -312,13 +305,13 @@ function setFloatUniform(program,float,name,gl) {
 function setMat4Uniform(program, mat4,name,gl) {
     gl.useProgram(program)
     let uniformLocation = gl.getUniformLocation(program, name);
-    gl.uniform4fv(uniformLocation,mat4);
+    gl.uniformMatrix4fv(uniformLocation,gl.FALSE,mat4);
 }
 
 function setMat3Uniform(program, mat3,name,gl) {
     gl.useProgram(program)
     let uniformLocation = gl.getUniformLocation(program, name);
-    gl.uniform3fv(uniformLocation,mat3);
+    gl.uniformMatrix3fv(uniformLocation,gl.FALSE,mat3);
 }
 
 function setLighting(program, lightDir, ambiente, diffuse, specular, alpha, eye) {
