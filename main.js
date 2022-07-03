@@ -297,10 +297,37 @@ function disableTransperency(gl) {
     gl.disable(gl.BLEND);
 }
 
-function setWindowColor(program,color,gl) {
+function setVec3Uniform(program,vec,name,gl) {
     gl.useProgram(program)
-    let windowLocation = gl.getUniformLocation(program, 'windowColor');
-    gl.uniform3f(windowLocation,color[0],color[1],color[2]);
+    let uniformLocation = gl.getUniformLocation(program, name);
+    gl.uniform3f(uniformLocation,vec[0],vec[1],vec[2]);
+}
+
+function setFloatUniform(program,float,name,gl) {
+    gl.useProgram(program)
+    let uniformLocation = gl.getUniformLocation(program, name);
+    gl.uniform1f(uniformLocation,float);
+}
+
+function setMat4Uniform(program, mat4,name,gl) {
+    gl.useProgram(program)
+    let uniformLocation = gl.getUniformLocation(program, name);
+    gl.uniform4fv(uniformLocation,mat4);
+}
+
+function setMat3Uniform(program, mat3,name,gl) {
+    gl.useProgram(program)
+    let uniformLocation = gl.getUniformLocation(program, name);
+    gl.uniform3fv(uniformLocation,mat3);
+}
+
+function setLighting(program, lightDir, ambiente, diffuse, specular, alpha, eye) {
+    setVec3Uniform(program, lightDir,'lightDirection', gl);
+    setVec3Uniform(program, ambiente, 'ambiente', gl);
+    setVec3Uniform(program, diffuse, 'diffuse', gl);
+    setVec3Uniform(program, specular, 'specular', gl);
+    setVec3Uniform(program, eye,'eyeDir',gl);
+    setFloatUniform(program, alpha, 'alpha', gl);
 }
 
 
@@ -360,7 +387,7 @@ async function init() {
 
         // draw opaque objects
         disableTransperency(gl);
-
+        setLighting(carProgram,[-5.,0.,7.],[0.0,0.0,0.0],[1.,1.,1.],[0.1,0.1,0.1], 10.0, eye);
 
         // skybox 
         const skyboxScaleFactor = 100;
@@ -409,7 +436,7 @@ async function init() {
 
         // draw transperent objects
         enableTransperency(0.8,gl);
-        setWindowColor(carWindowProgram, [0.1,0.1,0.1], gl);
+        setVec3Uniform(carWindowProgram, [0.1,0.1,0.1],'windowColor', gl);
 
         // Windscreen
         const carWindscreenPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
