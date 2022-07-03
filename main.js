@@ -72,7 +72,8 @@ async function init() {
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
-    const movieVertices = await getVertices(gl, movieProgram, moviePath + "box.obj");
+    const movieVertices = await getVertices(gl, movieProgram, moviePath + "screen.obj");
+    const structureVertices = await getVertices(gl, movieProgram, moviePath + "structure.obj");
     const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
 
     // create framebuffer
@@ -115,11 +116,11 @@ async function init() {
 
         // skybox 
         const skyboxScaleFactor = 100;
-        const skyboxRotation = new Rotation(0, 0, 0);
+        const skyboxRotation = new Rotation(0, 270, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices,false)
         skybox.setTexture(skyboxTexture);
-        await skybox.draw();
+        await skybox.draw()
 
 
 
@@ -155,7 +156,31 @@ async function init() {
         const carRearMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices, false)
         carRearMirror.setTexture(skyboxTexture);
-        await carRearMirror.draw()
+        await carRearMirror.draw();
+
+
+
+
+
+        gl.bindTexture(gl.TEXTURE_2D, movieTexture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
+        //gl.generateMipmap(gl.TEXTURE_2D)
+        gl.bindTexture(gl.TEXTURE_2D, null)
+
+        // movie
+        const movieScaleFactor = 0.5;
+        const movieRotation = new Rotation(0., 30, 0)
+
+        const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices, false )
+        movie.setTexture(movieTexture);
+        await movie.draw();
+/*
+        const structurePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const structure = new DrawableObject(movieProgram, structurePosition,  structureVertices, false )
+        await structure.draw();
+
+ */
 
 
         // draw transperent objects
@@ -176,34 +201,6 @@ async function init() {
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowInput.value/1000 * 0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
         await carDoorWindowRightFront.draw()
-
-
-
-        gl.bindTexture(gl.TEXTURE_2D, movieTexture)
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
-        gl.generateMipmap(gl.TEXTURE_2D)
-        gl.bindTexture(gl.TEXTURE_2D, null)
-
-
-
-
-        // movie
-        const movieScaleFactor = 1;
-        const movieRotation = new Rotation(0, counter, 0)
-        const moviePosition = new Position(movieRotation, null, [0, 0.0, 0], [movieScaleFactor, movieScaleFactor, movieScaleFactor], [0, 0, 10])
-        const movie = new DrawableObject(movieProgram, movieTexture, moviePosition, moviePath + "sphere.obj", movieVertices, null, false, null)
-        await movie.draw();
-
-
-        /*
-        // test
-        const scaleFactor = 1;
-        const testCamRotation = new Rotation(0, 0, 0)
-        const testPosition = new Position(testCamRotation, null, [-1, 0.0, 0], [scaleFactor, scaleFactor, scaleFactor], [0, 0, 10])
-        const test = new DrawableObject(testProgram, null, testPosition, testPath + "house.obj", testVertices, null, false)
-        await test.draw()
-
-         */
 
     }
 
