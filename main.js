@@ -7,6 +7,7 @@ const carMirrorPath = "objects/car/rear_mirror/"
 const carWindowPath = "objects/car/window/"
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
+const windowInput = document.getElementById("window")
 
 let tolerance = 0.01;
 let updateId;
@@ -416,7 +417,7 @@ async function init() {
         await carWindscreen.draw()
 
         // Door Window Left Front
-        const carDoorWindowLeftFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowInput.value/1000 * 0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices, false)
         await carDoorWindowLeftFront.draw()
 
