@@ -1,5 +1,20 @@
 'use strict';
 
+function checkKey(e) {
+
+    e = e || window.event;
+
+    // ignore warning for the ==, otherwise this wont work
+    if (e.keyCode == '37') {
+        // left arrow
+        camRotation -= keyRotationStrength;
+    }
+    else if (e.keyCode == '39') {
+        // right arrow
+        camRotation += keyRotationStrength;
+    }
+}
+
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
@@ -25,307 +40,14 @@ const fpsSlider = document.getElementById("fpsSlider");
 const canvas = document.getElementById("canvas")
 const gl = canvas.getContext("webgl");
 
+let fpsHistory = []
+const level = 0;
+
 const VBO = gl.createBuffer();
 
 document.onkeydown = checkKey;
 
-function checkKey(e) {
-
-    e = e || window.event;
-    
-    // ignore warning for the ==, otherwise this wont work
-    if (e.keyCode == '37') {
-        // left arrow
-        camRotation -= keyRotationStrength;
-    }
-    else if (e.keyCode == '39') {
-        // right arrow
-        camRotation += keyRotationStrength;
-    }
-}
-
-async function getShader(shaderPath, glContext){
-    let response = await fetch(shaderPath);
-    let shaderText = await response.text();
-
-    const shader = glContext.createShader(shaderPath.includes(".vert") ? glContext.VERTEX_SHADER : glContext.FRAGMENT_SHADER);
-    glContext.shaderSource(shader, shaderText);
-    glContext.compileShader(shader);
-
-    if (!glContext.getShaderParameter(shader, glContext.COMPILE_STATUS))
-        console.error('ERROR', glContext.getShaderInfoLog(shader));
-
-    return shader;
-}
-
-async function getProgram(shaderPath, glContext){
-
-    const program = glContext.createProgram();
-
-    glContext.attachShader(program, await getShader(shaderPath + "shader.vert", glContext));
-    glContext.attachShader(program, await getShader(shaderPath + "shader.frag", glContext));
-
-    glContext.linkProgram(program);
-    glContext.validateProgram(program);
-
-    if (!glContext.getProgramParameter(program, glContext.VALIDATE_STATUS))
-        console.error('ERROR', glContext.getProgramInfoLog(program));
-
-    return program;
-}
-
-async function bindVerticesToBuffer(vertices, program){
-    gl.useProgram(program);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices),
-        gl.STATIC_DRAW);
-
-}
-
-async function getVertices(gl, program, objPath){
-    let request = await fetch(objPath);
-    let boxText = await request.text();
-    let vertices = objToVBO(boxText, program);
-
-    await bindVerticesToBuffer(vertices);
-
-    return vertices;
-}
-
-
-async function bindParameters(gl, program){
-    gl.useProgram(program);
-
-    const teapotPositionAttributeLocation = gl.getAttribLocation(program, "vertPosition");
-    const teapotColorAttributeLocation = gl.getAttribLocation(program, "vertNormal");
-    const texCoordAttributeLocation = gl.getAttribLocation(program, "vertTexCoord");
-
-    if(teapotPositionAttributeLocation >= 0){
-        gl.vertexAttribPointer(teapotPositionAttributeLocation,
-            3, gl.FLOAT, false,
-            8 * Float32Array.BYTES_PER_ELEMENT,
-            0);
-
-        gl.enableVertexAttribArray(teapotPositionAttributeLocation);
-    }
-
-    if(teapotColorAttributeLocation >= 0){
-        gl.vertexAttribPointer(teapotColorAttributeLocation,
-            3, gl.FLOAT, gl.FALSE,
-            8 * Float32Array.BYTES_PER_ELEMENT,
-            5 * Float32Array.BYTES_PER_ELEMENT);
-
-        gl.enableVertexAttribArray(teapotColorAttributeLocation);
-    }
-
-    if(texCoordAttributeLocation >= 0){
-        gl.vertexAttribPointer(texCoordAttributeLocation,
-            2, gl.FLOAT, false,
-            8 * Float32Array.BYTES_PER_ELEMENT,
-            3 * Float32Array.BYTES_PER_ELEMENT);
-
-        gl.enableVertexAttribArray(texCoordAttributeLocation);
-    }
-}
-
-async function draw(gl, vertices){
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices),
-        gl.STATIC_DRAW);
-    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 8);
-}
-
-let fpsHistory = []
-
-async function handleFPS(currentDelta, loop){
-
-    // fps
-    updateId = requestAnimationFrame(loop);
-    const delta = currentDelta - previousDelta;
-    const fps = 1000 / delta;
-    
-    
-    
-    if (fpsLimit && delta < (1000 / fpsLimit) - tolerance)
-        return true;
-
-    fpsHistory.push(fps);
-    if(fpsHistory.length > 100) fpsHistory.shift()
-    const fpsAvg = fpsHistory.reduce((a, b) => a + b) / fpsHistory.length;
-
-    previousDelta = currentDelta;
-    fpsLabel.textContent = fps.toFixed(1);
-    fpsAvgLabel.textContent = fpsAvg.toFixed(1);
-}
-
-async function position(gl, program, objRotationAngle, translateVector3, scaleVector3, canvas, eye, look){
-    gl.useProgram(program);
-    let identityMatrix = new Float32Array(16);
-    let viewMatrix = new Float32Array(16);
-    let projMatrix = new Float32Array(16);
-    let translateMatrix = new Float32Array(16);
-    let scaleMatrix = new Float32Array(16);
-    let rotateMatrix = new Float32Array(16);
-    let normalMatrix = new Float32Array(9);
-    let worldMatrix = new Float32Array(16);
-    var inverseMat = new Float32Array(16);
-    const camDir = new Float32Array(3);
-
-    identity(identityMatrix);
-    identity(viewMatrix);
-    identity(projMatrix);
-    identity(translateMatrix);
-    identity(scaleMatrix);
-    identity(rotateMatrix);
-    identity(normalMatrix);
-    identity(inverseMat);
-
-    lookAt(viewMatrix, eye, look, [0, 1, 0]);
-
-    if(objRotationAngle !== null){
-        rotateX(rotateMatrix, rotateMatrix, objRotationAngle.x * Math.PI / 180);
-        rotateY(rotateMatrix, rotateMatrix, objRotationAngle.y * Math.PI / 180);
-        rotateZ(rotateMatrix, rotateMatrix, objRotationAngle.z * Math.PI / 180);
-    }
-
-    translate(translateMatrix, translateMatrix, translateVector3)
-    scale(scaleMatrix, scaleMatrix, scaleVector3);
-
-    perspective(projMatrix, 45 * Math.PI / 180, canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
-
-    multiply(worldMatrix, scaleMatrix,rotateMatrix);
-    multiply(worldMatrix, worldMatrix,translateMatrix);
-    normalFromMat4(normalMatrix, worldMatrix);
-
-    inverseMat = mat3FromMat4(viewMatrix);
-    inverseMat = invert3x3(inverseMat);
-    vec3MulMat3(camDir, [0,0,1], inverseMat);
-
-    setMat4Uniform(program,viewMatrix,'mView',gl);
-    setMat4Uniform(program,projMatrix,'mProj',gl);
-    setMat4Uniform(program,translateMatrix,'mTranslate',gl);
-    setMat4Uniform(program,scaleMatrix,'mScale',gl);
-    setMat4Uniform(program,rotateMatrix,'mRotate',gl);
-    setMat3Uniform(program,normalMatrix,'mNormale',gl);
-    setVec3Uniform(program,camDir,'camDir',gl);
-
-}
-
-const level = 0;
-
-function getTextureForFramebuffer(){
-    let texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-
-    const internalFormat = gl.RGBA;
-    const border = 0;
-    const format = gl.RGBA;
-    const type = gl.UNSIGNED_BYTE;
-    const data = null;
-
-    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, targetTextureWidth, targetTextureHeight, border, format, type, data);
-
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-    gl.bindTexture(gl.TEXTURE_2D, null);
-
-    return texture;
-}
-
-function getFramebuffer(texture){
-    const fb = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,texture, 0);
-
-    const depthBuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
-
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, targetTextureWidth, targetTextureHeight);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
-
-    return fb;
-}
-
-function printError(gl){
-    let error = gl.getError();
-    if(error !== 0)
-        console.log(error)
-}
-
-function getSkyboxTexture(){
-    const skyboxTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, skyboxTexture);
-    let textureImage = document.getElementById("skybox")
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, textureImage)
-    gl.generateMipmap(gl.TEXTURE_2D)
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    
-    return skyboxTexture;
-}
-
-function initFogForProgram(program){
-    gl.useProgram(program);
-    let fogNear = gl.getUniformLocation(program, 'fogNear');
-    let fogFar = gl.getUniformLocation(program, 'fogFar');
-
-    let fogNearValue = fogNearInput.value/1000.;
-    let fogFarValue = fogFarInput.value/1000.;
-
-    gl.uniform1f(fogNear, fogNearValue);
-    gl.uniform1f(fogFar, fogFarValue);
-}
-
-function enableTransperency(alpha, gl) {
-    gl.depthMask(false);
-    gl.blendColor(0.0,0.0,0.0,alpha);
-    gl.blendEquationSeparate(gl.FUNC_ADD,gl.FUNC_ADD);
-    gl.blendFuncSeparate(gl.SRC_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA,gl.CONSTANT_ALPHA);
-    gl.enable(gl.BLEND);
-}
-
-function disableTransperency(gl) {
-    gl.depthMask(true);
-    gl.disable(gl.BLEND);
-}
-
-function setVec3Uniform(program,vec,name,gl) {
-    gl.useProgram(program)
-    let uniformLocation = gl.getUniformLocation(program, name);
-    gl.uniform3f(uniformLocation,vec[0],vec[1],vec[2]);
-}
-
-function setFloatUniform(program,float,name,gl) {
-    gl.useProgram(program)
-    let uniformLocation = gl.getUniformLocation(program, name);
-    gl.uniform1f(uniformLocation,float);
-}
-
-function setMat4Uniform(program, mat4,name,gl) {
-    gl.useProgram(program)
-    let uniformLocation = gl.getUniformLocation(program, name);
-    gl.uniformMatrix4fv(uniformLocation,gl.FALSE,mat4);
-}
-
-function setMat3Uniform(program, mat3,name,gl) {
-    gl.useProgram(program)
-    let uniformLocation = gl.getUniformLocation(program, name);
-    gl.uniformMatrix3fv(uniformLocation,gl.FALSE,mat3);
-}
-
-function setLighting(program, lightDir, ambiente, diffuse, specular, alpha, eye) {
-    setVec3Uniform(program, lightDir,'lightDirection', gl);
-    setVec3Uniform(program, ambiente, 'ambiente', gl);
-    setVec3Uniform(program, diffuse, 'diffuse', gl);
-    setVec3Uniform(program, specular, 'specular', gl);
-    setVec3Uniform(program, eye,'eyeDir',gl);
-    setFloatUniform(program, alpha, 'alpha', gl);
-}
-
-
 async function init() {
-
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
     // compile programs
@@ -337,7 +59,6 @@ async function init() {
 
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
-
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
     const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
     const carDoorRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_right_front.obj");
@@ -346,8 +67,6 @@ async function init() {
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
-
-
 
     // create framebuffer
     let texture = getTextureForFramebuffer();
@@ -445,7 +164,6 @@ async function init() {
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowInput.value/1000 * 0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
         await carDoorWindowRightFront.draw()
-
     }
 
     requestAnimationFrame(loop);
