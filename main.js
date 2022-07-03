@@ -296,6 +296,12 @@ function disableTransperency(gl) {
     gl.disable(gl.BLEND);
 }
 
+function setWindowColor(program,color,gl) {
+    gl.useProgram(program)
+    let windowLocation = gl.getUniformLocation(program, 'windowColor');
+    gl.uniform3f(windowLocation,color[0],color[1],color[2]);
+}
+
 
 async function init() {
 
@@ -354,6 +360,7 @@ async function init() {
         // draw opaque objects
         disableTransperency(gl);
 
+
         // skybox 
         const skyboxScaleFactor = 100;
         const skyboxRotation = new Rotation(0, 0, 0);
@@ -361,6 +368,8 @@ async function init() {
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices,false)
         skybox.setTexture(skyboxTexture);
         await skybox.draw();
+
+
 
 
         // Car
@@ -399,6 +408,7 @@ async function init() {
 
         // draw transperent objects
         enableTransperency(0.8,gl);
+        setWindowColor(carWindowProgram, [0.1,0.1,0.1], gl);
 
         // Windscreen
         const carWindscreenPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)

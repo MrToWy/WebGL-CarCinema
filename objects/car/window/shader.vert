@@ -9,7 +9,9 @@ uniform mat4 mRotate;
 uniform mat4 mTranslate;
 uniform mat4 mView;
 uniform mat4 mProj;
+uniform vec3 windowColor;
 
 void main(){
+    fragColor = windowColor;
     gl_Position = mProj * mView * mTranslate * mRotate * mScale * vec4(vertPosition, 1.0);
 }
