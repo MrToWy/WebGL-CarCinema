@@ -20,6 +20,9 @@ const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
 const carWindowPath = "objects/car/window/"
+const dodgeCarPath = "objects/car_dodge/"
+
+const input = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 const windowInput = document.getElementById("window")
@@ -54,6 +57,7 @@ async function init() {
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const carProgram = await getProgram(carPath, gl)
+    const dodgeCarProgram = await getProgram(dodgeCarPath, gl)
     const carMirrorProgram = await getProgram(carMirrorPath, gl);
     const carWindowProgram = await  getProgram(carWindowPath, gl);
 
@@ -67,6 +71,7 @@ async function init() {
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
+    const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
 
     // create framebuffer
     let texture = getTextureForFramebuffer();
@@ -86,7 +91,11 @@ async function init() {
         }
 
         counter -= 0.3;
+
+
+
         fpsLimit = fpsSlider.value;
+
 
         initFogForProgram(houseProgram);
 
@@ -144,6 +153,12 @@ async function init() {
         const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices, false)
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw()
+
+
+        // Door Window Right Front
+        const dodgeCarPosition = new Position(new Rotation(-90, 0, counter), [0, 0.0, -80.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, false)
+        await dodgeCar.draw()
 
 
         // draw transperent objects
