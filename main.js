@@ -5,7 +5,7 @@ const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
 const carWindowPath = "objects/car/window/"
-const input = document.getElementById("input")
+const lookatInput = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 
@@ -184,11 +184,19 @@ async function position(gl, program, objRotationAngle, cameraRotationAngle, tran
     identity(rotateMatrix);
     identity(normalMatrix);
 
+    if(cameraRotationAngle !== null){
+        rotateX(viewMatrix, viewMatrix, cameraRotationAngle.x * Math.PI / 180);
+        rotateY(viewMatrix, viewMatrix, cameraRotationAngle.y * Math.PI / 180);
+        rotateZ(viewMatrix, viewMatrix, cameraRotationAngle.z * Math.PI / 180);
+    }
+    
     lookAt(viewMatrix, eye, look, [0, 1, 0]);
 
-    rotateX(rotateMatrix, rotateMatrix, objRotationAngle.x * Math.PI / 180);
-    rotateY(rotateMatrix, rotateMatrix, objRotationAngle.y * Math.PI / 180);
-    rotateZ(rotateMatrix, rotateMatrix, objRotationAngle.z * Math.PI / 180);
+    if(objRotationAngle !== null){
+        rotateX(rotateMatrix, rotateMatrix, objRotationAngle.x * Math.PI / 180);
+        rotateY(rotateMatrix, rotateMatrix, objRotationAngle.y * Math.PI / 180);
+        rotateZ(rotateMatrix, rotateMatrix, objRotationAngle.z * Math.PI / 180);
+    }
 
     translate(translateMatrix, translateMatrix, translateVector3)
     scale(scaleMatrix, scaleMatrix, scaleVector3);
@@ -349,10 +357,16 @@ async function init() {
         
         initFogForProgram(houseProgram);
 
+        const cameraRotation = lookatInput.value/1000;
+        const sin = Math.sin(cameraRotation);
+        const cos = Math.cos(cameraRotation);
+        const lookAtX = sin;
+        const lookAtZ = -cos;
+
         const scaleFactorCar = 0.1;
-        const position = [0,0.0,0.0];
-        const eye = [0,1.0,2];
-        const look = [0,1,0]
+        const position = [0, 0.0, -2.0];
+        const eye = [0, 1.0, 0];
+        const look = [lookAtX, 1, lookAtZ]
         const carCamRotation = new Rotation(-90, 0, camRotation);
 
         // draw opaque objects
@@ -371,7 +385,6 @@ async function init() {
         // Inside
         const carInsidePosition = new Position(carCamRotation, null, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices, false)
-        car.setTexture(null) // you could insert a texture here
         await car.draw()
         
         // Airing
