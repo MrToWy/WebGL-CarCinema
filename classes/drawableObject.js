@@ -8,28 +8,33 @@ class Rotation{
 
 
 class Position{
-    constructor(objectRotation, cameraRotation, position, scale, eye) {
+    constructor(objectRotation, position, scale, eye ,look) {
         this.objectRotation = objectRotation;
-        this.cameraRotation = cameraRotation;
         this.position = position;
         this.scale = scale;
         this.eye = eye;
+        this.look = look;
     }
 }
 
 
 class DrawableObject {
-    constructor(program, texture, position, objectPath, vertices, framebuffer, clear, getTextureFromFramebuffer) {
+    constructor(program, position, vertices, clear, getTextureFromFramebuffer) {
         this.program = program;
-        this.texture = texture;
         this.position = position;
-        this.objectPath = objectPath;
         this.vertices = vertices;
-        this.framebuffer = framebuffer;
         this.clear = clear;
         this.getTextureFromFramebuffer = getTextureFromFramebuffer;
     }
-
+    
+    setTexture(texture){
+        this.texture = texture;
+    }
+    
+    setFramebuffer(framebuffer){
+        this.framebuffer = framebuffer;
+    }
+    
     async draw() {
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -50,8 +55,8 @@ class DrawableObject {
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         }
         
-        await position(gl, this.program, this.position.objectRotation, this.position.cameraRotation, this.position.position, this.position.scale, canvas, this.position.eye)
-        await bindParameters(gl, this.program, this.objectPath)
+        await position(gl, this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look)
+        await bindParameters(gl, this.program)
 
         if(this.clear)
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);

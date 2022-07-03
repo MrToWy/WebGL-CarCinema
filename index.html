@@ -8,21 +8,23 @@
 
 <h1>CG1-Abgabe</h1>
 
-FPS: <l id="fps"></l>
+FPS: <l id="fps"></l> Durchschnitt: <l id="fpsAvg"></l>
 
 </br>
 
-Obj Position:
-<input type="range" min="-2600" max="2500" value="-2250" class="slider" id="input">
 
 FPS-Limit:
-<input type="range" min="1" max="100" value="1" class="slider" id="fpsSlider">
+<input type="range" min="1" max="100" value="20" class="slider" id="fpsSlider">
 
 
 Fog Near:
 <input type="range" min="900" max="1000" value="900" class="slider" id="fogNear">
 Fog Far:
 <input type="range" min="900" max="1000" value="1000" class="slider" id="fogFar">
+
+Schiebefenster:
+<input type="range" min="-1000" max="0" value="0" class="slider" id="window">
+
 
 <br>
 
@@ -39,9 +41,12 @@ Fog Far:
 
 
 <script src="lib/matrix.js"></script>
-<script src="lib/objectImport.js"></script>
+<script src="lib/objectUtils.js"></script>
+<script src="lib/programUtils.js"></script>
 
 <script src="main.js"></script>
 <script src="classes/drawableObject.js"></script>
+
+
 </body>
 </html>
