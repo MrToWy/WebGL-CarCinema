@@ -55,7 +55,7 @@ class DrawableObject {
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         }
         
-        await position(gl, this.program, this.position.objectRotation, this.position.cameraRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look)
+        await position(gl, this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look)
         await bindParameters(gl, this.program)
 
         if(this.clear)
