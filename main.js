@@ -51,62 +51,8 @@ const VBO = gl.createBuffer();
 document.onkeydown = checkKey;
 
 
-
-
-async function getMTL(){
-    let request = await fetch(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
-    let dodgeMtlText = await request.text();
-
-    const materials = parseMTL(dodgeMtlText);
-    console.log(materials);
-    return materials;
-}
-
-function parseMTL(text) {
-    const materials = {};
-    let material;
-
-    const keywords = {
-        newmtl(parts, unparsedArgs) {
-            material = {};
-            materials[unparsedArgs] = material;
-        },
-        Ns(parts)     { material.shininess      = parseFloat(parts[0]); },
-        Ka(parts)     { material.ambient        = parts.map(parseFloat); },
-        Kd(parts)     { material.diffuse        = parts.map(parseFloat); },
-        Ks(parts)     { material.specular       = parts.map(parseFloat); },
-        Ke(parts)     { material.emissive       = parts.map(parseFloat); },
-        Ni(parts)     { material.opticalDensity = parseFloat(parts[0]); },
-        d(parts)      { material.opacity        = parseFloat(parts[0]); },
-        illum(parts)  { material.illum          = parseInt(parts[0]); },
-    };
-
-    const keywordRE = /(\w*)(?: )*(.*)/;
-    const lines = text.split('\n');
-    for (let lineNo = 0; lineNo < lines.length; ++lineNo) {
-        const line = lines[lineNo].trim();
-        if (line === '' || line.startsWith('#')) {
-            continue;
-        }
-        const m = keywordRE.exec(line);
-        if (!m) {
-            continue;
-        }
-        const [, keyword, unparsedArgs] = m;
-        const parts = line.split(/\s+/).slice(1);
-        const handler = keywords[keyword];
-        if (!handler) {
-            console.warn('unhandled keyword:', keyword);
-            continue;
-        }
-        handler(parts, unparsedArgs);
-    }
-
-    return materials;
-}
-
 async function init() {
-    await getMTL();
+
 
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
@@ -118,7 +64,6 @@ async function init() {
     const carMirrorProgram = await getProgram(carMirrorPath, gl);
     const carWindowProgram = await  getProgram(carWindowPath, gl);
 
-
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
     const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
@@ -129,6 +74,10 @@ async function init() {
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
     const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
+    const treeVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "Tree_obj.obj");
+
+    const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
+    const treeMaterials = await getMTL(dodgeCarPath + "Tree_obj.mtl");
 
     // create framebuffer
     let texture = getTextureForFramebuffer();
@@ -147,7 +96,7 @@ async function init() {
             return;
         }
 
-        counter -= 0.3;
+        counter -= 0.9;
 
 
 
@@ -168,10 +117,10 @@ async function init() {
         setLighting(carProgram,[-5.,0.,7.],[0.0,0.0,0.0],[1.,1.,1.],[0.1,0.1,0.1], 10.0, eye);
 
         // skybox 
-        const skyboxScaleFactor = 100;
+        const skyboxScaleFactor = 200;
         const skyboxRotation = new Rotation(0, 0, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
-        const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices,false)
+        const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
         skybox.setTexture(skyboxTexture);
         await skybox.draw();
 
@@ -181,22 +130,22 @@ async function init() {
         // Car
         // Inside
         const carInsidePosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices, false)
+        const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices)
         await car.draw()
         
         // Airing
         const carAiringPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carAiring = new DrawableObject(carProgram, carAiringPosition, carAiringVertices, false)
+        const carAiring = new DrawableObject(carProgram, carAiringPosition, carAiringVertices)
         await carAiring.draw()
 
         // Door Right Front
         const carDoorRightFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorRightFront = new DrawableObject(carProgram, carDoorRightFrontPosition, carDoorRightFrontVertices, false)
+        const carDoorRightFront = new DrawableObject(carProgram, carDoorRightFrontPosition, carDoorRightFrontVertices)
         await carDoorRightFront.draw()
 
         // Door Left Front
         const carDoorLeftFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices, false)
+        const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices)
         await carDoorLeftFront.draw()
 
 
@@ -207,15 +156,21 @@ async function init() {
 
         // Rear Mirror
         const carRearMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices, false)
+        const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices)
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw()
 
 
-        // Door Window Right Front
+        // Dodge Car outside
         const dodgeCarPosition = new Position(new Rotation(-90, 0, counter), [0, 0.0, -80.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, false)
+        const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
         await dodgeCar.draw()
+
+        // tree
+        const scaleFactorTree = 2;
+        const treePosition = new Position(new Rotation(0, 0, 0), [-75., -10.0, -60.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
+        const tree = new DrawableObject(dodgeCarProgram, treePosition, treeVertices, treeMaterials)
+        await tree.draw()
 
 
         // draw transperent objects
@@ -224,17 +179,17 @@ async function init() {
 
         // Windscreen
         const carWindscreenPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carWindscreen = new DrawableObject(carWindowProgram, carWindscreenPosition, carWindscreenVertices, false)
+        const carWindscreen = new DrawableObject(carWindowProgram, carWindscreenPosition, carWindscreenVertices)
         await carWindscreen.draw()
 
         // Door Window Left Front
         const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowInput.value/1000 * 0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices, false)
+        const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices)
         await carDoorWindowLeftFront.draw()
 
         // Door Window Right Front
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowInput.value/1000 * 0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
+        const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
     }
 
