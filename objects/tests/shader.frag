@@ -18,5 +18,5 @@ void main(){
     light += cDiffuse * max(dot(normalDir,lightDir),0.);
     light += cSpecular * pow(max(dot(reflect(-lightDir,normalDir),eyeDir),0.),alpha);
 
-    gl_FragColor = vec4(fragColor, 1.)*vec4(light,1.);
+    gl_FragColor = vec4(1., 0., 0., 1.);
 }
