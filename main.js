@@ -22,6 +22,8 @@ const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
 const carWindowPath = "objects/car/window/"
 const dodgeCarPath = "objects/car_dodge/"
+const airshipPath = "objects/airship/"
+const treePath = "objects/tree/"
 
 const input = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
@@ -34,7 +36,7 @@ let previousDelta = 0;
 let fpsLimit = 15;
 const targetTextureWidth = 1024;
 const targetTextureHeight = targetTextureWidth;
-let camRotation = 0;
+let camRotation = -600;
 const keyRotationStrength = 10;
 
 
@@ -65,6 +67,8 @@ async function init() {
     const dodgeCarProgram = await getProgram(dodgeCarPath, gl)
     const carMirrorProgram = await getProgram(carMirrorPath, gl);
     const carWindowProgram = await  getProgram(carWindowPath, gl);
+    const treeProgram = await  getProgram(treePath, gl);
+    const airshipProgram = await  getProgram(airshipPath, gl);
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
@@ -76,13 +80,12 @@ async function init() {
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
     const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
-    const treeVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "Tree_obj.obj");
-    const airshipVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "Low-Poly_airship.obj");
-    const airshipScreenVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "screen.obj");
+    const treeVertices = await getVertices(gl, treeProgram, treePath + "Tree_obj.obj");
+    const airshipVertices = await getVertices(gl, airshipProgram, airshipPath + "Low-Poly_airship.obj");
 
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
-    const treeMaterials = await getMTL(dodgeCarPath + "Tree_obj.mtl");
-    const airshipMaterials = await getMTL(dodgeCarPath + "Low-Poly_airship.mtl");
+    const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
+    const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
 
     // create framebuffer
     let texture = getTextureForFramebuffer();
@@ -167,33 +170,23 @@ async function init() {
 
 
         // Dodge Car outside
-        const dodgeCarPosition = new Position(new Rotation(-90, 0, counter), [0, 0.0, -80.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const dodgeCarPosition = new Position(new Rotation(-110, 16, 155), [-130, -15.0, -100.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
         await dodgeCar.draw()
 
         // tree
         const scaleFactorTree = 2;
-        const treePosition = new Position(new Rotation(0, 0, 0), [-75., -10.0, -60.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
-        const tree = new DrawableObject(dodgeCarProgram, treePosition, treeVertices, treeMaterials)
+        const treePosition = new Position(new Rotation(0, 0, 0), [-65., -10.0, -150.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
+        const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw()
 
 
         // airship
-        const scaleFactorAirship = 20;
-        const airshipPosition = new Position(new Rotation(0, counter, 0), [-0., -0.0, -60.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
-        const airship = new DrawableObject(testProgram, airshipPosition, airshipVertices, airshipMaterials)
-        airship.setFramebuffer(fb);
-        airship.setTexture(null);
+        const scaleFactorAirship = 2;
+        const airshipPosition = new Position(new Rotation(0, 200, 0), [-30., 20.0, -90.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
+        const airship = new DrawableObject(airshipProgram, airshipPosition, airshipVertices, airshipMaterials)
         await airship.draw()
-
-        // airship
-        const scaleFactorAirshipScreen = 2;
-        const airshipScreenPosition = new Position(new Rotation(0, counter*5, 0), [-0., -0.0, -60.], [scaleFactorAirshipScreen, scaleFactorAirshipScreen, scaleFactorAirshipScreen], eye, look)
-        const airshipScreen = new DrawableObject(dodgeCarProgram, airshipScreenPosition, airshipScreenVertices, null, true)
-        airshipScreen.setTexture(texture);
-        airshipScreen.setFramebuffer(fb);
-        await airshipScreen.draw()
-
+        
 
         // draw transperent objects
         enableTransperency(0.8,gl);
