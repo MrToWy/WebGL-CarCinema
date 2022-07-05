@@ -122,8 +122,10 @@ async function init() {
 
         // draw opaque objects
         disableTransperency(gl);
-        setLighting(carProgram,[-5.,0.,7.],[0.0,0.0,0.0],[1.,1.,1.],[0.1,0.1,0.1], 10.0, eye);
+        setLighting(carProgram,[5.,0.,7.], [-5.,0.,7.],[0.0,0.0,0.0],[1.,1.,1.],[0.1,0.1,0.1], 10.0, eye);
+        setLighting(dodgeCarProgram,[5.,0.,7.], null,[0.0,0.0,0.0],[1.,1.,1.],[0.1,0.1,0.1], 10.0, eye);
 
+        
         // skybox 
         const skyboxScaleFactor = 200;
         const skyboxRotation = new Rotation(0, 0, 0);
@@ -204,7 +206,7 @@ async function init() {
 
         // Door Window Right Front
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowInput.value/1000 * -0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices, false)
+        const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
     }
 
