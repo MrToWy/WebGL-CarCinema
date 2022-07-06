@@ -72,7 +72,7 @@ async function init() {
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
-    const movieVertices = await getVertices(gl, movieProgram, moviePath + "screen.obj");
+    const movieVertices = await getVertices(gl, movieProgram, moviePath + "cube.obj");
     const structureVertices = await getVertices(gl, movieProgram, moviePath + "structure.obj");
     const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
 
@@ -85,7 +85,13 @@ async function init() {
     
     //movie screen
     let movieTexture = gl.createTexture();
-    let textureImage = document.getElementById("videoTexture")
+    let textureVideo = document.getElementById("videoTexture")
+    gl.bindTexture(gl.TEXTURE_2D, movieTexture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,gl.RGBA, gl.UNSIGNED_BYTE, textureVideo);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindTexture(gl.TEXTURE_2D, null);
 
 
     gl.enable(gl.DEPTH_TEST);
@@ -123,8 +129,6 @@ async function init() {
         await skybox.draw()
 
 
-
-
         // Car
         // Inside
         const carInsidePosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
@@ -159,25 +163,21 @@ async function init() {
         await carRearMirror.draw();
 
 
-        gl.useProgram(movieProgram);
-        var textureLocation2 = gl.getUniformLocation(movieProgram, "texture");
-        gl.uniform1i(textureLocation2, 0);
-
-        gl.useProgram(movieProgram);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, movieTexture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage)
-        gl.bindTexture(gl.TEXTURE_2D, null)
 
         // movie
-        const movieScaleFactor = 0.5;
+        const movieScaleFactor = 5;
         const movieRotation = new Rotation(0., 30, 0)
 
         const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices, false )
         movie.setTexture(movieTexture);
+
+        gl.useProgram(movieProgram);
+        var textureLocation2 = gl.getUniformLocation(movieProgram, "texture");
+        gl.uniform1i(textureLocation2, 0);
+        gl.bindTexture(gl.TEXTURE_2D, movieTexture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureVideo)
+
         await movie.draw();
 
         const structurePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
