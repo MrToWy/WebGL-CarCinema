@@ -78,6 +78,8 @@ async function init() {
     const carWindscreenVertices = await getVertices(gl, carProgram, carPath + "car_windscreen.obj");
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
+    const carLeftMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_left.obj");
+    const carRightMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_right.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
     const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
     const treeVertices = await getVertices(gl, treeProgram, treePath + "Tree_obj.obj");
@@ -182,6 +184,18 @@ async function init() {
         const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices)
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw()
+
+        // Left Mirror
+        const carLeftMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carLeftMirror = new DrawableObject(carMirrorProgram, carLeftMirrorPosition, carLeftMirrorVertices)
+        carLeftMirror.setTexture(skyboxTexture);
+        await carLeftMirror.draw()
+
+        // Right Mirror
+        const carRightMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carRightMirror = new DrawableObject(carMirrorProgram, carRightMirrorPosition, carRightMirrorVertices)
+        carRightMirror.setTexture(skyboxTexture);
+        await carRightMirror.draw()
 
 
         // Dodge Car outside
