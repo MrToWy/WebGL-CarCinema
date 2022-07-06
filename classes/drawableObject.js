@@ -1,3 +1,27 @@
+class Color{
+    constructor(r, g, b, a) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+
+    array(){ return [this.r, this.g, this.b, this.a] }
+}
+
+class Lighting{
+    constructor() {
+    }
+
+    fill(ambient, diffuse, specular, direction){
+        this.ambient = ambient;
+        this.diffuse = diffuse;
+        this.specular = specular;
+        this.direction = direction;
+    }
+}
+
+
 class Material{
     constructor() {
     }

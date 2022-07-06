@@ -9,6 +9,11 @@ varying vec3 fragLightDir2;
 uniform vec3 ambiente;
 uniform vec3 diffuse;
 uniform vec3 specular;
+
+uniform vec3 ambiente2;
+uniform vec3 diffuse2;
+uniform vec3 specular2;
+
 uniform float alpha;
 uniform vec3 eyeDir;
 
@@ -25,9 +30,10 @@ void main(){
     light1 += specular * pow(max(dot(reflect(-lightDir,normalDir),eyeDir),0.),alpha);
 
 
-    vec3 light2 = ambiente;
-    light2 += diffuse * max(dot(normalDir,lightDir2),0.);
-    light2 += specular * pow(max(dot(reflect(-lightDir2,normalDir),eyeDir),0.),alpha);
+    vec3 light2 = ambiente2;
+    light2 += diffuse2 * max(dot(normalDir,lightDir2),0.);
+    light2 += specular2 * pow(max(dot(reflect(-lightDir2,normalDir),eyeDir),0.),alpha);
+
 
     float light1Percentage = 0.5;
     vec3 light = light1Percentage * light1 + (1. - light1Percentage) * light2;
