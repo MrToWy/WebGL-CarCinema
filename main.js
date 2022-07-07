@@ -56,7 +56,7 @@ async function init() {
     // compile programs
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
-    const movieProgram = await getProgram(skyboxPath, gl)
+    const movieProgram = await getProgram(moviePath, gl)
     const testProgram = await getProgram(testPath, gl)
     const carProgram = await getProgram(carPath, gl)
     const carMirrorProgram = await getProgram(carMirrorPath, gl);
@@ -72,7 +72,7 @@ async function init() {
     const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
     const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
-    const movieVertices = await getVertices(gl, movieProgram, moviePath + "cube.obj");
+    const movieVertices = await getVertices(gl, movieProgram, moviePath + "screen.obj");
     const structureVertices = await getVertices(gl, movieProgram, moviePath + "structure.obj");
     const testVertices = await getVertices(gl, testProgram, testPath + "house.obj");
 
@@ -165,7 +165,7 @@ async function init() {
 
 
         // movie
-        const movieScaleFactor = 5;
+        const movieScaleFactor = 0.5;
         const movieRotation = new Rotation(0., 30, 0)
 
         const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
