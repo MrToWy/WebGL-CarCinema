@@ -22,7 +22,6 @@ const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
 const carWindowPath = "objects/car/window/"
 const moviePath = "objects/movie/"
-const testPath = "objects/tests/"
 const dodgeCarPath = "objects/car_dodge/"
 const airshipPath = "objects/airship/"
 const treePath = "objects/tree/"
@@ -32,6 +31,7 @@ const input = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 const windowInput = document.getElementById("window")
+const textureVideo = document.getElementById("videoTexture")
 
 let tolerance = 0.01;
 let updateId;
@@ -63,11 +63,9 @@ async function init() {
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
     // compile programs
-    const testProgram = await getProgram(testPath, gl)
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const movieProgram = await getProgram(moviePath, gl)
-    const testProgram = await getProgram(testPath, gl)
     const carProgram = await getProgram(carPath, gl)
     const dodgeCarProgram = await getProgram(dodgeCarPath, gl)
     const carMirrorProgram = await getProgram(carMirrorPath, gl);
@@ -107,7 +105,6 @@ async function init() {
     
     //movie screen
     let movieTexture = gl.createTexture();
-    let textureVideo = document.getElementById("videoTexture")
     gl.bindTexture(gl.TEXTURE_2D, movieTexture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,gl.RGBA, gl.UNSIGNED_BYTE, textureVideo);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -163,7 +160,7 @@ async function init() {
         
         // skybox 
         const skyboxScaleFactor = 200;
-        const skyboxRotation = new Rotation(0, 0, 0);
+        const skyboxRotation = new Rotation(0, 270, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
         skybox.setTexture(skyboxTexture);
@@ -210,7 +207,7 @@ async function init() {
         const movieRotation = new Rotation(0., 30, 0)
 
         const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
-        const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices, false )
+        const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices )
         movie.setTexture(movieTexture);
 
         gl.useProgram(movieProgram);
@@ -222,7 +219,7 @@ async function init() {
         await movie.draw();
 
         const structurePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
-        const structure = new DrawableObject(movieProgram, structurePosition,  structureVertices, false )
+        const structure = new DrawableObject(movieProgram, structurePosition,  structureVertices)
         await structure.draw();
 
 

@@ -110,7 +110,6 @@ class DrawableObject {
                 const material = this.materials.find(f => f.name === materialName);
 
                 if(material === undefined) {
-                    console.log("Missing material ", materialName)
                     setVec3Uniform(this.program, [0., 0., 0.],'materialEmissive',gl);
                     setVec3Uniform(this.program, [0., 0., 0.],'materialAmbient',gl);
                     setVec3Uniform(this.program, [1., 1., 1.], 'materialDiffuse', gl);
