@@ -23,3 +23,8 @@ https://www.cgtrader.com/free-3d-models/plant/other/simple-tree-low-poly-3d-mode
 
 Coca Cola Textur:
 https://pngset.com/download-free-png-atbkz
+
+Skybox Textur:
+https://polyhaven.com/a/drackenstein_quarry
+
+
