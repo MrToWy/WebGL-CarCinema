@@ -71,6 +71,10 @@ class DrawableObject {
     setTexture(texture){
         this.texture = texture;
     }
+
+    setSecondTexture(texture2){
+        this.texture2 = texture2;
+    }
     
     setFramebuffer(framebuffer){
         this.framebuffer = framebuffer;
@@ -93,8 +97,13 @@ class DrawableObject {
                     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, level);
                     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
                 }
-
+                gl.activeTexture(gl.TEXTURE0)
                 gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            }
+
+            if(this.texture2 !== null) {
+                gl.activeTexture(gl.TEXTURE1)
+                gl.bindTexture(gl.TEXTURE_2D, this.texture2);
             }
 
             else if(this.framebuffer !== null) {

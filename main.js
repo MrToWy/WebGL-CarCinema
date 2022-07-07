@@ -105,18 +105,23 @@ async function init() {
     let fb = getFramebuffer(texture);
 
     // get textures
-    let skyboxTexture = getTextureForHtmlElement("skybox");
-    let colaTexture = getTextureForHtmlElement("cola");
+    let skyboxTexture = getTextureForHtmlElement("skybox", 0);
+    let colaTexture = getTextureForHtmlElement("cola", 0);
+    let scratchTexture = getTextureForHtmlElement("colaScratch", 1);
+    gl.useProgram(colaProgram);
+    var colatextureLocation = gl.getUniformLocation(colaProgram, "texture");
+    gl.uniform1i(colatextureLocation, 0);
+    var scratchTextureLocation = gl.getUniformLocation(colaProgram, "scratch");
+    gl.uniform1i(scratchTextureLocation, 1);
     
     //movie screen
     let movieTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, movieTexture)
+    gl.bindTexture(gl.TEXTURE_2D, movieTexture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,gl.RGBA, gl.UNSIGNED_BYTE, textureVideo);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.bindTexture(gl.TEXTURE_2D, null);
-
 
     gl.enable(gl.DEPTH_TEST);
 
@@ -197,7 +202,8 @@ async function init() {
         const colaScaleFactor = 1;
         const colaPosition = new Position(new Rotation(40., 0., 0.), [0., 2., -20.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
         const cola = new DrawableObject(colaProgram, colaPosition, colaVertices)
-        cola.setTexture(colaTexture)
+        cola.setTexture(colaTexture);
+        cola.setSecondTexture(scratchTexture);
         await cola.draw()
 
 
