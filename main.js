@@ -165,10 +165,10 @@ async function init() {
 
 
         // movie
-        const movieScaleFactor = 0.5;
+        const movieScaleFactor = 1;
         const movieRotation = new Rotation(0., 30, 0)
 
-        const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices, false )
         movie.setTexture(movieTexture);
 
