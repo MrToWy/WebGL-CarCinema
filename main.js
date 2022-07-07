@@ -143,9 +143,13 @@ async function init() {
 
 
         fpsLimit = fpsSlider.value;
-
-
-        initFogForProgram(houseProgram);
+        
+        
+        initFogForProgram(skyboxProgram);
+        initFogForProgram(movieProgram);
+        initFogForProgram(dodgeCarProgram);
+        initFogForProgram(treeProgram);
+        initFogForProgram(airshipProgram);
 
         const cameraRotation = camRotation/1000;
         const scaleFactorCar = 0.1;
@@ -174,7 +178,7 @@ async function init() {
 
         
         // skybox 
-        const skyboxScaleFactor = 200;
+        const skyboxScaleFactor = 90.;
         const skyboxRotation = new Rotation(0, 270, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
@@ -260,13 +264,13 @@ async function init() {
 
 
         // Dodge Car outside
-        const dodgeCarPosition = new Position(new Rotation(-110, 16, 155), [-130, -15.0, -100.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const dodgeCarPosition = new Position(new Rotation(-110, 16, 155), [-30, -15.0, -60.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
         await dodgeCar.draw()
 
         // tree
         const scaleFactorTree = 2;
-        const treePosition = new Position(new Rotation(0, 0, 0), [-65., -10.0, -150.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
+        const treePosition = new Position(new Rotation(0, 0, 0), [-35., -0.0, -70.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw()
 
@@ -275,7 +279,7 @@ async function init() {
         const scaleFactorAirship = 1;
         const airshipPosition = new Position(new Rotation(0, 200, 0), [-30., 15.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
         const airship = new DrawableObject(airshipProgram, airshipPosition, airshipVertices, airshipMaterials)
-        const airshipRotation = new Rotation(0, -counter / 10, 0);
+        const airshipRotation = new Rotation(0, -0 / 10, 0);
         airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw()
 

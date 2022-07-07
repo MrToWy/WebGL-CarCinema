@@ -14,6 +14,10 @@ uniform vec3 materialSpecular;
 uniform float materialShininess;
 uniform float materialOpacity;
 
+uniform float fogNear;
+uniform float fogFar;
+uniform vec4 fogColor;
+
 void main(){
     float alpha = 2.;
 
@@ -35,5 +39,12 @@ void main(){
     light += ambienteResult + emissive + diffuse + specular;
 
 
-    gl_FragColor = vec4(light,1.);
+    vec4 color = vec4(light,1.);
+    vec4 fogColorStatic = vec4(0.5, 0.5, 0.5, 0.5);
+
+    // fog
+    float fogAmount = smoothstep(fogNear, fogFar, gl_FragCoord.z);
+    vec4 colorWithFog = mix(color, fogColorStatic, fogAmount);
+
+    gl_FragColor = colorWithFog;
 }
