@@ -1,5 +1,7 @@
 'use strict';
 
+const rotationLimit = 681;
+
 function checkKey(e) {
 
     e = e || window.event;
@@ -7,11 +9,14 @@ function checkKey(e) {
     // ignore warning for the ==, otherwise this wont work
     if (e.keyCode == '37') {
         // left arrow
-        camRotation -= keyRotationStrength;
+        
+        if(camRotation > -rotationLimit)
+            camRotation -= keyRotationStrength;
     }
     else if (e.keyCode == '39') {
         // right arrow
-        camRotation += keyRotationStrength;
+        if(camRotation < rotationLimit)
+            camRotation += keyRotationStrength;
     }
 }
 
