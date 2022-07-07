@@ -75,6 +75,10 @@ class DrawableObject {
     setFramebuffer(framebuffer){
         this.framebuffer = framebuffer;
     }
+
+    setRotationAfterTranslation(rotationAfterTranslation){
+        this.rotationAfterTranslation = rotationAfterTranslation;
+    }
     
     async draw() {
         for (const geometry of this.vertices) {
@@ -97,7 +101,7 @@ class DrawableObject {
                 gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
             }
 
-            await position(gl, this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look)
+            await position(gl, this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look, this.rotationAfterTranslation)
             await bindParameters(gl, this.program)
 
             // set default mat

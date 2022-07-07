@@ -211,10 +211,19 @@ async function init() {
 
 
         // airship
-        const scaleFactorAirship = 2;
-        const airshipPosition = new Position(new Rotation(0, 200, 0), [-30., 20.0, -90.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
+        const scaleFactorAirship = 1;
+        const airshipPosition = new Position(new Rotation(0, 200, 0), [-30., 10.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
         const airship = new DrawableObject(airshipProgram, airshipPosition, airshipVertices, airshipMaterials)
+        const airshipRotation = new Rotation(0, -counter / 10, 0);
+        airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw()
+
+        // airship2
+        const airshipPosition2 = new Position(new Rotation(0, 200, 0), [-30., 10.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
+        const airship2 = new DrawableObject(airshipProgram, airshipPosition2, airshipVertices, airshipMaterials)
+        const airshipRotation2 = new Rotation(0, -counter / 10 + 180, 0);
+        airship2.setRotationAfterTranslation(airshipRotation2);
+        await airship2.draw()
         
 
         // draw transperent objects
