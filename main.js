@@ -21,14 +21,17 @@ const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
 const carWindowPath = "objects/car/window/"
+const moviePath = "objects/movie/"
 const dodgeCarPath = "objects/car_dodge/"
 const airshipPath = "objects/airship/"
 const treePath = "objects/tree/"
+
 
 const input = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 const windowInput = document.getElementById("window")
+const textureVideo = document.getElementById("videoTexture")
 
 let tolerance = 0.01;
 let updateId;
@@ -60,9 +63,9 @@ async function init() {
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
     // compile programs
-    const testProgram = await getProgram(testPath, gl)
     const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
+    const movieProgram = await getProgram(moviePath, gl)
     const carProgram = await getProgram(carPath, gl)
     const dodgeCarProgram = await getProgram(dodgeCarPath, gl)
     const carMirrorProgram = await getProgram(carMirrorPath, gl);
@@ -81,6 +84,9 @@ async function init() {
     const carLeftMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_left.obj");
     const carRightMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_right.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
+
+    const movieVertices = await getVertices(gl, movieProgram, moviePath + "screen.obj");
+    const structureVertices = await getVertices(gl, movieProgram, moviePath + "structure.obj");
     const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
     const treeVertices = await getVertices(gl, treeProgram, treePath + "Tree_obj.obj");
     const airshipVertices = await getVertices(gl, airshipProgram, airshipPath + "Low-Poly_airship.obj");
@@ -89,6 +95,7 @@ async function init() {
     const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
     const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
 
+
     // create framebuffer
     let texture = getTextureForFramebuffer();
     let fb = getFramebuffer(texture);
@@ -96,6 +103,16 @@ async function init() {
     // skybox
     let skyboxTexture = getSkyboxTexture();
     
+    //movie screen
+    let movieTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, movieTexture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,gl.RGBA, gl.UNSIGNED_BYTE, textureVideo);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+
+
     gl.enable(gl.DEPTH_TEST);
 
     let counter = 0;
@@ -143,13 +160,11 @@ async function init() {
         
         // skybox 
         const skyboxScaleFactor = 200;
-        const skyboxRotation = new Rotation(0, 0, 0);
+        const skyboxRotation = new Rotation(0, 270, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
         skybox.setTexture(skyboxTexture);
-        await skybox.draw();
-
-
+        await skybox.draw()
 
 
         // Car
@@ -157,7 +172,7 @@ async function init() {
         const carInsidePosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices)
         await car.draw()
-        
+
         // Airing
         const carAiringPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carAiring = new DrawableObject(carProgram, carAiringPosition, carAiringVertices)
@@ -183,7 +198,30 @@ async function init() {
         const carRearMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices)
         carRearMirror.setTexture(skyboxTexture);
-        await carRearMirror.draw()
+        await carRearMirror.draw();
+
+
+
+        // movie
+        const movieScaleFactor = 1;
+        const movieRotation = new Rotation(0., 30, 0)
+
+        const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices )
+        movie.setTexture(movieTexture);
+
+        gl.useProgram(movieProgram);
+        var textureLocation2 = gl.getUniformLocation(movieProgram, "texture");
+        gl.uniform1i(textureLocation2, 0);
+        gl.bindTexture(gl.TEXTURE_2D, movieTexture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureVideo)
+
+        await movie.draw();
+
+        const structurePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const structure = new DrawableObject(movieProgram, structurePosition,  structureVertices)
+        await structure.draw();
+
 
         // Left Mirror
         const carLeftMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
@@ -244,6 +282,7 @@ async function init() {
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowInput.value/1000 * -0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
+
     }
 
     requestAnimationFrame(loop);

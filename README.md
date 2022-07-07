@@ -19,3 +19,7 @@ https://www.cgtrader.com/free-3d-models/car/sport-car/low-poly-dodge-challenger-
 
 Tree:
 https://www.cgtrader.com/free-3d-models/plant/other/simple-tree-low-poly-3d-model
+
+
+Coca Cola Textur:
+https://pngset.com/download-free-png-atbkz
