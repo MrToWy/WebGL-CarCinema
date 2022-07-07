@@ -16,6 +16,7 @@ function checkKey(e) {
 }
 
 const testPath = "objects/tests/"
+const colaPath = "objects/cola/"
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
@@ -39,7 +40,7 @@ let previousDelta = 0;
 let fpsLimit = 15;
 const targetTextureWidth = 1024;
 const targetTextureHeight = targetTextureWidth;
-let camRotation = -600;
+let camRotation = 0;
 const keyRotationStrength = 10;
 
 
@@ -47,6 +48,7 @@ const fpsLabel = document.getElementById("fps");
 const fpsAvgLabel = document.getElementById("fpsAvg");
 const fpsSlider = document.getElementById("fpsSlider");
 const canvas = document.getElementById("canvas")
+const cola = document.getElementById("cola")
 const gl = canvas.getContext("webgl");
 
 let fpsHistory = []
@@ -72,6 +74,7 @@ async function init() {
     const carWindowProgram = await  getProgram(carWindowPath, gl);
     const treeProgram = await  getProgram(treePath, gl);
     const airshipProgram = await  getProgram(airshipPath, gl);
+    const colaProgram = await  getProgram(colaPath, gl);
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
@@ -90,6 +93,7 @@ async function init() {
     const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
     const treeVertices = await getVertices(gl, treeProgram, treePath + "Tree_obj.obj");
     const airshipVertices = await getVertices(gl, airshipProgram, airshipPath + "Low-Poly_airship.obj");
+    const colaVertices = await getVertices(gl, airshipProgram, colaPath + "cola.obj");
 
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
     const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
@@ -100,8 +104,9 @@ async function init() {
     let texture = getTextureForFramebuffer();
     let fb = getFramebuffer(texture);
 
-    // skybox
-    let skyboxTexture = getSkyboxTexture();
+    // get textures
+    let skyboxTexture = getTextureForHtmlElement("skybox");
+    let colaTexture = getTextureForHtmlElement("cola");
     
     //movie screen
     let movieTexture = gl.createTexture();
@@ -187,6 +192,13 @@ async function init() {
         const carDoorLeftFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices)
         await carDoorLeftFront.draw()
+
+        // cola
+        const colaScaleFactor = 1;
+        const colaPosition = new Position(new Rotation(40., 0., 0.), [0., 2., -20.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
+        const cola = new DrawableObject(colaProgram, colaPosition, colaVertices)
+        cola.setTexture(colaTexture)
+        await cola.draw()
 
 
         gl.useProgram(carMirrorProgram);
