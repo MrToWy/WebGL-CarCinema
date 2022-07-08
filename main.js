@@ -145,7 +145,7 @@ async function init() {
 
         fpsLimit = fpsSlider.value;
         
-        
+        initFogForProgram(carMirrorProgram)
         initFogForProgram(skyboxProgram);
         initFogForProgram(movieProgram);
         initFogForProgram(dodgeCarProgram);
