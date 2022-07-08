@@ -88,6 +88,7 @@ class DrawableObject {
         for (const geometry of this.vertices) {
             gl.bindTexture(gl.TEXTURE_2D, null);
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
             gl.useProgram(this.program);
 
@@ -95,19 +96,20 @@ class DrawableObject {
                 if(this.getTextureFromFramebuffer){
                     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer)
                     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, level);
-                    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+                    //gl.bindFramebuffer(gl.FRAMEBUFFER, null)
                 }
                 gl.activeTexture(gl.TEXTURE0)
                 gl.bindTexture(gl.TEXTURE_2D, this.texture);
             }
 
-            if(this.texture2 !== null) {
+            if(this.texture2 !== null ) {
                 gl.activeTexture(gl.TEXTURE1)
                 gl.bindTexture(gl.TEXTURE_2D, this.texture2);
             }
 
             else if(this.framebuffer !== null) {
                 gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+                //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             }
 
             await position(gl, this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look, this.rotationAfterTranslation)

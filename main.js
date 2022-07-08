@@ -31,6 +31,8 @@ const moviePath = "objects/movie/"
 const dodgeCarPath = "objects/car_dodge/"
 const airshipPath = "objects/airship/"
 const treePath = "objects/tree/"
+const fireflyPath = "objects/firefly/"
+const fireflyFbPath = "objects/firefly/framebuffer/"
 
 
 const input = document.getElementById("input")
@@ -80,6 +82,8 @@ async function init() {
     const treeProgram = await  getProgram(treePath, gl);
     const airshipProgram = await  getProgram(airshipPath, gl);
     const colaProgram = await  getProgram(colaPath, gl);
+    const fireflyProgram = await getProgram(fireflyPath, gl);
+    const fireflyFbProgram = await getProgram(fireflyFbPath, gl);
 
     const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
     const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
@@ -100,14 +104,38 @@ async function init() {
     const airshipVertices = await getVertices(gl, airshipProgram, airshipPath + "Low-Poly_airship.obj");
     const colaVertices = await getVertices(gl, airshipProgram, colaPath + "cola.obj");
 
+    const fireflyVertices = await getVertices(gl, fireflyProgram, fireflyPath + "firefly.obj");
+
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
     const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
     const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
 
 
-    // create framebuffer
-    let texture = getTextureForFramebuffer();
-    let fb = getFramebuffer(texture);
+    const texture = gl.createTexture();
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const border = 0;
+    const format = gl.RGBA;
+    const type = gl.UNSIGNED_BYTE;
+    const data = null;
+
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, targetTextureWidth, targetTextureHeight, border, format, type, data);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,texture, level);
+
+    const depthBuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
+
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, targetTextureWidth, targetTextureHeight);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
     // get textures
     let skyboxTexture = getTextureForHtmlElement("skybox", 0);
@@ -223,8 +251,6 @@ async function init() {
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw();
 
-
-
         // movie
         const movieScaleFactor = 1;
         const movieRotation = new Rotation(0., 30, 0)
@@ -285,6 +311,20 @@ async function init() {
         const airshipRotation2 = new Rotation(0, -counter / 10 + 180, 0);
         airship2.setRotationAfterTranslation(airshipRotation2);
         await airship2.draw()
+
+        const scaleFactorFirefly = 0.3;
+        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -4.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices);
+        gl.useProgram(fireflyFbProgram);
+        fireflyFb.setFramebuffer(fb);
+        await fireflyFb.draw()
+        
+        const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -4.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const firefly = new DrawableObject(fireflyProgram, fireflyPosition, fireflyVertices);
+        gl.useProgram(fireflyProgram);
+        var textureLocation3 = gl.getUniformLocation(fireflyProgram, "u_texture");
+        gl.uniform1i(textureLocation3, 1);
+        await firefly.draw()
         
 
         // draw transperent objects
