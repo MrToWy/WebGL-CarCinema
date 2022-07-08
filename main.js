@@ -101,6 +101,7 @@ async function init() {
     const colaVertices = await getVertices(gl, airshipProgram, colaPath + "cola.obj");
 
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
+    const dodgeGreenCarMaterials = await getMTL(dodgeCarPath + "GreenDodgeChallengerSRTHellcat2015.mtl");
     const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
     const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
 
@@ -267,6 +268,10 @@ async function init() {
         const dodgeCarPosition = new Position(new Rotation(-110, 16, 155), [-30, -15.0, -60.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
         await dodgeCar.draw()
+        
+        const greenDodgeCarPosition = new Position(new Rotation(-110, 16, 155), [-30, -10.0, -60.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, dodgeCarVertices, dodgeGreenCarMaterials)
+        await greenDodgeCar.draw()
 
         // tree
         const scaleFactorTree = 2;
