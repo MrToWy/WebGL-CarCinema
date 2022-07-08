@@ -187,6 +187,16 @@ async function init() {
         const look = [Math.sin(cameraRotation), 1, - Math.cos(cameraRotation)]
         const carRotation = new Rotation(-90, 0, 0);
 
+        const vertices = [
+            1., 1., 0.,     1., 1., 0.,0.,0.,
+            -1., -1., 0.,   0., 0., 0.,0.,0.,
+            -1., 1., 0.,    0., 1., 0.,0.,0.,
+            1., -1., 0.,    1., 0., 0.,0.,0.,
+            -1., -1., 0.,   0., 0., 0.,0.,0.,
+            1., 1., 0.,     1., 1., 0.,0.,0.,
+
+        ]
+
         // draw opaque objects
         disableTransperency(gl);
 
@@ -321,20 +331,21 @@ async function init() {
         airship2.setRotationAfterTranslation(airshipRotation2);
         await airship2.draw()
 
-        const scaleFactorFirefly = 0.3;
-        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -4.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        let scaleFactorFirefly = 0.05;
+        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices);
         gl.useProgram(fireflyFbProgram);
         fireflyFb.setFramebuffer(fb);
         await fireflyFb.draw()
-        
-        const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -4.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
-        const firefly = new DrawableObject(fireflyProgram, fireflyPosition, fireflyVertices);
-        gl.useProgram(fireflyProgram);
-        var textureLocation3 = gl.getUniformLocation(fireflyProgram, "u_texture");
+
+        scaleFactorFirefly = 0.05;
+        const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
+        gl.useProgram(fireflyFbProgram);
+        var textureLocation3 = gl.getUniformLocation(fireflyFbProgram, "u_texture");
         gl.uniform1i(textureLocation3, 1);
         await firefly.draw()
-        
+
 
         // draw transperent objects
         enableTransperency(0.8,gl);
@@ -354,6 +365,15 @@ async function init() {
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowInput.value/1000 * -0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
+
+        scaleFactorFirefly = 3.0;
+        const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), [0, 0.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:vertices}]);
+        gl.useProgram(fireflyProgram);
+        canvasFirefly.setTexture(texture);
+        await canvasFirefly.draw();
+
+
 
     }
 
