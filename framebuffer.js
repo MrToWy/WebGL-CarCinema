@@ -53,9 +53,8 @@ async function init() {
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, targetTextureWidth, targetTextureHeight);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
-    const cameraRotation = camRotation/1000;
     const eye = [0., 0.0, 0.];
-    const look = [Math.sin(cameraRotation), 0, - Math.cos(cameraRotation)]
+    const look = [0, 0, -10.]
 
     async function loop() {
         gl.enable(gl.DEPTH_TEST);
@@ -63,7 +62,7 @@ async function init() {
 
 
 
-        const scaleFactorFirefly = 1.0;
+        let scaleFactorFirefly = 0.2;
         const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 0.0, -7.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyFbVertices, null, true);
         gl.useProgram(fireflyFbProgram);
@@ -71,7 +70,7 @@ async function init() {
         fireflyFb.setFramebuffer(fb);
         await fireflyFb.draw();
 
-
+        scaleFactorFirefly = 3.0;
         const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 0.0, -7.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const firefly = new DrawableObject(fireflyProgram, fireflyPosition, [{vertices:vertices}]);
         gl.useProgram(fireflyProgram);
@@ -79,8 +78,9 @@ async function init() {
         await firefly.draw();
 
 
-        const scaleFactorFirefly2 = 1.;
-        const fireflyFb2Position = new Position(new Rotation(0, 0, 0), [0., 0.0, -7.5], [scaleFactorFirefly2, scaleFactorFirefly2, scaleFactorFirefly2], eye, look)
+
+        const scaleFactorFirefly2 = 0.2;
+        const fireflyFb2Position = new Position(new Rotation(0, 0, 0), [0., 0.0, -7.0], [scaleFactorFirefly2, scaleFactorFirefly2, scaleFactorFirefly2], eye, look)
         const fireflyFb2 = new DrawableObject(fireflyFbProgram, fireflyFb2Position, fireflyFbVertices);
         await fireflyFb2.draw();
 

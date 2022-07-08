@@ -4,7 +4,7 @@ varying vec2 texCoord;
 
 void main(void) {
     float weight = 0.01;
-    vec4 frameColor = vec4(1., 0.4 ,0.5 ,0.);
+    vec4 frameColor = vec4(0., 0. ,0. ,0.);
     for (int i = 0; i < 10; i++) {
         float sShift = float(i) * 1.0/800.0; // Auflösung in s-Richtung
         for (int j = 0; j < 10; j++) {
