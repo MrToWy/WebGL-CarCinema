@@ -284,7 +284,7 @@ async function init() {
         const scaleFactorAirship = 1;
         const airshipPosition = new Position(new Rotation(0, 200, 0), [-30., 15.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
         const airship = new DrawableObject(airshipProgram, airshipPosition, airshipVertices, airshipMaterials)
-        const airshipRotation = new Rotation(0, -0 / 10, 0);
+        const airshipRotation = new Rotation(0, -counter / 10, 0);
         airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw()
 
