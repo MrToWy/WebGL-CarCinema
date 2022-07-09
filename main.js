@@ -273,10 +273,7 @@ async function init() {
         const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices )
         movie.setTexture(movieTexture);
-
-        gl.useProgram(movieProgram);
-        var textureLocation2 = gl.getUniformLocation(movieProgram, "texture");
-        gl.uniform1i(textureLocation2, 0);
+        setIntUniform(movieProgram,0,'texture',gl);
         gl.bindTexture(gl.TEXTURE_2D, movieTexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureVideo)
 
@@ -333,12 +330,10 @@ async function init() {
 
         gl.enable(gl.DEPTH_TEST);
 
-
         let scaleFactorFirefly = 0.005;
-        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
+        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0.,1.,-1.])
         const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
-        gl.useProgram(fireflyFbProgram);
-        setVec3Uniform(fireflyFbProgram,[1.,1.,0.], 'color', gl);
+        setVec4Uniform(fireflyFbProgram,[1.,1.,0.,1.], 'color', gl);
         fireflyFb.setTexture(texture);
         fireflyFb.setFramebuffer(fb);
         await fireflyFb.draw()
@@ -347,8 +342,7 @@ async function init() {
         scaleFactorFirefly = 0.005;
         const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
         const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
-        gl.useProgram(fireflyFbProgram);
-        setVec3Uniform(fireflyFbProgram,[0.5,1.,0.], 'color', gl);
+        setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
         await firefly.draw()
 
 
@@ -376,7 +370,6 @@ async function init() {
         scaleFactorFirefly = 1.;
         const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:vertices}]);
-        gl.useProgram(fireflyProgram);
         canvasFirefly.setTexture(texture);
         await canvasFirefly.draw();
 
