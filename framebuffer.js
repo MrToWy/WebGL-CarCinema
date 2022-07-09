@@ -77,8 +77,6 @@ async function init() {
         firefly.setTexture(texture);
         await firefly.draw();
 
-
-
         const scaleFactorFirefly2 = 0.2;
         const fireflyFb2Position = new Position(new Rotation(0, 0, 0), [0., 0.0, -7.0], [scaleFactorFirefly2, scaleFactorFirefly2, scaleFactorFirefly2], eye, look)
         const fireflyFb2 = new DrawableObject(fireflyFbProgram, fireflyFb2Position, fireflyFbVertices);

@@ -112,7 +112,7 @@ async function init() {
     const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
 
 
-    const texture = gl.createTexture();
+    let texture = gl.createTexture();
     const level = 0;
     const internalFormat = gl.RGBA;
     const border = 0;
@@ -122,7 +122,7 @@ async function init() {
 
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, targetTextureWidth, targetTextureHeight, border, format, type, data);
+    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, gl.canvas.width, gl.canvas.height, border, format, type, data);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -135,7 +135,7 @@ async function init() {
     const depthBuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
 
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, targetTextureWidth, targetTextureHeight);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
     // get textures
@@ -248,7 +248,7 @@ async function init() {
 
         // cola
         const colaScaleFactor = 1;
-        const colaPosition = new Position(new Rotation(40., 0., 0.), [0., 2., -20.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
+        const colaPosition = new Position(new Rotation(40., 0., 0.), [2., 2., -20.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
         const cola = new DrawableObject(colaProgram, colaPosition, colaVertices)
         cola.setTexture(colaTexture);
         cola.setSecondTexture(scratchTexture);
@@ -331,20 +331,26 @@ async function init() {
         airship2.setRotationAfterTranslation(airshipRotation2);
         await airship2.draw()
 
-        let scaleFactorFirefly = 0.05;
-        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
-        const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices);
+        gl.enable(gl.DEPTH_TEST);
+
+
+        let scaleFactorFirefly = 0.005;
+        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
+        const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
         gl.useProgram(fireflyFbProgram);
+        setVec3Uniform(fireflyFbProgram,[1.,1.,0.], 'color', gl);
+        fireflyFb.setTexture(texture);
         fireflyFb.setFramebuffer(fb);
         await fireflyFb.draw()
 
-        scaleFactorFirefly = 0.05;
-        const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+
+        scaleFactorFirefly = 0.005;
+        const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
         const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
         gl.useProgram(fireflyFbProgram);
-        var textureLocation3 = gl.getUniformLocation(fireflyFbProgram, "u_texture");
-        gl.uniform1i(textureLocation3, 1);
+        setVec3Uniform(fireflyFbProgram,[0.5,1.,0.], 'color', gl);
         await firefly.draw()
+
 
 
         // draw transperent objects
@@ -366,8 +372,9 @@ async function init() {
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
 
-        scaleFactorFirefly = 3.0;
-        const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), [0, 0.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        enableTransperency(1.,gl);
+        scaleFactorFirefly = 1.;
+        const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:vertices}]);
         gl.useProgram(fireflyProgram);
         canvasFirefly.setTexture(texture);
