@@ -218,7 +218,7 @@ async function init() {
         
         // skybox 
         const skyboxScaleFactor = 90.;
-        const skyboxRotation = new Rotation(0, 270, 0);
+        const skyboxRotation = new Rotation(0, 90, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
         skybox.setTexture(skyboxTexture);
@@ -247,8 +247,8 @@ async function init() {
         await carDoorLeftFront.draw()
 
         // cola
-        const colaScaleFactor = 1;
-        const colaPosition = new Position(new Rotation(40., 0., 0.), [2., 2., -20.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
+        const colaScaleFactor = 0.04;
+        const colaPosition = new Position(new Rotation(0., 0., 0.), [0., 0.55, -1.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
         const cola = new DrawableObject(colaProgram, colaPosition, colaVertices)
         cola.setTexture(colaTexture);
         cola.setSecondTexture(scratchTexture);
@@ -267,10 +267,10 @@ async function init() {
         await carRearMirror.draw();
 
         // movie
-        const movieScaleFactor = 1;
+        const movieScaleFactor = 0.65;
+        const moviePos =[-7., -2., -60.] ;
         const movieRotation = new Rotation(0., 30, 0)
-
-        const moviePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const moviePosition = new Position(movieRotation, moviePos,  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices )
         movie.setTexture(movieTexture);
         setIntUniform(movieProgram,0,'texture',gl);
@@ -279,7 +279,7 @@ async function init() {
 
         await movie.draw();
 
-        const structurePosition = new Position(movieRotation, [-7.0,5.0,-60.],  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const structurePosition = new Position(movieRotation, moviePos,  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const structure = new DrawableObject(movieProgram, structurePosition,  structureVertices)
         await structure.draw();
 
@@ -298,17 +298,18 @@ async function init() {
 
 
         // Dodge Car outside
-        const dodgeCarPosition = new Position(new Rotation(-110, 16, 155), [-30, -15.0, -60.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -70.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
         await dodgeCar.draw()
-        
-        const greenDodgeCarPosition = new Position(new Rotation(-110, 16, 155), [-30, -10.0, -60.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+
+
+        const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -65.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, dodgeCarVertices, dodgeGreenCarMaterials)
         await greenDodgeCar.draw()
 
         // tree
-        const scaleFactorTree = 2;
-        const treePosition = new Position(new Rotation(0, 0, 0), [-35., -0.0, -70.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
+        const scaleFactorTree = 0.7;
+        const treePosition = new Position(new Rotation(0, 0, 0), [5., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw()
 
