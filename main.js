@@ -344,6 +344,8 @@ async function init() {
         const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
         const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
         setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
+        const rotation = new Rotation(0, -counter / 10 , 0);
+        firefly.setRotationAfterTranslation(rotation);
         await firefly.draw()
 
 
@@ -372,6 +374,7 @@ async function init() {
         const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:vertices}]);
         canvasFirefly.setTexture(texture);
+        canvasFirefly.setRotationAfterTranslation(rotation);
         await canvasFirefly.draw();
 
 
