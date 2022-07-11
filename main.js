@@ -157,6 +157,15 @@ async function init() {
     for (let i = 200; i > 0; i--) {
         positions.push(calcFireflyPosition(i));
     }
+
+    // calc firefly positions
+    let positions2 = [[0, 1.0, -2.0]]
+    for (let i = -100; i < 100; i++) {
+        positions2.push(calcFireflyPosition2(i));
+    }
+    for (let i = 100; i > -100; i--) {
+        positions2.push(calcFireflyPosition2(i));
+    }
     
 
     async function loop(currentDelta) {
@@ -355,7 +364,7 @@ async function init() {
 
         
         // second inner firefly
-        const fireflyPosition2 = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
+        const fireflyPosition2 = new Position(new Rotation(0, 0, 0), positions2[posCounter], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
         const firefly2 = new DrawableObject(fireflyFbProgram, fireflyPosition2, fireflyVertices);
         setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
         const rotation2 = new Rotation(0, -0 / 10 , 0);
@@ -394,7 +403,7 @@ async function init() {
         // second firefly canvas
         enableTransperency(1.,gl);
         scaleFactorFirefly = 1.;
-        const canvasFireflyPosition2 = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const canvasFireflyPosition2 = new Position(new Rotation(0, 0, 0), positions2[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const canvasFirefly2 = new DrawableObject(fireflyProgram, canvasFireflyPosition2, [{vertices:canvasFireflyVertices}]);
         canvasFirefly2.setTexture(fireflyTexture);
         canvasFirefly2.setRotationAfterTranslation(rotation);
