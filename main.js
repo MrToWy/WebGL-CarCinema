@@ -145,10 +145,10 @@ async function init() {
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
     // get textures
-    let skyboxDayTexture = getTextureForHtmlElement("skyboxDay", 0);
-    let skyboxNightTexture = getTextureForHtmlElement("skyboxNight", 1);
-    let colaTexture = getTextureForHtmlElement("cola", 0);
-    let scratchTexture = getTextureForHtmlElement("colaScratch", 1);
+    let skyboxDayTexture = getTextureForHtmlElement("skyboxDay");
+    let skyboxNightTexture = getTextureForHtmlElement("skyboxNight");
+    let colaTexture = getTextureForHtmlElement("cola");
+    let scratchTexture = getTextureForHtmlElement("colaScratch");
     gl.useProgram(colaProgram);
     var colatextureLocation = gl.getUniformLocation(colaProgram, "texture");
     gl.uniform1i(colatextureLocation, 0);
@@ -225,13 +225,13 @@ async function init() {
         let skyboxTexture;
         // skybox 
         const skyboxScaleFactor = 90.;
-        const skyboxRotation = new Rotation(0, -130, 0);
+        const skyboxRotation = new Rotation(0, -160, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
         if(dayOrNightInput.checked){
             skybox.setTexture(skyboxDayTexture);
             skyboxTexture = skyboxDayTexture;
-            skybox.position.objectRotation = new Rotation(2, 231, 0);
+            skybox.position.objectRotation = new Rotation(2, 201, 0);
         } else {
             skybox.setTexture(skyboxNightTexture);
             skyboxTexture = skyboxNightTexture;
