@@ -257,7 +257,7 @@ async function init() {
         const carDoorLeftFront = new DrawableObject(carProgram, carPosition, carDoorLeftFrontVertices)
         await carDoorLeftFront.draw()
 
-        // cola
+        // Cola
         const colaScaleFactor = 0.04;
         const colaPosition = new Position(new Rotation(0., 0., 0.), [0., 0.55, -1.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
         const cola = new DrawableObject(colaProgram, colaPosition, colaVertices)
@@ -266,11 +266,7 @@ async function init() {
         await cola.draw()
 
 
-        gl.useProgram(carMirrorProgram);
-        var textureLocation = gl.getUniformLocation(carMirrorProgram, "u_texture");
-        gl.uniform1i(textureLocation, 0);
-
-
+        setIntUniform(carMirrorProgram, 0 , "u_texture", gl);
         // Rear Mirror
         const carRearMirror = new DrawableObject(carMirrorProgram, carPosition, carRearMirrorVertices)
         carRearMirror.setTexture(skyboxTexture);
@@ -288,7 +284,7 @@ async function init() {
 
 
         // movie
-        const movieScaleFactor = 0.65;
+        const movieScaleFactor = 1.5;
         const moviePos =[-7., -2., -60.] ;
         const movieRotation = new Rotation(0., 30, 0)
         const moviePosition = new Position(movieRotation, moviePos,  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
@@ -316,8 +312,8 @@ async function init() {
 
 
         // tree
-        const scaleFactorTree = 0.7;
-        const treePosition = new Position(new Rotation(0, 0, 0), [5., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
+        const scaleFactorTree = 1.4;
+        const treePosition = new Position(new Rotation(0, 0, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw()
 
