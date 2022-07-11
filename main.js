@@ -377,6 +377,15 @@ async function init() {
         firefly.setRotationAfterTranslation(rotation);
         await firefly.draw()
 
+        
+        // second inner firefly
+        const fireflyPosition2 = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
+        const firefly2 = new DrawableObject(fireflyFbProgram, fireflyPosition2, fireflyVertices);
+        setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
+        const rotation2 = new Rotation(0, -0 / 10 , 0);
+        firefly2.setRotationAfterTranslation(rotation2);
+        await firefly2.draw()
+
 
 
         // draw transperent objects
@@ -406,6 +415,15 @@ async function init() {
         canvasFirefly.setTexture(texture);
         canvasFirefly.setRotationAfterTranslation(rotation);
         await canvasFirefly.draw();
+
+        // second firefly canvas
+        enableTransperency(1.,gl);
+        scaleFactorFirefly = 1.;
+        const canvasFireflyPosition2 = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const canvasFirefly2 = new DrawableObject(fireflyProgram, canvasFireflyPosition2, [{vertices:canvasFireflyVertices}]);
+        canvasFirefly2.setTexture(texture);
+        canvasFirefly2.setRotationAfterTranslation(rotation);
+        await canvasFirefly2.draw();
     }
 
     requestAnimationFrame(loop);
