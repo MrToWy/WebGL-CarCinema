@@ -375,9 +375,6 @@ async function init() {
         const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:canvasFireflyVertices}]);
         canvasFirefly.setTexture(texture);
         await canvasFirefly.draw();
-
-
-
     }
 
     requestAnimationFrame(loop);
