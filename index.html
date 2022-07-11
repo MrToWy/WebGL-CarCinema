@@ -8,40 +8,41 @@
 
 <h1>CG1-Abgabe</h1>
 
-FPS: <l id="fps"></l> Durchschnitt: <l id="fpsAvg"></l>
+<div>
+    Fog: <br>
+    <input type="range" min="995" max="1000" value="1000" class="slider" id="fogNear">
+    <input hidden type="range" min="950" max="1000" value="1000" class="slider" id="fogFar"><br>
+    <button id="dayOrNight" onclick="dayOrNight()">Day</button>
+    <button id="window" onclick="openWindow()">Open Window</button>
+    <button onclick="hideSettings()">Settings</button>
+</div>
 
-</br>
+<div hidden id="settings">
+    <br>
+    <input type="checkbox" id="errors">
+    Hide errors
+    <br>
+    FPS-Limit:
+    <input type="range" min="1" max="100" value="20" class="slider" id="fpsSlider">
 
+    <br>
 
-FPS-Limit:
-<input type="range" min="1" max="100" value="20" class="slider" id="fpsSlider">
-
-
-Fog:
-<input type="range" min="995" max="1000" value="1000" class="slider" id="fogNear">
-
-<input hidden type="range" min="950" max="1000" value="1000" class="slider" id="fogFar">
-
-Schiebefenster:
-<input type="checkbox" checked id="window">
-
-Hide errors:
-<input type="checkbox" id="errors">
-
-
-Day or Night:
-<input type="checkbox" id="dayOrNight">
-
+    FPS:
+    <l id="fps"></l>
+    <br>
+    Durchschnitt:
+    <l id="fpsAvg"></l>
+</div>
 <br>
 
-<canvas width="800" height="800" id="canvas">
+<canvas width="800" height="800" id="canvas"></canvas>
 
-</canvas>
-
-<video autoplay loop id="videoTexture" width="320" height="240" controls>
+<video autoplay loop id="videoTexture" width="1" height="1" controls>
     <source src="objects/movie/movie.mp4" type="video/mp4">
     Your browser does not support the video tag.
 </video>
+
+<br>
 
 <img id="skyboxDay" src="objects/skybox/day.jpg" width="0">
 <img id="skyboxNight" src="objects/skybox/night.jpg" width="0">
@@ -55,6 +56,35 @@ Day or Night:
 
 <script src="main.js"></script>
 <script src="classes/drawableObject.js"></script>
+<script>
+    function dayOrNight() {
+        let button = document.getElementById("dayOrNight");
+        if (button.innerHTML === "Day") {
+            button.innerHTML = "Night"
+        } else {
+            button.innerHTML = "Day"
+        }
+    }
+
+    function openWindow() {
+        let button = document.getElementById("window");
+        if (button.innerHTML === "Open Window") {
+            button.innerHTML = "Close Window"
+        } else {
+            button.innerHTML = "Open Window"
+        }
+    }
+
+    function hideSettings() {
+        let button = document.getElementById("settings");
+        if(button.hidden === true){
+            button.hidden = false;
+        } else {
+            button.hidden = true;
+        }
+
+    }
+</script>
 
 
 </body>

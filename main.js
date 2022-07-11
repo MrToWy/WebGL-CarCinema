@@ -195,10 +195,10 @@ async function init() {
         
         // window animation
         const windowSpeed = 10;
-        if(windowPosition <= windowLimit && windowInput.checked){
+        if(windowPosition <= windowLimit && windowInput.innerHTML === "Open Window"){
             windowPosition += windowSpeed;
         }
-        else if(windowPosition > windowLowerLimit && !windowInput.checked){
+        else if(windowPosition > windowLowerLimit && windowInput.innerHTML !== "Open Window"){
             windowPosition -= windowSpeed;
         }
 
@@ -228,7 +228,7 @@ async function init() {
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
 
-        if(dayOrNightInput.checked){
+        if(dayOrNightInput.innerHTML === "Night"){
             skybox.setTexture(skyboxDayTexture);
             skyboxTexture = skyboxDayTexture;
             skybox.position.objectRotation = new Rotation(2, 201, 0);
