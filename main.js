@@ -118,14 +118,6 @@ async function init() {
 
 
     let texture = gl.createTexture();
-    const level = 0;
-    const internalFormat = gl.RGBA;
-    const border = 0;
-    const format = gl.RGBA;
-    const type = gl.UNSIGNED_BYTE;
-    const data = null;
-
-
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA,  gl.UNSIGNED_BYTE, null);
@@ -136,7 +128,7 @@ async function init() {
 
     const fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,texture, level);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,texture, 0);
 
     const depthBuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
@@ -228,6 +220,7 @@ async function init() {
         const skyboxRotation = new Rotation(0, -160, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
+
         if(dayOrNightInput.checked){
             skybox.setTexture(skyboxDayTexture);
             skyboxTexture = skyboxDayTexture;
@@ -338,7 +331,7 @@ async function init() {
 
         // airship2
         const airshipPosition2 = new Position(new Rotation(0, 200, 0), [-30., 15.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
-        const airship2 = new DrawableObject(airshipProgram, airshipPosition2, airshipVertices, airshipMaterials)
+        const airship2 = new DrawableObject(airshipProgram, airshipPosition, airshipVertices, airshipMaterials)
         const airshipRotation2 = new Rotation(0, -counter / 10 + 180, 0);
         airship2.setRotationAfterTranslation(airshipRotation2);
         await airship2.draw()
