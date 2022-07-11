@@ -37,6 +37,7 @@ const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 const windowInput = document.getElementById("window")
 const textureVideo = document.getElementById("videoTexture")
+const errorInput = document.getElementById("errors")
 
 const windowLowerLimit = -1000;
 const windowLimit = 0;
@@ -380,9 +381,6 @@ async function init() {
         canvasFirefly.setTexture(texture);
         canvasFirefly.setRotationAfterTranslation(rotation);
         await canvasFirefly.draw();
-
-
-
     }
 
     requestAnimationFrame(loop);
