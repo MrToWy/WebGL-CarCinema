@@ -11,8 +11,9 @@ uniform mat4 mRotate;
 uniform mat4 mTranslate;
 uniform mat4 mView;
 uniform mat4 mProj;
+uniform mat4 mRotateAfterTrans;
 
 void main(){
     texCoord = vertTexCoord;
-    gl_Position = mProj * mView *  mTranslate *  mRotate * mScale * vec4(vertPosition, 1.0);
+    gl_Position = mProj * mView * mRotateAfterTrans *  mTranslate *  mRotate * mScale * vec4(vertPosition, 1.0);
 }
