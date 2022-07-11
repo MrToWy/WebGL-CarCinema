@@ -7,7 +7,12 @@
 <body>
 
 <h1>CG1-Abgabe</h1>
-
+<div style="position: sticky; top: 0;">
+    <video autoplay muted loop id="videoTexture" width="1" height="1" controls>
+        <source src="objects/movie/movie.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
 <div>
     Fog: <br>
     <input type="range" min="995" max="1000" value="1000" class="slider" id="fogNear">
@@ -34,13 +39,7 @@
     <l id="fpsAvg"></l>
 </div>
 <br>
-
 <canvas width="800" height="800" id="canvas"></canvas>
-
-<video autoplay loop id="videoTexture" width="200" height="200" controls>
-    <source src="objects/movie/movie.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
 
 <br>
 
