@@ -41,6 +41,8 @@ const fogFarInput = document.getElementById("fogFar")
 const windowInput = document.getElementById("window")
 const textureVideo = document.getElementById("videoTexture")
 
+const windowLowerLimit = -1000;
+const windowLimit = 0;
 let tolerance = 0.01;
 let updateId;
 let previousDelta = 0;
@@ -160,6 +162,7 @@ async function init() {
     gl.enable(gl.DEPTH_TEST);
 
     let counter = 0;
+    let windowPosition = 0;
 
     async function loop(currentDelta) {
 
@@ -196,6 +199,15 @@ async function init() {
             1., 1., 0.,     1., 1., 0.,0.,0.,
 
         ]
+        
+        // window animation
+        const windowSpeed = 10;
+        if(windowPosition <= windowLimit && windowInput.checked){
+            windowPosition += windowSpeed;
+        }
+        else if(windowPosition > windowLowerLimit && !windowInput.checked){
+            windowPosition -= windowSpeed;
+        }
 
         // draw opaque objects
         disableTransperency(gl);
@@ -358,12 +370,12 @@ async function init() {
         await carWindscreen.draw()
 
         // Door Window Left Front
-        const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowInput.value/1000 * 0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowPosition/1000 * 0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices)
         await carDoorWindowLeftFront.draw()
 
         // Door Window Right Front
-        const carDoorWindowRightFrontPosition = new Position(carRotation, [windowInput.value/1000 * -0.419,windowInput.value/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorWindowRightFrontPosition = new Position(carRotation, [windowPosition/1000 * -0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
 
