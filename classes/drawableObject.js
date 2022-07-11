@@ -138,7 +138,9 @@ class DrawableObject {
                 }
             }
 
-            printError(gl);
+            if(!errorInput.checked)
+                printError(gl);
+            
             await draw(gl, geometry.vertices)
         }
     }
