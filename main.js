@@ -83,24 +83,24 @@ async function init() {
     const fireflyProgram = await getProgram(fireflyPath, gl);
     const fireflyFbProgram = await getProgram(fireflyFbPath, gl);
 
-    const skyboxVertices = await getVertices(gl, skyboxProgram, skyboxPath + "sphere.obj");
-    const carInsideVertices = await getVertices(gl, carProgram, carPath + "car_inside.obj");
-    const carDoorLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_left_front.obj");
-    const carDoorRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_right_front.obj");
-    const carDoorWindowLeftFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_left_front.obj");
-    const carWindscreenVertices = await getVertices(gl, carProgram, carPath + "car_windscreen.obj");
-    const carDoorWindowRightFrontVertices = await getVertices(gl, carProgram, carPath + "car_door_window_right_front.obj");
-    const carRearMirrorVertices = await getVertices(gl, carMirrorProgram, carPath + "car_rear_mirror_2.obj");
-    const carLeftMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_left.obj");
-    const carRightMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_right.obj");
-    const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
-    const movieVertices = await getVertices(gl, movieProgram, moviePath + "screen.obj");
-    const structureVertices = await getVertices(gl, movieProgram, moviePath + "structure.obj");
-    const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
-    const treeVertices = await getVertices(gl, treeProgram, treePath + "Tree_obj.obj");
-    const airshipVertices = await getVertices(gl, airshipProgram, airshipPath + "Low-Poly_airship.obj");
-    const colaVertices = await getVertices(gl, airshipProgram, colaPath + "cola.obj");
-    const fireflyVertices = await getVertices(gl, fireflyProgram, fireflyPath + "firefly.obj");
+    const skyboxVertices = await getVertices(gl, skyboxPath + "sphere.obj");
+    const carInsideVertices = await getVertices(gl, carPath + "car_inside.obj");
+    const carDoorLeftFrontVertices = await getVertices(gl, carPath + "car_door_left_front.obj");
+    const carDoorRightFrontVertices = await getVertices(gl, carPath + "car_door_right_front.obj");
+    const carDoorWindowLeftFrontVertices = await getVertices(gl, carPath + "car_door_window_left_front.obj");
+    const carWindscreenVertices = await getVertices(gl, carPath + "car_windscreen.obj");
+    const carDoorWindowRightFrontVertices = await getVertices(gl, carPath + "car_door_window_right_front.obj");
+    const carRearMirrorVertices = await getVertices(gl, carPath + "car_rear_mirror_2.obj");
+    const carLeftMirrorVertices = await getVertices(gl,carPath + "car_mirror_left.obj");
+    const carRightMirrorVertices = await getVertices(gl,carPath + "car_mirror_right.obj");
+    const carAiringVertices = await getVertices(gl, carPath + "car_airing.obj");
+    const movieVertices = await getVertices(gl, moviePath + "screen.obj");
+    const structureVertices = await getVertices(gl, moviePath + "structure.obj");
+    const dodgeCarVertices = await getVertices(gl, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
+    const treeVertices = await getVertices(gl, treePath + "Tree_obj.obj");
+    const airshipVertices = await getVertices(gl, airshipPath + "Low-Poly_airship.obj");
+    const colaVertices = await getVertices(gl, colaPath + "cola.obj");
+    const fireflyVertices = await getVertices(gl, fireflyPath + "firefly.obj");
     const canvasFireflyVertices = [
         1., 1., 0.,     1., 1., 0.,0.,0.,
         -1., -1., 0.,   0., 0., 0.,0.,0.,
@@ -116,25 +116,11 @@ async function init() {
     const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
 
 
-    let texture = gl.createTexture();
-    const level = 0;
-    const internalFormat = gl.RGBA;
-    const border = 0;
-    const format = gl.RGBA;
-    const type = gl.UNSIGNED_BYTE;
-    const data = null;
-
-
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, gl.canvas.width, gl.canvas.height, border, format, type, data);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-
+    let fireflyTexture = getFireflyTexture();
+    
     const fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,texture, level);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,fireflyTexture, level);
 
     const depthBuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
@@ -147,19 +133,13 @@ async function init() {
     let colaTexture = getTextureForHtmlElement("cola", 0);
     let scratchTexture = getTextureForHtmlElement("colaScratch", 1);
     gl.useProgram(colaProgram);
-    var colatextureLocation = gl.getUniformLocation(colaProgram, "texture");
+    const colatextureLocation = gl.getUniformLocation(colaProgram, "texture");
     gl.uniform1i(colatextureLocation, 0);
-    var scratchTextureLocation = gl.getUniformLocation(colaProgram, "scratch");
+    const scratchTextureLocation = gl.getUniformLocation(colaProgram, "scratch");
     gl.uniform1i(scratchTextureLocation, 1);
     
     //movie screen
-    let movieTexture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, movieTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,gl.RGBA, gl.UNSIGNED_BYTE, textureVideo);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.bindTexture(gl.TEXTURE_2D, null);
+    let movieTexture = getMovieScreenTexture();
 
     gl.enable(gl.DEPTH_TEST);
 
@@ -250,23 +230,20 @@ async function init() {
 
         // Car
         // Inside
-        const carInsidePosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const car = new DrawableObject(carProgram, carInsidePosition, carInsideVertices)
+        const carPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const car = new DrawableObject(carProgram, carPosition, carInsideVertices)
         await car.draw()
 
         // Airing
-        const carAiringPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carAiring = new DrawableObject(carProgram, carAiringPosition, carAiringVertices)
+        const carAiring = new DrawableObject(carProgram, carPosition, carAiringVertices)
         await carAiring.draw()
 
         // Door Right Front
-        const carDoorRightFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorRightFront = new DrawableObject(carProgram, carDoorRightFrontPosition, carDoorRightFrontVertices)
+        const carDoorRightFront = new DrawableObject(carProgram, carPosition, carDoorRightFrontVertices)
         await carDoorRightFront.draw()
 
         // Door Left Front
-        const carDoorLeftFrontPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorLeftFront = new DrawableObject(carProgram, carDoorLeftFrontPosition, carDoorLeftFrontVertices)
+        const carDoorLeftFront = new DrawableObject(carProgram, carPosition, carDoorLeftFrontVertices)
         await carDoorLeftFront.draw()
 
         // cola
@@ -284,22 +261,31 @@ async function init() {
 
 
         // Rear Mirror
-        const carRearMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carRearMirror = new DrawableObject(carMirrorProgram, carRearMirrorPosition, carRearMirrorVertices)
+        const carRearMirror = new DrawableObject(carMirrorProgram, carPosition, carRearMirrorVertices)
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw();
+
+        // Left Mirror
+        const carLeftMirror = new DrawableObject(carMirrorProgram, carPosition, carLeftMirrorVertices)
+        carLeftMirror.setTexture(skyboxTexture);
+        await carLeftMirror.draw()
+
+        // Right Mirror
+        const carRightMirror = new DrawableObject(carMirrorProgram, carPosition, carRightMirrorVertices)
+        carRightMirror.setTexture(skyboxTexture);
+        await carRightMirror.draw()
+        
 
         // movie
         const movieScaleFactor = 0.65;
         const moviePos =[-7., -2., -60.] ;
         const movieRotation = new Rotation(0., 30, 0)
         const moviePosition = new Position(movieRotation, moviePos,  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
-        const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices )
+        const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices)
         movie.setTexture(movieTexture);
-        setIntUniform(movieProgram,0,'texture',gl);
+        setIntUniform(movieProgram,0,'texture', gl);
         gl.bindTexture(gl.TEXTURE_2D, movieTexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureVideo)
-
         await movie.draw();
 
         const structurePosition = new Position(movieRotation, moviePos,  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
@@ -307,29 +293,17 @@ async function init() {
         await structure.draw();
 
 
-        // Left Mirror
-        const carLeftMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carLeftMirror = new DrawableObject(carMirrorProgram, carLeftMirrorPosition, carLeftMirrorVertices)
-        carLeftMirror.setTexture(skyboxTexture);
-        await carLeftMirror.draw()
-
-        // Right Mirror
-        const carRightMirrorPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carRightMirror = new DrawableObject(carMirrorProgram, carRightMirrorPosition, carRightMirrorVertices)
-        carRightMirror.setTexture(skyboxTexture);
-        await carRightMirror.draw()
-
-
         // Dodge Car outside
         const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -70.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
         await dodgeCar.draw()
 
-
+        // green dodge
         const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -65.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, dodgeCarVertices, dodgeGreenCarMaterials)
         await greenDodgeCar.draw()
 
+        
         // tree
         const scaleFactorTree = 0.7;
         const treePosition = new Position(new Rotation(0, 0, 0), [5., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
@@ -345,21 +319,21 @@ async function init() {
         airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw()
 
+        
         // airship2
-        const airshipPosition2 = new Position(new Rotation(0, 200, 0), [-30., 15.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
-        const airship2 = new DrawableObject(airshipProgram, airshipPosition2, airshipVertices, airshipMaterials)
         const airshipRotation2 = new Rotation(0, -counter / 10 + 180, 0);
-        airship2.setRotationAfterTranslation(airshipRotation2);
-        await airship2.draw()
+        airship.setRotationAfterTranslation(airshipRotation2);
+        await airship.draw()
 
         gl.enable(gl.DEPTH_TEST);
+        
         
         // bloom
         let scaleFactorFirefly = 0.005;
         const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0.,1.,-1.])
         const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
         setVec4Uniform(fireflyFbProgram,[1.,1.,0.,1.], 'color', gl);
-        fireflyFb.setTexture(texture);
+        fireflyFb.setTexture(fireflyTexture);
         fireflyFb.setFramebuffer(fb);
         await fireflyFb.draw()
 
@@ -393,8 +367,7 @@ async function init() {
         setVec3Uniform(carWindowProgram, [0.1,0.1,0.1],'windowColor', gl);
 
         // Windscreen
-        const carWindscreenPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carWindscreen = new DrawableObject(carWindowProgram, carWindscreenPosition, carWindscreenVertices)
+        const carWindscreen = new DrawableObject(carWindowProgram, carPosition, carWindscreenVertices)
         await carWindscreen.draw()
 
         // Door Window Left Front
@@ -412,7 +385,7 @@ async function init() {
         scaleFactorFirefly = 1.;
         const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), positions[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:canvasFireflyVertices}]);
-        canvasFirefly.setTexture(texture);
+        canvasFirefly.setTexture(fireflyTexture);
         canvasFirefly.setRotationAfterTranslation(rotation);
         await canvasFirefly.draw();
 
@@ -421,7 +394,7 @@ async function init() {
         scaleFactorFirefly = 1.;
         const canvasFireflyPosition2 = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const canvasFirefly2 = new DrawableObject(fireflyProgram, canvasFireflyPosition2, [{vertices:canvasFireflyVertices}]);
-        canvasFirefly2.setTexture(texture);
+        canvasFirefly2.setTexture(fireflyTexture);
         canvasFirefly2.setRotationAfterTranslation(rotation);
         await canvasFirefly2.draw();
     }
