@@ -150,15 +150,6 @@ async function init() {
     let posCounter = 0;
     
     // calc firefly positions
-    function calcFireflyPosition(i){
-        const x = i.toFixed()/2000.;
-
-        const buzzing = i%2===0?0.0005:0.;
-        const sinus = Math.sin(x*1000.)/1000.;
-
-        return [x, 1.0 + x + buzzing + sinus, -2.0]
-    }
-
     let positions = [[0, 1.0, -2.0]]
     for (let i = 0; i < 200; i++) {
         positions.push(calcFireflyPosition(i));
