@@ -35,6 +35,7 @@ const fireflyFbPath = "objects/firefly/framebuffer/"
 
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
+const dayOrNightInput = document.getElementById("dayOrNight")
 const windowInput = document.getElementById("window")
 const textureVideo = document.getElementById("videoTexture")
 const errorInput = document.getElementById("errors")
@@ -129,9 +130,10 @@ async function init() {
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
     // get textures
-    let skyboxTexture = getTextureForHtmlElement("skybox", 0);
-    let colaTexture = getTextureForHtmlElement("cola", 0);
-    let scratchTexture = getTextureForHtmlElement("colaScratch", 1);
+    let skyboxDayTexture = getTextureForHtmlElement("skyboxDay");
+    let skyboxNightTexture = getTextureForHtmlElement("skyboxNight");
+    let colaTexture = getTextureForHtmlElement("cola");
+    let scratchTexture = getTextureForHtmlElement("colaScratch");
     gl.useProgram(colaProgram);
     const colatextureLocation = gl.getUniformLocation(colaProgram, "texture");
     gl.uniform1i(colatextureLocation, 0);
@@ -218,13 +220,22 @@ async function init() {
         setLighting(carProgram, lighingCar1, lighingCar2, 10.0, eye);
         setLighting(dodgeCarProgram, lighingCar1, null, 10.0, eye);
 
-        
+
+        let skyboxTexture;
         // skybox 
         const skyboxScaleFactor = 90.;
-        const skyboxRotation = new Rotation(0, 90, 0);
+        const skyboxRotation = new Rotation(0, -160, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
-        skybox.setTexture(skyboxTexture);
+
+        if(dayOrNightInput.checked){
+            skybox.setTexture(skyboxDayTexture);
+            skyboxTexture = skyboxDayTexture;
+            skybox.position.objectRotation = new Rotation(2, 201, 0);
+        } else {
+            skybox.setTexture(skyboxNightTexture);
+            skyboxTexture = skyboxNightTexture;
+        }
         await skybox.draw()
 
 
@@ -274,7 +285,7 @@ async function init() {
         const carRightMirror = new DrawableObject(carMirrorProgram, carPosition, carRightMirrorVertices)
         carRightMirror.setTexture(skyboxTexture);
         await carRightMirror.draw()
-        
+
 
         // movie
         const movieScaleFactor = 0.65;
@@ -303,7 +314,7 @@ async function init() {
         const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, dodgeCarVertices, dodgeGreenCarMaterials)
         await greenDodgeCar.draw()
 
-        
+
         // tree
         const scaleFactorTree = 0.7;
         const treePosition = new Position(new Rotation(0, 0, 0), [5., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
@@ -319,7 +330,7 @@ async function init() {
         airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw()
 
-        
+
         // airship2
         const airshipRotation2 = new Rotation(0, -counter / 10 + 180, 0);
         airship.setRotationAfterTranslation(airshipRotation2);
@@ -327,7 +338,7 @@ async function init() {
 
         gl.enable(gl.DEPTH_TEST);
         
-        
+
         // bloom
         let scaleFactorFirefly = 0.005;
         const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0.,1.,-1.])

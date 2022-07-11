@@ -25,6 +25,7 @@ Coca Cola Textur:
 https://pngset.com/download-free-png-atbkz
 
 Skybox Textur:
-https://polyhaven.com/a/drackenstein_quarry
+https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloppenheim_02.jpg
+https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloppenheim_03.jpg
 
 
