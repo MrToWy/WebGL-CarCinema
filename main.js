@@ -35,6 +35,7 @@ const fireflyFbPath = "objects/firefly/framebuffer/"
 
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
+const dayOrNightInput = document.getElementById("dayOrNight")
 const windowInput = document.getElementById("window")
 const textureVideo = document.getElementById("videoTexture")
 const errorInput = document.getElementById("errors")
@@ -126,7 +127,8 @@ async function init() {
 
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, gl.canvas.width, gl.canvas.height, border, format, type, data);
+
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA,  gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -143,7 +145,8 @@ async function init() {
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
     // get textures
-    let skyboxTexture = getTextureForHtmlElement("skybox", 0);
+    let skyboxDayTexture = getTextureForHtmlElement("skyboxDay", 0);
+    let skyboxNightTexture = getTextureForHtmlElement("skyboxNight", 1);
     let colaTexture = getTextureForHtmlElement("cola", 0);
     let scratchTexture = getTextureForHtmlElement("colaScratch", 1);
     gl.useProgram(colaProgram);
@@ -218,13 +221,21 @@ async function init() {
         setLighting(carProgram, lighingCar1, lighingCar2, 10.0, eye);
         setLighting(dodgeCarProgram, lighingCar1, null, 10.0, eye);
 
-        
+
+        let skyboxTexture;
         // skybox 
         const skyboxScaleFactor = 90.;
-        const skyboxRotation = new Rotation(0, 90, 0);
+        const skyboxRotation = new Rotation(0, -130, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
-        skybox.setTexture(skyboxTexture);
+        if(dayOrNightInput.checked){
+            skybox.setTexture(skyboxDayTexture);
+            skyboxTexture = skyboxDayTexture;
+            skybox.position.objectRotation = new Rotation(2, 231, 0);
+        } else {
+            skybox.setTexture(skyboxNightTexture);
+            skyboxTexture = skyboxNightTexture;
+        }
         await skybox.draw()
 
 
