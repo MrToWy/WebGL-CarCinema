@@ -201,16 +201,16 @@ async function init() {
         disableTransperency(gl);
 
         const lighingCar1 = new Lighting();
-        lighingCar1.ambient = new Color(0., 0., 0., 0.,);
+        lighingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
         lighingCar1.diffuse = new Color(1., 1., 1., 1.);
         lighingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
-        lighingCar1.direction = [5., 0., 7.]
+        lighingCar1.direction = [5., -10., -7.]
 
         const lighingCar2 = new Lighting();
-        lighingCar2.ambient = new Color(0., 0., 0., 0.,);
+        lighingCar2.ambient = new Color(0.1, 0.1, 0.1, 0.1,);
         lighingCar2.diffuse = new Color(1., 1., 1., 1.);
         lighingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
-        lighingCar2.direction = [-5., 0., 7.]
+        lighingCar2.direction = [5., 10., -7.]
 
         setLighting(carProgram, lighingCar1, lighingCar2, 10.0, eye);
         setLighting(dodgeCarProgram, lighingCar1, null, 10.0, eye);
