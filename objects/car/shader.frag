@@ -3,8 +3,6 @@ precision mediump float;
 varying vec2 texCoord;
 varying vec3 fragColor;
 varying vec3 fragNormal;
-varying vec3 fragLightDir;
-varying vec3 fragLightDir2;
 varying vec3 fragPosition;
 
 uniform vec3 ambiente;
@@ -18,11 +16,13 @@ uniform vec3 specular2;
 uniform float alpha;
 uniform vec3 eyeDir;
 
+uniform vec3 lightDirection;
+uniform vec3 lightDirection2;
+
 void main(){
 
-    // ToDo: uniforms
-    vec4 lightPosition = vec4(3., 10., 0., 0.);
-    vec4 lightPosition2 = vec4(-3., -10., 0., 0.);
+    vec4 lightPosition = vec4(lightDirection, 0.);
+    vec4 lightPosition2 = vec4(lightDirection2, 0.);
     vec3 camPosition = vec3(0., 0., 1.);
 
     vec3 N = normalize(fragNormal);
@@ -32,10 +32,6 @@ void main(){
 
     vec3 H = normalize(L + camPosition);
     vec3 H2 = normalize(L2 + camPosition);
-
-
-    vec3 lightDir = normalize(fragLightDir);
-    vec3 lightDir2 = normalize(fragLightDir2);
 
 
     vec3 normalDir = normalize(fragNormal);

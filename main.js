@@ -209,16 +209,16 @@ async function init() {
         lighingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
         lighingCar1.diffuse = new Color(1., 1., 1., 1.);
         lighingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
-        lighingCar1.direction = [5., -10., -7.]
+        lighingCar1.direction = [3., 10., 0.]
 
         const lighingCar2 = new Lighting();
         lighingCar2.ambient = new Color(0.1, 0.1, 0.1, 0.1,);
         lighingCar2.diffuse = new Color(1., 1., 1., 1.);
         lighingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
-        lighingCar2.direction = [5., 10., -7.]
+        lighingCar2.direction = [-3., -10., 0.]
 
         setLighting(carProgram, lighingCar1, lighingCar2, 10.0, eye);
-        setLighting(dodgeCarProgram, lighingCar1, null, 10.0, eye);
+        setLighting(dodgeCarProgram, lighingCar1, lighingCar2, 10.0, eye);
 
 
         let skyboxTexture;
