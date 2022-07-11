@@ -160,6 +160,26 @@ async function init() {
 
     let counter = 0;
     let windowPosition = 0;
+    let posCounter = 0;
+    
+    // calc firefly positions
+    function calcFireflyPosition(i){
+        const x = i.toFixed()/2000.;
+
+        const buzzing = i%2===0?0.0005:0.;
+        const sinus = Math.sin(x*1000.)/1000.;
+
+        return [x, 1.0 + x + buzzing + sinus, -2.0]
+    }
+
+    let positions = [[0, 1.0, -2.0]]
+    for (let i = 0; i < 200; i++) {
+        positions.push(calcFireflyPosition(i));
+    }
+    for (let i = 200; i > 0; i--) {
+        positions.push(calcFireflyPosition(i));
+    }
+    
 
     async function loop(currentDelta) {
 
@@ -337,7 +357,8 @@ async function init() {
         await airship2.draw()
 
         gl.enable(gl.DEPTH_TEST);
-
+        
+        // bloom
         let scaleFactorFirefly = 0.005;
         const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0.,1.,-1.])
         const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
@@ -347,13 +368,27 @@ async function init() {
         await fireflyFb.draw()
 
 
-        scaleFactorFirefly = 0.005;
-        const fireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
+        // inner firefly+
+        posCounter += 1;
+        
+        if(posCounter >= positions.length)
+            posCounter = 0;
+        
+        const fireflyPosition = new Position(new Rotation(0, 0, 0), positions[posCounter], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
         const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
         setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
-        const rotation = new Rotation(0, -counter / 10 , 0);
+        const rotation = new Rotation(0, -0 / 10 , 0);
         firefly.setRotationAfterTranslation(rotation);
         await firefly.draw()
+
+        
+        // second inner firefly
+        const fireflyPosition2 = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
+        const firefly2 = new DrawableObject(fireflyFbProgram, fireflyPosition2, fireflyVertices);
+        setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
+        const rotation2 = new Rotation(0, -0 / 10 , 0);
+        firefly2.setRotationAfterTranslation(rotation2);
+        await firefly2.draw()
 
 
 
@@ -376,13 +411,23 @@ async function init() {
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
 
+        // firefly canvas
         enableTransperency(1.,gl);
         scaleFactorFirefly = 1.;
-        const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), positions[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
         const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:canvasFireflyVertices}]);
         canvasFirefly.setTexture(texture);
         canvasFirefly.setRotationAfterTranslation(rotation);
         await canvasFirefly.draw();
+
+        // second firefly canvas
+        enableTransperency(1.,gl);
+        scaleFactorFirefly = 1.;
+        const canvasFireflyPosition2 = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+        const canvasFirefly2 = new DrawableObject(fireflyProgram, canvasFireflyPosition2, [{vertices:canvasFireflyVertices}]);
+        canvasFirefly2.setTexture(texture);
+        canvasFirefly2.setRotationAfterTranslation(rotation);
+        await canvasFirefly2.draw();
     }
 
     requestAnimationFrame(loop);
