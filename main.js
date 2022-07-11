@@ -313,7 +313,7 @@ async function init() {
 
         // tree
         const scaleFactorTree = 1.4;
-        const treePosition = new Position(new Rotation(0, 0, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
+        const treePosition = new Position(new Rotation(0, 150, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw()
 
