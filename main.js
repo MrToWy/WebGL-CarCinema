@@ -1,7 +1,5 @@
 'use strict';
 
-const rotationLimit = 681;
-
 function checkKey(e) {
 
     e = e || window.event;
@@ -19,8 +17,8 @@ function checkKey(e) {
             camRotation += keyRotationStrength;
     }
 }
+document.onkeydown = checkKey;
 
-const testPath = "objects/tests/"
 const colaPath = "objects/cola/"
 const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
@@ -35,7 +33,6 @@ const fireflyPath = "objects/firefly/"
 const fireflyFbPath = "objects/firefly/framebuffer/"
 
 
-const input = document.getElementById("input")
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 const windowInput = document.getElementById("window")
@@ -43,6 +40,7 @@ const textureVideo = document.getElementById("videoTexture")
 
 const windowLowerLimit = -1000;
 const windowLimit = 0;
+const rotationLimit = 681;
 let tolerance = 0.01;
 let updateId;
 let previousDelta = 0;
@@ -65,16 +63,13 @@ const level = 0;
 
 const VBO = gl.createBuffer();
 
-document.onkeydown = checkKey;
 
 
 async function init() {
 
-
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
     // compile programs
-    const houseProgram = await getProgram(housePath, gl)
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const movieProgram = await getProgram(moviePath, gl)
     const carProgram = await getProgram(carPath, gl)
@@ -98,15 +93,21 @@ async function init() {
     const carLeftMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_left.obj");
     const carRightMirrorVertices = await getVertices(gl, carMirrorProgram,carPath + "car_mirror_right.obj");
     const carAiringVertices = await getVertices(gl, carProgram, carPath + "car_airing.obj");
-
     const movieVertices = await getVertices(gl, movieProgram, moviePath + "screen.obj");
     const structureVertices = await getVertices(gl, movieProgram, moviePath + "structure.obj");
     const dodgeCarVertices = await getVertices(gl, dodgeCarProgram, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
     const treeVertices = await getVertices(gl, treeProgram, treePath + "Tree_obj.obj");
     const airshipVertices = await getVertices(gl, airshipProgram, airshipPath + "Low-Poly_airship.obj");
     const colaVertices = await getVertices(gl, airshipProgram, colaPath + "cola.obj");
-
     const fireflyVertices = await getVertices(gl, fireflyProgram, fireflyPath + "firefly.obj");
+    const canvasFireflyVertices = [
+        1., 1., 0.,     1., 1., 0.,0.,0.,
+        -1., -1., 0.,   0., 0., 0.,0.,0.,
+        -1., 1., 0.,    0., 1., 0.,0.,0.,
+        1., -1., 0.,    1., 0., 0.,0.,0.,
+        -1., -1., 0.,   0., 0., 0.,0.,0.,
+        1., 1., 0.,     1., 1., 0.,0.,0.,
+    ]
 
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
     const dodgeGreenCarMaterials = await getMTL(dodgeCarPath + "GreenDodgeChallengerSRTHellcat2015.mtl");
@@ -172,8 +173,6 @@ async function init() {
 
         counter -= 0.9;
 
-
-
         fpsLimit = fpsSlider.value;
         
         initFogForProgram(carMirrorProgram)
@@ -190,15 +189,6 @@ async function init() {
         const look = [Math.sin(cameraRotation), 1, - Math.cos(cameraRotation)]
         const carRotation = new Rotation(-90, 0, 0);
 
-        const vertices = [
-            1., 1., 0.,     1., 1., 0.,0.,0.,
-            -1., -1., 0.,   0., 0., 0.,0.,0.,
-            -1., 1., 0.,    0., 1., 0.,0.,0.,
-            1., -1., 0.,    1., 0., 0.,0.,0.,
-            -1., -1., 0.,   0., 0., 0.,0.,0.,
-            1., 1., 0.,     1., 1., 0.,0.,0.,
-
-        ]
         
         // window animation
         const windowSpeed = 10;
@@ -382,7 +372,7 @@ async function init() {
         enableTransperency(1.,gl);
         scaleFactorFirefly = 1.;
         const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
-        const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:vertices}]);
+        const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:canvasFireflyVertices}]);
         canvasFirefly.setTexture(texture);
         await canvasFirefly.draw();
 
