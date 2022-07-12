@@ -20,7 +20,6 @@ function checkKey(e) {
 document.onkeydown = checkKey;
 
 const colaPath = "objects/cola/"
-const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
@@ -40,6 +39,12 @@ const dayOrNightInput = document.getElementById("dayOrNight")
 const windowInput = document.getElementById("window")
 const textureVideo = document.getElementById("videoTexture")
 const errorInput = document.getElementById("errors")
+const fpsLabel = document.getElementById("fps");
+const fpsAvgLabel = document.getElementById("fpsAvg");
+const fpsSlider = document.getElementById("fpsSlider");
+const canvas = document.getElementById("canvas")
+const cola = document.getElementById("cola")
+const gl = canvas.getContext("webgl");
 
 const windowLowerLimit = -1000;
 const windowLimit = 0;
@@ -53,14 +58,6 @@ const targetTextureHeight = targetTextureWidth;
 let camRotation = 0;
 const keyRotationStrength = 10;
 
-
-const fpsLabel = document.getElementById("fps");
-const fpsAvgLabel = document.getElementById("fpsAvg");
-const fpsSlider = document.getElementById("fpsSlider");
-const canvas = document.getElementById("canvas")
-const cola = document.getElementById("cola")
-const gl = canvas.getContext("webgl");
-
 let fpsHistory = []
 const level = 0;
 
@@ -73,53 +70,9 @@ const drawOnlyAt  = {
 
 }
 
-
-
 async function init() {
-    // compile programs
-    const skyboxProgram = await getProgram(skyboxPath, gl)
-    const movieProgram = await getProgram(moviePath, gl)
-    const carProgram = await getProgram(carPath, gl)
-    const dodgeCarProgram = await getProgram(dodgeCarPath, gl)
-    const carMirrorProgram = await getProgram(carMirrorPath, gl);
-    const carWindowProgram = await  getProgram(carWindowPath, gl);
-    const treeProgram = await  getProgram(treePath, gl);
-    const airshipProgram = await  getProgram(airshipPath, gl);
-    const colaProgram = await  getProgram(colaPath, gl);
-    const fireflyProgram = await getProgram(fireflyPath, gl);
-    const fireflyFbProgram = await getProgram(fireflyFbPath, gl);
-    const birdProgram = await getProgram(birdPath, gl);
-    const batProgram = await getProgram(batPath, gl);
-
-    // get vertices
-    const skyboxVertices = await getVertices(gl, skyboxPath + "sphere.obj");
-    const carInsideVertices = await getVertices(gl, carPath + "car_inside.obj");
-    const carDoorLeftFrontVertices = await getVertices(gl, carPath + "car_door_left_front.obj");
-    const carDoorRightFrontVertices = await getVertices(gl, carPath + "car_door_right_front.obj");
-    const carDoorWindowLeftFrontVertices = await getVertices(gl, carPath + "car_door_window_left_front.obj");
-    const carWindscreenVertices = await getVertices(gl, carPath + "car_windscreen.obj");
-    const carDoorWindowRightFrontVertices = await getVertices(gl, carPath + "car_door_window_right_front.obj");
-    const carRearMirrorVertices = await getVertices(gl, carPath + "car_rear_mirror_2.obj");
-    const carLeftMirrorVertices = await getVertices(gl,carPath + "car_mirror_left.obj");
-    const carRightMirrorVertices = await getVertices(gl,carPath + "car_mirror_right.obj");
-    const carAiringVertices = await getVertices(gl, carPath + "car_airing.obj");
-    const movieVertices = await getVertices(gl, moviePath + "screen.obj");
-    const structureVertices = await getVertices(gl, moviePath + "structure.obj");
-    const dodgeCarVertices = await getVertices(gl, dodgeCarPath + "DodgeChallengerSRTHellcat2015.obj");
-    const treeVertices = await getVertices(gl, treePath + "Tree_obj.obj");
-    const airshipVertices = await getVertices(gl, airshipPath + "Low-Poly_airship.obj");
-    const colaVertices = await getVertices(gl, colaPath + "cola.obj");
-    const fireflyVertices = await getVertices(gl, fireflyPath + "firefly.obj");
-    const birdVertices = await getVertices(gl, birdPath + "bird.obj");
-    const batVertices = await getVertices(gl, batPath + "bird.obj");
-    const canvasFireflyVertices = [
-        1., 1., 0.,     1., 1., 0.,0.,0.,
-        -1., -1., 0.,   0., 0., 0.,0.,0.,
-        -1., 1., 0.,    0., 1., 0.,0.,0.,
-        1., -1., 0.,    1., 0., 0.,0.,0.,
-        -1., -1., 0.,   0., 0., 0.,0.,0.,
-        1., 1., 0.,     1., 1., 0.,0.,0.,
-    ]
+    await getPrograms();
+    await getAllVertices();
 
     // materials
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
@@ -163,7 +116,7 @@ async function init() {
     let posCounter = 0;
     
     // calc firefly positions
-    let positions = [[0, 1.0, -2.0]]
+    let positions = []
     for (let i = 0; i < 200; i++) {
         positions.push(calcFireflyPosition(i));
     }
@@ -172,7 +125,7 @@ async function init() {
     }
 
     // calc firefly positions
-    let positions2 = [[0, 1.0, -2.0]]
+    let positions2 = []
     for (let i = -100; i < 100; i++) {
         positions2.push(calcFireflyPosition2(i));
     }
@@ -332,7 +285,7 @@ async function init() {
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw(drawOnlyAt.DayAndNight)
 
-        
+
         // bat
         const scaleFactorBirds = 0.2;
         const birdsPosition = new Position(new Rotation(0, 0, 0), [17., 13.5, -70.0], [scaleFactorBirds, scaleFactorBirds, scaleFactorBirds], eye, look)
@@ -368,13 +321,15 @@ async function init() {
             posCounter = 0;
 
         let scaleFactorFirefly = 0.005;
+        let fireflyCount = 2;
 
         // draw firefly
-        for (let i = 0; i < 2 ; i++) {
+        for (let i = 0; i < fireflyCount ; i++) {
             // firefly bloom in framebuffer
             let pos = positions;
-            if(i === 1)
+            if(i === 1) {
                 pos = positions2;
+            }
 
             const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0., 1., -1.])
             const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
@@ -393,7 +348,7 @@ async function init() {
 
         // draw transperent objects
         // firefly canvas
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < fireflyCount; i++) {
             let pos = positions;
             if(i === 1)
                 pos = positions2;
