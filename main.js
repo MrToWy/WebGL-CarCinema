@@ -301,19 +301,19 @@ async function init() {
 
 
         // Dodge Car outside
-        const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -70.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -50.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
         await dodgeCar.draw()
 
         // green dodge
-        const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -65.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -55.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, dodgeCarVertices, dodgeGreenCarMaterials)
         await greenDodgeCar.draw()
 
 
         // tree
         const scaleFactorTree = 1.4;
-        const treePosition = new Position(new Rotation(0, 150, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
+        const treePosition = new Position(new Rotation(0, 60, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw()
 
