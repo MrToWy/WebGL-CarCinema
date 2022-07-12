@@ -68,9 +68,6 @@ const VBO = gl.createBuffer();
 
 
 async function init() {
-
-    gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-
     // compile programs
     const skyboxProgram = await getProgram(skyboxPath, gl)
     const movieProgram = await getProgram(moviePath, gl)
@@ -84,6 +81,7 @@ async function init() {
     const fireflyProgram = await getProgram(fireflyPath, gl);
     const fireflyFbProgram = await getProgram(fireflyFbPath, gl);
 
+    // get vertices
     const skyboxVertices = await getVertices(gl, skyboxPath + "sphere.obj");
     const carInsideVertices = await getVertices(gl, carPath + "car_inside.obj");
     const carDoorLeftFrontVertices = await getVertices(gl, carPath + "car_door_left_front.obj");
@@ -111,6 +109,7 @@ async function init() {
         1., 1., 0.,     1., 1., 0.,0.,0.,
     ]
 
+    // materials
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
     const dodgeGreenCarMaterials = await getMTL(dodgeCarPath + "GreenDodgeChallengerSRTHellcat2015.mtl");
     const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
@@ -121,7 +120,7 @@ async function init() {
     
     const fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,fireflyTexture, level);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fireflyTexture, 0);
 
     const depthBuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
@@ -326,18 +325,16 @@ async function init() {
         airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw()
 
-
         // airship2
         const airshipRotation2 = new Rotation(0, -counter / 10 + 180, 0);
         airship.setRotationAfterTranslation(airshipRotation2);
         await airship.draw()
 
+
         // Firefly
         posCounter += 1;
         await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions, gl,fb);
-
         await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions2, gl,fb);
-
 
 
         // draw transperent objects
