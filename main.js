@@ -156,7 +156,7 @@ async function init() {
     let posCounter = 0;
     
     // calc firefly positions
-    let positions = [[0, 1.0, -2.0]]
+    let positions = []
     for (let i = 0; i < 200; i++) {
         positions.push(calcFireflyPosition(i));
     }
@@ -165,7 +165,7 @@ async function init() {
     }
 
     // calc firefly positions
-    let positions2 = [[0, 1.0, -2.0]]
+    let positions2 = []
     for (let i = -100; i < 100; i++) {
         positions2.push(calcFireflyPosition2(i));
     }
@@ -344,13 +344,15 @@ async function init() {
             posCounter = 0;
 
         let scaleFactorFirefly = 0.005;
+        let fireflyCount = 2;
 
         // draw firefly
-        for (let i = 0; i < 2 ; i++) {
+        for (let i = 0; i < fireflyCount ; i++) {
             // firefly bloom in framebuffer
             let pos = positions;
-            if(i === 1)
+            if(i === 1) {
                 pos = positions2;
+            }
 
             const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0., 1., -1.])
             const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
@@ -369,7 +371,7 @@ async function init() {
 
         // draw transperent objects
         // firefly canvas
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < fireflyCount; i++) {
             let pos = positions;
             if(i === 1)
                 pos = positions2;
