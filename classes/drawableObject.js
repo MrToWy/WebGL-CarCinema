@@ -84,7 +84,12 @@ class DrawableObject {
         this.rotationAfterTranslation = rotationAfterTranslation;
     }
     
-    async draw() {
+    async draw(drawtime) {
+        // nur bei passender Tageszeit zeichnen
+        if(dayOrNightInput.innerHTML === "Night" && drawtime === drawOnlyAt.Night || dayOrNightInput.innerHTML === "Day" && drawtime === drawOnlyAt.Day){
+            return;
+        }
+
         for (const geometry of this.vertices) {
             gl.bindTexture(gl.TEXTURE_2D, null);
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -140,10 +145,11 @@ class DrawableObject {
 
             if(!errorInput.checked)
                 printError(gl);
-            
+
             await draw(gl, geometry.vertices)
         }
     }
 }
+
 
 

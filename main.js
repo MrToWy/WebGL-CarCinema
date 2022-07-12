@@ -65,6 +65,13 @@ const level = 0;
 
 const VBO = gl.createBuffer();
 
+const drawOnlyAt  = {
+    Day: 0,
+    Night: 1,
+    DayAndNight: 2
+
+}
+
 
 
 async function init() {
@@ -235,26 +242,26 @@ async function init() {
             skybox.setTexture(skyboxNightTexture);
             skyboxTexture = skyboxNightTexture;
         }
-        await skybox.draw()
+        await skybox.draw(drawOnlyAt.DayAndNight)
 
 
         // Car
         // Inside
         const carPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const car = new DrawableObject(carProgram, carPosition, carInsideVertices)
-        await car.draw()
+        await car.draw(drawOnlyAt.DayAndNight)
 
         // Airing
         const carAiring = new DrawableObject(carProgram, carPosition, carAiringVertices)
-        await carAiring.draw()
+        await carAiring.draw(drawOnlyAt.DayAndNight)
 
         // Door Right Front
         const carDoorRightFront = new DrawableObject(carProgram, carPosition, carDoorRightFrontVertices)
-        await carDoorRightFront.draw()
+        await carDoorRightFront.draw(drawOnlyAt.DayAndNight)
 
         // Door Left Front
         const carDoorLeftFront = new DrawableObject(carProgram, carPosition, carDoorLeftFrontVertices)
-        await carDoorLeftFront.draw()
+        await carDoorLeftFront.draw(drawOnlyAt.DayAndNight)
 
         // Cola
         const colaScaleFactor = 0.04;
@@ -262,24 +269,24 @@ async function init() {
         const cola = new DrawableObject(colaProgram, colaPosition, colaVertices)
         cola.setTexture(colaTexture);
         cola.setSecondTexture(scratchTexture);
-        await cola.draw()
+        await cola.draw(drawOnlyAt.DayAndNight)
 
 
         setIntUniform(carMirrorProgram, 0 , "u_texture", gl);
         // Rear Mirror
         const carRearMirror = new DrawableObject(carMirrorProgram, carPosition, carRearMirrorVertices)
         carRearMirror.setTexture(skyboxTexture);
-        await carRearMirror.draw();
+        await carRearMirror.draw(drawOnlyAt.DayAndNight);
 
         // Left Mirror
         const carLeftMirror = new DrawableObject(carMirrorProgram, carPosition, carLeftMirrorVertices)
         carLeftMirror.setTexture(skyboxTexture);
-        await carLeftMirror.draw()
+        await carLeftMirror.draw(drawOnlyAt.DayAndNight)
 
         // Right Mirror
         const carRightMirror = new DrawableObject(carMirrorProgram, carPosition, carRightMirrorVertices)
         carRightMirror.setTexture(skyboxTexture);
-        await carRightMirror.draw()
+        await carRightMirror.draw(drawOnlyAt.DayAndNight)
 
 
         // movie
@@ -292,29 +299,29 @@ async function init() {
         setIntUniform(movieProgram,0,'texture', gl);
         gl.bindTexture(gl.TEXTURE_2D, movieTexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureVideo)
-        await movie.draw();
+        await movie.draw(drawOnlyAt.DayAndNight);
 
         const structurePosition = new Position(movieRotation, moviePos,  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const structure = new DrawableObject(movieProgram, structurePosition,  structureVertices)
-        await structure.draw();
+        await structure.draw(drawOnlyAt.DayAndNight);
 
 
         // Dodge Car outside
         const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -50.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
-        await dodgeCar.draw()
+        await dodgeCar.draw(drawOnlyAt.DayAndNight)
 
         // green dodge
         const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -55.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, dodgeCarVertices, dodgeGreenCarMaterials)
-        await greenDodgeCar.draw()
+        await greenDodgeCar.draw(drawOnlyAt.DayAndNight)
 
 
         // tree
         const scaleFactorTree = 1.4;
         const treePosition = new Position(new Rotation(0, 60, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
-        await tree.draw()
+        await tree.draw(drawOnlyAt.DayAndNight)
 
 
         // airship
@@ -323,18 +330,18 @@ async function init() {
         const airship = new DrawableObject(airshipProgram, airshipPosition, airshipVertices, airshipMaterials)
         const airshipRotation = new Rotation(0, -counter / 10, 0);
         airship.setRotationAfterTranslation(airshipRotation);
-        await airship.draw()
+        await airship.draw(drawOnlyAt.Day)
 
         // airship2
         const airshipRotation2 = new Rotation(0, -counter / 10 + 180, 0);
         airship.setRotationAfterTranslation(airshipRotation2);
-        await airship.draw()
+        await airship.draw(drawOnlyAt.Day)
 
 
         // Firefly
         posCounter += 1;
-        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions, gl,fb);
-        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions2, gl,fb);
+        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions, gl,fb,drawOnlyAt.Night);
+        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions2, gl,fb,drawOnlyAt.Night);
 
 
         // draw transperent objects
@@ -343,17 +350,17 @@ async function init() {
 
         // Windscreen
         const carWindscreen = new DrawableObject(carWindowProgram, carPosition, carWindscreenVertices)
-        await carWindscreen.draw()
+        await carWindscreen.draw(drawOnlyAt.DayAndNight)
 
         // Door Window Left Front
         const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowPosition/1000 * 0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices)
-        await carDoorWindowLeftFront.draw()
+        await carDoorWindowLeftFront.draw(drawOnlyAt.DayAndNight)
 
         // Door Window Right Front
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowPosition/1000 * -0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
-        await carDoorWindowRightFront.draw()
+        await carDoorWindowRightFront.draw(drawOnlyAt.DayAndNight)
 
 
     }
