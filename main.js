@@ -340,14 +340,49 @@ async function init() {
 
         // Firefly
         posCounter += 1;
-        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions, gl,fb,drawOnlyAt.Night);
-        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions2, gl,fb,drawOnlyAt.Night);
+        if(posCounter >= positions.length)
+            posCounter = 0;
+
+        let scaleFactorFirefly = 0.005;
+
+        // draw firefly
+        for (let i = 0; i < 2 ; i++) {
+            // firefly bloom in framebuffer
+            let pos = positions;
+            if(i === 1)
+                pos = positions2;
+
+            const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0., 1., -1.])
+            const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
+            setVec4Uniform(fireflyFbProgram, [1., 1., 0., 1.], 'color', gl);
+            fireflyFb.setTexture(fireflyTexture);
+            fireflyFb.setFramebuffer(fb);
+            await fireflyFb.draw(drawOnlyAt.Night)
+
+            // firefly without bloom
+            const fireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
+            const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
+            setVec4Uniform(fireflyFbProgram, [0.5, 1., 0., 1.], 'color', gl);
+            await firefly.draw(drawOnlyAt.Night)
+        }
 
 
         // draw transperent objects
+        // firefly canvas
+        for (let i = 0; i < 2; i++) {
+            let pos = positions;
+            if(i === 1)
+                pos = positions2;
+            enableTransperency(1., gl);
+            scaleFactorFirefly = 1.;
+            const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
+            const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices: canvasFireflyVertices}]);
+            canvasFirefly.setTexture(fireflyTexture);
+            await canvasFirefly.draw(drawOnlyAt.Night);
+        }
+
         enableTransperency(0.8,gl);
         setVec3Uniform(carWindowProgram, [0.1,0.1,0.1],'windowColor', gl);
-
         // Windscreen
         const carWindscreen = new DrawableObject(carWindowProgram, carPosition, carWindscreenVertices)
         await carWindscreen.draw(drawOnlyAt.DayAndNight)
@@ -361,8 +396,6 @@ async function init() {
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowPosition/1000 * -0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw(drawOnlyAt.DayAndNight)
-
-
     }
 
     requestAnimationFrame(loop);
