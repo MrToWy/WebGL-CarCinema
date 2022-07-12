@@ -31,7 +31,8 @@ const airshipPath = "objects/airship/"
 const treePath = "objects/tree/"
 const fireflyPath = "objects/firefly/"
 const fireflyFbPath = "objects/firefly/framebuffer/"
-
+const birdPath = "objects/birds/day/"
+const batPath = "objects/birds/night/"
 
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
@@ -87,6 +88,8 @@ async function init() {
     const colaProgram = await  getProgram(colaPath, gl);
     const fireflyProgram = await getProgram(fireflyPath, gl);
     const fireflyFbProgram = await getProgram(fireflyFbPath, gl);
+    const birdProgram = await getProgram(birdPath, gl);
+    const batProgram = await getProgram(batPath, gl);
 
     // get vertices
     const skyboxVertices = await getVertices(gl, skyboxPath + "sphere.obj");
@@ -107,6 +110,8 @@ async function init() {
     const airshipVertices = await getVertices(gl, airshipPath + "Low-Poly_airship.obj");
     const colaVertices = await getVertices(gl, colaPath + "cola.obj");
     const fireflyVertices = await getVertices(gl, fireflyPath + "firefly.obj");
+    const birdVertices = await getVertices(gl, birdPath + "bird.obj");
+    const batVertices = await getVertices(gl, batPath + "bird.obj");
     const canvasFireflyVertices = [
         1., 1., 0.,     1., 1., 0.,0.,0.,
         -1., -1., 0.,   0., 0., 0.,0.,0.,
@@ -121,6 +126,8 @@ async function init() {
     const dodgeGreenCarMaterials = await getMTL(dodgeCarPath + "GreenDodgeChallengerSRTHellcat2015.mtl");
     const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
     const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
+    const birdMaterials = await getMTL(birdPath + "bird.mtl");
+    const batMaterials = await getMTL(batPath + "bird.mtl");
 
 
     let fireflyTexture = getFireflyTexture();
@@ -184,6 +191,8 @@ async function init() {
 
         fpsLimit = fpsSlider.value;
         
+        initFogForProgram(birdProgram)
+        initFogForProgram(batProgram)
         initFogForProgram(carMirrorProgram)
         initFogForProgram(skyboxProgram);
         initFogForProgram(movieProgram);
@@ -322,6 +331,21 @@ async function init() {
         const treePosition = new Position(new Rotation(0, 60, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
         await tree.draw(drawOnlyAt.DayAndNight)
+
+        
+        // bat
+        const scaleFactorBirds = 0.2;
+        const birdsPosition = new Position(new Rotation(0, 0, 0), [17., 13.5, -70.0], [scaleFactorBirds, scaleFactorBirds, scaleFactorBirds], eye, look)
+        const bat = new DrawableObject(batProgram, birdsPosition, batVertices, batMaterials)
+        const birdsRotation = new Rotation(0, counter / 2, 0);
+        bat.setRotationAfterTranslation(birdsRotation);
+        await bat.draw(drawOnlyAt.Night)
+
+        // bird
+        const bird = new DrawableObject(birdProgram, birdsPosition, birdVertices, birdMaterials)
+        bird.setRotationAfterTranslation(birdsRotation);
+        await bird.draw(drawOnlyAt.Day)
+
 
 
         // airship
