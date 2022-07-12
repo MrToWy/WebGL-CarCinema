@@ -332,6 +332,7 @@ async function init() {
         airship.setRotationAfterTranslation(airshipRotation2);
         await airship.draw()
 
+        // Firefly
         posCounter += 1;
         await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions, gl,fb);
 
