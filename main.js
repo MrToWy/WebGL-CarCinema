@@ -332,40 +332,10 @@ async function init() {
         airship.setRotationAfterTranslation(airshipRotation2);
         await airship.draw()
 
-        gl.enable(gl.DEPTH_TEST);
-        
-
-        // bloom
-        let scaleFactorFirefly = 0.005;
-        const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0.,1.,-1.])
-        const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
-        setVec4Uniform(fireflyFbProgram,[1.,1.,0.,1.], 'color', gl);
-        fireflyFb.setTexture(fireflyTexture);
-        fireflyFb.setFramebuffer(fb);
-        await fireflyFb.draw()
-
-
-        // inner firefly+
         posCounter += 1;
-        
-        if(posCounter >= positions.length)
-            posCounter = 0;
-        
-        const fireflyPosition = new Position(new Rotation(0, 0, 0), positions[posCounter], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
-        const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
-        setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
-        const rotation = new Rotation(0, -0 / 10 , 0);
-        firefly.setRotationAfterTranslation(rotation);
-        await firefly.draw()
+        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions, gl,fb);
 
-        
-        // second inner firefly
-        const fireflyPosition2 = new Position(new Rotation(0, 0, 0), positions2[posCounter], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
-        const firefly2 = new DrawableObject(fireflyFbProgram, fireflyPosition2, fireflyVertices);
-        setVec4Uniform(fireflyFbProgram,[0.5,1.,0.,1.], 'color', gl);
-        const rotation2 = new Rotation(0, -0 / 10 , 0);
-        firefly2.setRotationAfterTranslation(rotation2);
-        await firefly2.draw()
+        await drawFirefly(posCounter, fireflyFbProgram,fireflyProgram, fireflyVertices,canvasFireflyVertices, eye,look,fireflyTexture,positions2, gl,fb);
 
 
 
@@ -387,23 +357,7 @@ async function init() {
         const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
         await carDoorWindowRightFront.draw()
 
-        // firefly canvas
-        enableTransperency(1.,gl);
-        scaleFactorFirefly = 1.;
-        const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), positions[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
-        const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices:canvasFireflyVertices}]);
-        canvasFirefly.setTexture(fireflyTexture);
-        canvasFirefly.setRotationAfterTranslation(rotation);
-        await canvasFirefly.draw();
 
-        // second firefly canvas
-        enableTransperency(1.,gl);
-        scaleFactorFirefly = 1.;
-        const canvasFireflyPosition2 = new Position(new Rotation(0, 0, 0), positions2[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
-        const canvasFirefly2 = new DrawableObject(fireflyProgram, canvasFireflyPosition2, [{vertices:canvasFireflyVertices}]);
-        canvasFirefly2.setTexture(fireflyTexture);
-        canvasFirefly2.setRotationAfterTranslation(rotation);
-        await canvasFirefly2.draw();
     }
 
     requestAnimationFrame(loop);
