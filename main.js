@@ -20,7 +20,6 @@ function checkKey(e) {
 document.onkeydown = checkKey;
 
 const colaPath = "objects/cola/"
-const housePath = "objects/house/"
 const skyboxPath = "objects/skybox/"
 const carPath = "objects/car/"
 const carMirrorPath = "objects/car/rear_mirror/"
