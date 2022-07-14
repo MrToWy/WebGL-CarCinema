@@ -248,7 +248,7 @@ async function init() {
         await cola.draw(drawOnlyAt.DayAndNight)
 
 
-        setIntUniform(carMirrorProgram, 0 , "u_texture", gl);
+        setIntUniform(carMirrorProgram, 0 , "u_texture");
         // Rear Mirror
         const carRearMirror = new DrawableObject(carMirrorProgram, carPosition, carRearMirrorVertices)
         carRearMirror.setTexture(skyboxTexture);
@@ -272,7 +272,7 @@ async function init() {
         const moviePosition = new Position(movieRotation, moviePos,  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices)
         movie.setTexture(movieTexture);
-        setIntUniform(movieProgram,0,'texture', gl);
+        setIntUniform(movieProgram,0,'texture');
         gl.bindTexture(gl.TEXTURE_2D, movieTexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureVideo)
         await movie.draw(drawOnlyAt.DayAndNight);
