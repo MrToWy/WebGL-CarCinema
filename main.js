@@ -171,7 +171,7 @@ async function init() {
         }
 
         // draw opaque objects
-        disableTransperency(gl);
+        disableTransparency(gl);
 
         const lighingCar1 = new Lighting();
         lighingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
@@ -352,7 +352,7 @@ async function init() {
             let pos = positions;
             if(i === 1)
                 pos = positions2;
-            enableTransperency(1., gl);
+            enableTransparency(1.);
             scaleFactorFirefly = 1.;
             const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
             const canvasFirefly = new DrawableObject(fireflyProgram, canvasFireflyPosition, [{vertices: canvasFireflyVertices}]);
@@ -360,7 +360,7 @@ async function init() {
             await canvasFirefly.draw(drawOnlyAt.Night);
         }
 
-        enableTransperency(0.8,gl);
+        enableTransparency(0.8);
         setVec3Uniform(carWindowProgram, [0.1,0.1,0.1],'windowColor', gl);
         // Windscreen
         const carWindscreen = new DrawableObject(carWindowProgram, carPosition, carWindscreenVertices)

@@ -118,7 +118,7 @@ class DrawableObject {
             }
 
             await position(gl, this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look, this.rotationAfterTranslation)
-            await bindParameters(gl, this.program)
+            await bindParameters(this.program)
 
             // set default mat
             //setVec3Uniform(this.program, [0., 0., 0],'materialAmbient',gl);
@@ -144,9 +144,9 @@ class DrawableObject {
             }
 
             if(!errorInput.checked)
-                printError(gl);
+                printError();
 
-            await draw(gl, geometry.vertices)
+            await draw(geometry.vertices)
         }
     }
 }
