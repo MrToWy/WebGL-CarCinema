@@ -37,7 +37,8 @@ const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 const dayOrNightInput = document.getElementById("dayOrNight")
 const windowInput = document.getElementById("window")
-const textureVideo = document.getElementById("videoTexture")
+const textureVideoDay = document.getElementById("videoTextureDay")
+const textureVideoNight = document.getElementById("videoTextureNight")
 const errorInput = document.getElementById("errors")
 const fpsLabel = document.getElementById("fps");
 const fpsAvgLabel = document.getElementById("fpsAvg");
@@ -107,7 +108,8 @@ async function init() {
     gl.uniform1i(scratchTextureLocation, 1);
     
     //movie screen
-    let movieTexture = getMovieScreenTexture();
+    let movieTextureDay = getMovieScreenTexture(textureVideoDay);
+    let movieTextureNight = getMovieScreenTexture(textureVideoNight);
 
     gl.enable(gl.DEPTH_TEST);
 
@@ -264,6 +266,15 @@ async function init() {
         carRightMirror.setTexture(skyboxTexture);
         await carRightMirror.draw(drawOnlyAt.DayAndNight)
 
+        let movieTexture;
+        let textureVideo;
+        if(dayOrNightInput.innerHTML === "Night"){
+           movieTexture = movieTextureDay;
+           textureVideo = textureVideoDay;
+        }else{
+            movieTexture = movieTextureNight;
+            textureVideo = textureVideoNight;
+        }
 
         // movie
         const movieScaleFactor = 1.5;
