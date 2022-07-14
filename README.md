@@ -1,10 +1,5 @@
 Externe Quellen:
 
-Tisch-Obj: https://free3d.com/3d-model/modern-elegant-chair-and-table-384981.html
-
-Haus-Obj: https://www.cgtrader.com/free-3d-models/interior/living-room/desk-room
-
-
 Car-Inside:
 https://www.cgtrader.com/items/669703/download-page
 
@@ -34,3 +29,7 @@ https://www.cgtrader.com/free-3d-models/animals/bird/hanging-wooden-bird
 
 Bat:
 https://www.cgtrader.com/free-3d-models/animals/bird/bird-low-poly-3d-model-dac69081-34a0-44e8-af2b-7df94801e606
+
+Videos:
+https://pixabay.com/de/videos/horror-spuk-geisterschloss-112406/
+https://pixabay.com/de/videos/hündchen-hund-spielerisch-strand-4740/
