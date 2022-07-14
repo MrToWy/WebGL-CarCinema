@@ -189,7 +189,7 @@ async function init() {
             lighingCar2.direction = [-3., -10., 0.]
         } else { // Beleuchtung Nacht
             lighingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
-            lighingCar1.diffuse = new Color(0.6, 0.6, 0.6, 0.6);
+            lighingCar1.diffuse = new Color(0.6, 0.6, 0.6, 1.0);
             lighingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
             lighingCar1.direction = [3., 10., 0.]
 
