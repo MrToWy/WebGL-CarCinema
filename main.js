@@ -346,7 +346,7 @@ async function init() {
 
             const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0., 1., -1.])
             const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
-            setVec4Uniform(fireflyFbProgram, [1., 1., 0., 1.], 'color', gl);
+            setVec4Uniform(fireflyFbProgram, [1., 1., 0., 1.], 'color');
             fireflyFb.setTexture(fireflyTexture);
             fireflyFb.setFramebuffer(fb);
             await fireflyFb.draw(drawOnlyAt.Night)
@@ -354,7 +354,7 @@ async function init() {
             // firefly without bloom
             const fireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
             const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
-            setVec4Uniform(fireflyFbProgram, [0.5, 1., 0., 1.], 'color', gl);
+            setVec4Uniform(fireflyFbProgram, [0.5, 1., 0., 1.], 'color');
             await firefly.draw(drawOnlyAt.Night)
         }
 
