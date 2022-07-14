@@ -68,7 +68,6 @@ const drawOnlyAt  = {
     Day: 0,
     Night: 1,
     DayAndNight: 2
-
 }
 
 async function init() {
@@ -175,34 +174,34 @@ async function init() {
         // draw opaque objects
         disableTransparency();
 
-        const lighingCar1 = new Lighting();
-        const lighingCar2 = new Lighting();
+        const lightingCar1 = new Lighting();
+        const lightingCar2 = new Lighting();
 
         // Beleuchtung Tag
         if(dayOrNightInput.innerHTML === "Night"){
-            lighingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
-            lighingCar1.diffuse = new Color(1., 1., 1., 1.);
-            lighingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lighingCar1.direction = [3., 10., 0.]
+            lightingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
+            lightingCar1.diffuse = new Color(1., 1., 1., 1.);
+            lightingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
+            lightingCar1.direction = [3., 10., 0.]
 
-            lighingCar2.ambient = new Color(0.1, 0.1, 0.1, 0.1,);
-            lighingCar2.diffuse = new Color(1., 1., 1., 1.);
-            lighingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lighingCar2.direction = [-3., -10., 0.]
+            lightingCar2.ambient = new Color(0.1, 0.1, 0.1, 0.1,);
+            lightingCar2.diffuse = new Color(1., 1., 1., 1.);
+            lightingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
+            lightingCar2.direction = [-3., -10., 0.]
         } else { // Beleuchtung Nacht
-            lighingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
-            lighingCar1.diffuse = new Color(0.6, 0.6, 0.6, 1.0);
-            lighingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lighingCar1.direction = [3., 10., 0.]
+            lightingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
+            lightingCar1.diffuse = new Color(0.6, 0.6, 0.6, 1.0);
+            lightingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
+            lightingCar1.direction = [3., 10., 0.]
 
-            lighingCar2.ambient = new Color(0.0, 0.0, 0.0, 0.0,);
-            lighingCar2.diffuse = new Color(0.5, 0.5, 0.5, 1.);
-            lighingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lighingCar2.direction = [-3., -10., 0.]
+            lightingCar2.ambient = new Color(0.0, 0.0, 0.0, 0.0,);
+            lightingCar2.diffuse = new Color(0.5, 0.5, 0.5, 1.);
+            lightingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
+            lightingCar2.direction = [-3., -10., 0.]
         }
 
-        setLighting(carProgram, lighingCar1, lighingCar2, 10.0, eye);
-        setLighting(dodgeCarProgram, lighingCar1, lighingCar2, 10.0, eye);
+        setLighting(carProgram, lightingCar1, lightingCar2, 10.0, eye);
+        setLighting(dodgeCarProgram, lightingCar1, lightingCar2, 10.0, eye);
 
 
         let skyboxTexture;
