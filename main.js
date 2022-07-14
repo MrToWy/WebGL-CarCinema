@@ -171,7 +171,7 @@ async function init() {
         }
 
         // draw opaque objects
-        disableTransparency(gl);
+        disableTransparency();
 
         const lighingCar1 = new Lighting();
         const lighingCar2 = new Lighting();

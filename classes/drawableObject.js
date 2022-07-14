@@ -117,7 +117,7 @@ class DrawableObject {
                 //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             }
 
-            await position(gl, this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look, this.rotationAfterTranslation)
+            await position(this.program, this.position.objectRotation, this.position.position, this.position.scale, canvas, this.position.eye, this.position.look, this.rotationAfterTranslation)
             await bindParameters(this.program)
 
             // set default mat
