@@ -130,16 +130,16 @@ class DrawableObject {
                 const material = this.materials.find(f => f.name === materialName);
 
                 if(material === undefined) {
-                    setVec3Uniform(this.program, [0., 0., 0.],'materialEmissive',gl);
-                    setVec3Uniform(this.program, [0., 0., 0.],'materialAmbient',gl);
-                    setVec3Uniform(this.program, [1., 1., 1.], 'materialDiffuse', gl);
-                    setVec3Uniform(this.program, [0.1, 0.1, 0.1], 'materialSpecular', gl);
+                    setVec3Uniform(this.program, [0., 0., 0.],'materialEmissive');
+                    setVec3Uniform(this.program, [0., 0., 0.],'materialAmbient');
+                    setVec3Uniform(this.program, [1., 1., 1.], 'materialDiffuse');
+                    setVec3Uniform(this.program, [0.1, 0.1, 0.1], 'materialSpecular');
                 }
                 else {
-                    setVec3Uniform(this.program, material.diffuse, 'materialDiffuse', gl);
-                    setVec3Uniform(this.program, material.emissive, 'materialEmissive', gl);
-                    setVec3Uniform(this.program, material.specular, 'materialSpecular', gl);
-                    setVec3Uniform(this.program, material.ambient, 'materialAmbient', gl);
+                    setVec3Uniform(this.program, material.diffuse, 'materialDiffuse');
+                    setVec3Uniform(this.program, material.emissive, 'materialEmissive');
+                    setVec3Uniform(this.program, material.specular, 'materialSpecular');
+                    setVec3Uniform(this.program, material.ambient, 'materialAmbient');
                 }
             }
 
