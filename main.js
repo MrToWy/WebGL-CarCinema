@@ -61,13 +61,11 @@ async function init() {
     let allPrograms = await getPrograms(allPaths);
     let allVertices = await getAllVertices(allPaths);
     let allMaterials = await getAllMaterials(allPaths);
+    let allTextures = getAllTextures();
 
-
-    let fireflyTexture = getFireflyTexture();
-    
     const fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fireflyTexture, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, allTextures.firefly, 0);
 
     const depthBuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
@@ -75,20 +73,13 @@ async function init() {
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
 
-    // get textures
-    let skyboxDayTexture = getTextureForHtmlElement("skyboxDay");
-    let skyboxNightTexture = getTextureForHtmlElement("skyboxNight");
-    let colaTexture = getTextureForHtmlElement("cola");
-    let scratchTexture = getTextureForHtmlElement("colaScratch");
+
     gl.useProgram(allPrograms.cola);
     const colatextureLocation = gl.getUniformLocation(allPrograms.cola, "texture");
     gl.uniform1i(colatextureLocation, 0);
     const scratchTextureLocation = gl.getUniformLocation(allPrograms.cola, "scratch");
     gl.uniform1i(scratchTextureLocation, 1);
-    
-    //movie screen
-    let movieTextureDay = getMovieScreenTexture(textureVideoDay);
-    let movieTextureNight = getMovieScreenTexture(textureVideoNight);
+
 
     gl.enable(gl.DEPTH_TEST);
 
@@ -192,12 +183,12 @@ async function init() {
         const skybox = new DrawableObject(allPrograms.skybox, skyboxPosition,allVertices.skybox);
 
         if(dayOrNightInput.innerHTML === "Night"){
-            skybox.setTexture(skyboxDayTexture);
-            skyboxTexture = skyboxDayTexture;
+            skybox.setTexture(allTextures.skyboxDay);
+            skyboxTexture = allTextures.skyboxDay;
             skybox.position.objectRotation = new Rotation(2, 201, 0);
         } else {
-            skybox.setTexture(skyboxNightTexture);
-            skyboxTexture = skyboxNightTexture;
+            skybox.setTexture(allTextures.skyboxNight);
+            skyboxTexture = allTextures.skybox;
         }
         await skybox.draw(drawOnlyAt.DayAndNight)
 
@@ -224,8 +215,8 @@ async function init() {
         const colaScaleFactor = 0.04;
         const colaPosition = new Position(new Rotation(0., 0., 0.), [0., 0.55, -1.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
         const cola = new DrawableObject(allPrograms.cola, colaPosition, allVertices.cola)
-        cola.setTexture(colaTexture);
-        cola.setSecondTexture(scratchTexture);
+        cola.setTexture(allTextures.cola);
+        cola.setSecondTexture(allTextures.scratch);
         await cola.draw(drawOnlyAt.DayAndNight)
 
 
@@ -248,10 +239,10 @@ async function init() {
         let movieTexture;
         let textureVideo;
         if(dayOrNightInput.innerHTML === "Night"){
-           movieTexture = movieTextureDay;
+           movieTexture = allTextures.movieDay;
            textureVideo = textureVideoDay;
         }else{
-            movieTexture = movieTextureNight;
+            movieTexture = allTextures.movieNight;
             textureVideo = textureVideoNight;
         }
 
@@ -337,7 +328,7 @@ async function init() {
             const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0., 1., -1.])
             const fireflyFb = new DrawableObject(allPrograms.fireflyFb, fireflyFbPosition, allVertices.firefly, null, true);
             setVec4Uniform(allPrograms.fireflyFb, [1., 1., 0., 1.], 'color');
-            fireflyFb.setTexture(fireflyTexture);
+            fireflyFb.setTexture(allTextures.firefly);
             fireflyFb.setFramebuffer(fb);
             await fireflyFb.draw(drawOnlyAt.Night)
 
@@ -359,7 +350,7 @@ async function init() {
             scaleFactorFirefly = 1.;
             const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
             const canvasFirefly = new DrawableObject(allPrograms.firefly, canvasFireflyPosition, [{vertices: canvasFireflyVertices}]);
-            canvasFirefly.setTexture(fireflyTexture);
+            canvasFirefly.setTexture(allTextures.firefly);
             await canvasFirefly.draw(drawOnlyAt.Night);
         }
 
