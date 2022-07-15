@@ -56,38 +56,11 @@
 <script src="lib/matrix.js"></script>
 <script src="lib/objectUtils.js"></script>
 <script src="lib/programUtils.js"></script>
+<script src="lib/onButtonClick.js"></script>
 
 <script src="main.js"></script>
 <script src="classes/drawableObject.js"></script>
-<script>
-    function dayOrNight() {
-        let button = document.getElementById("dayOrNight");
-        if (button.innerHTML === "Day") {
-            button.innerHTML = "Night"
-        } else {
-            button.innerHTML = "Day"
-        }
-    }
 
-    function openWindow() {
-        let button = document.getElementById("window");
-        if (button.innerHTML === "Open Window") {
-            button.innerHTML = "Close Window"
-        } else {
-            button.innerHTML = "Open Window"
-        }
-    }
-
-    function hideSettings() {
-        let button = document.getElementById("settings");
-        if(button.hidden === true){
-            button.hidden = false;
-        } else {
-            button.hidden = true;
-        }
-
-    }
-</script>
 
 
 </body>
