@@ -83,7 +83,11 @@ class DrawableObject {
     setRotationAfterTranslation(rotationAfterTranslation){
         this.rotationAfterTranslation = rotationAfterTranslation;
     }
-    
+
+    /**
+     * Draw the object.
+     * @param drawtime Some objects are only drawn at day / night. This can be used to toggle the visibility.
+     */
     async draw(drawtime) {
         // nur bei passender Tageszeit zeichnen
         if(dayOrNightInput.innerHTML === "Night" && drawtime === drawOnlyAt.Night || dayOrNightInput.innerHTML === "Day" && drawtime === drawOnlyAt.Day){
