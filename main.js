@@ -19,19 +19,9 @@ function checkKey(e) {
 }
 document.onkeydown = checkKey;
 
-const fogNearInput = document.getElementById("fogNear");
-const fogFarInput = document.getElementById("fogFar");
-const dayOrNightInput = document.getElementById("dayOrNight");
-const windowInput = document.getElementById("window");
-const textureVideoDay = document.getElementById("videoTextureDay");
-const textureVideoNight = document.getElementById("videoTextureNight");
-const errorInput = document.getElementById("errors")
-const fpsLabel = document.getElementById("fps");
-const fpsAvgLabel = document.getElementById("fpsAvg");
-const fpsSlider = document.getElementById("fpsSlider");
-const canvas = document.getElementById("canvas");
-const cola = document.getElementById("cola");
-const gl = canvas.getContext("webgl");
+
+let elements = getAllElements();
+const gl = elements.canvas.getContext("webgl");
 
 const windowLowerLimit = -1000;
 const windowLimit = 0;
@@ -98,7 +88,7 @@ async function init() {
 
         counter -= 0.9;
 
-        fpsLimit = fpsSlider.value;
+        fpsLimit = elements.fpsSlider.value;
         
         initFogForProgram(allPrograms.bird)
         initFogForProgram(allPrograms.bat)
@@ -119,10 +109,10 @@ async function init() {
         
         // window animation
         const windowSpeed = 10;
-        if(windowPosition <= windowLimit && windowInput.innerHTML === "Open Window"){
+        if(windowPosition <= windowLimit && elements.windowInput.innerHTML === "Open Window"){
             windowPosition += windowSpeed;
         }
-        else if(windowPosition > windowLowerLimit && windowInput.innerHTML !== "Open Window"){
+        else if(windowPosition > windowLowerLimit && elements.windowInput.innerHTML !== "Open Window"){
             windowPosition -= windowSpeed;
         }
 
@@ -134,7 +124,7 @@ async function init() {
         const lightingCar2 = new Lighting();
 
         // Beleuchtung Tag
-        if(dayOrNightInput.innerHTML === "Night"){
+        if(elements.dayOrNightInput.innerHTML === "Night"){
             lightingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
             lightingCar1.diffuse = new Color(1., 1., 1., 1.);
             lightingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
@@ -167,7 +157,7 @@ async function init() {
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
         const skybox = new DrawableObject(allPrograms.skybox, skyboxPosition,allVertices.skybox);
 
-        if(dayOrNightInput.innerHTML === "Night"){
+        if(elements.dayOrNightInput.innerHTML === "Night"){
             skybox.setTexture(allTextures.skyboxDay);
             skyboxTexture = allTextures.skyboxDay;
             skybox.position.objectRotation = new Rotation(2, 201, 0);
@@ -225,17 +215,17 @@ async function init() {
 
         let movieTexture;
         let textureVideo;
-        if(dayOrNightInput.innerHTML === "Night"){
+        if(elements.dayOrNightInput.innerHTML === "Night"){
            movieTexture = allTextures.movieDay;
-           textureVideo = textureVideoDay;
+           textureVideo = elements.textureVideoDay;
         }else{
             movieTexture = allTextures.movieNight;
-            textureVideo = textureVideoNight;
+            textureVideo = elements.textureVideoNight;
         }
 
         // movie
         const movieScaleFactor = 1.5;
-        const moviePos =[-7., -2., -60.] ;
+        const moviePos =[-7., -2., -60.];
         const movieRotation = new Rotation(0., 30, 0)
         const moviePosition = new Position(movieRotation, moviePos,  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
         const movie = new DrawableObject(allPrograms.movie, moviePosition,  allVertices.movie)

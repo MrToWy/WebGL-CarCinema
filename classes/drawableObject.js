@@ -90,7 +90,7 @@ class DrawableObject {
      */
     async draw(drawtime) {
         // nur bei passender Tageszeit zeichnen
-        if(dayOrNightInput.innerHTML === "Night" && drawtime === drawOnlyAt.Night || dayOrNightInput.innerHTML === "Day" && drawtime === drawOnlyAt.Day){
+        if(elements.dayOrNightInput.innerHTML === "Night" && drawtime === drawOnlyAt.Night || elements.dayOrNightInput.innerHTML === "Day" && drawtime === drawOnlyAt.Day){
             return;
         }
 
@@ -147,7 +147,7 @@ class DrawableObject {
                 }
             }
 
-            if(!errorInput.checked)
+            if(!elements.errorInput.checked)
                 printError();
 
             await draw(geometry.vertices)
