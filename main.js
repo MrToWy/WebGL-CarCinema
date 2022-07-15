@@ -7,16 +7,16 @@ function checkKey(e) {
     // ignore warning for the ==, otherwise this wont work
     if (e.keyCode == '37') {
         // left arrow
-        
-        if(camRotation > -rotationLimit)
+
+        if (camRotation > -rotationLimit)
             camRotation -= keyRotationStrength;
-    }
-    else if (e.keyCode == '39') {
+    } else if (e.keyCode == '39') {
         // right arrow
-        if(camRotation < rotationLimit)
+        if (camRotation < rotationLimit)
             camRotation += keyRotationStrength;
     }
 }
+
 document.onkeydown = checkKey;
 
 
@@ -38,7 +38,7 @@ const level = 0;
 
 const VBO = gl.createBuffer();
 
-const drawOnlyAt  = {
+const drawOnlyAt = {
     Day: 0,
     Night: 1,
     DayAndNight: 2
@@ -59,93 +59,63 @@ async function init() {
     let counter = 0;
     let windowPosition = 0;
     let posCounter = 0;
-    
+
     // calc firefly positions
     let fireflyPos = getFireflyPosition();
-    
+
 
     async function loop(currentDelta) {
 
-        if(await handleFPS(currentDelta, loop)) {
+        if (await handleFPS(currentDelta, loop)) {
             return;
         }
 
         counter -= 0.9;
-
         fpsLimit = elements.fpsSlider.value;
-        
-        initFogForProgram(allPrograms.bird)
-        initFogForProgram(allPrograms.bat)
-        initFogForProgram(allPrograms.carMirror)
-        initFogForProgram(allPrograms.skybox);
-        initFogForProgram(allPrograms.movie);
-        initFogForProgram(allPrograms.dodgeCar);
-        initFogForProgram(allPrograms.tree);
-        initFogForProgram(allPrograms.airship);
 
-        const cameraRotation = camRotation/1000;
-        const scaleFactorCar = 0.1;
-        const position = [0, 0.0, -2.0];
-        const eye = [0, 1.0, 0];
-        const look = [Math.sin(cameraRotation), 1, - Math.cos(cameraRotation)]
-        const carRotation = new Rotation(-90, 0, 0);
-
-        
         // window animation
         const windowSpeed = 10;
-        if(windowPosition <= windowLimit && elements.windowInput.innerHTML === "Open Window"){
+        if (windowPosition <= windowLimit && elements.windowInput.innerHTML === "Open Window") {
             windowPosition += windowSpeed;
-        }
-        else if(windowPosition > windowLowerLimit && elements.windowInput.innerHTML !== "Open Window"){
+        } else if (windowPosition > windowLowerLimit && elements.windowInput.innerHTML !== "Open Window") {
             windowPosition -= windowSpeed;
         }
 
 
-
-        // draw opaque objects
+        // ++++++++++++++++++++ DRAW OPAQUE OBJECTS ++++++++++++++++++++
         disableTransparency();
-        const lightingCar1 = new Lighting();
-        const lightingCar2 = new Lighting();
+        setFog(allPrograms);
 
-        // Beleuchtung Tag
-        if(elements.dayOrNightInput.innerHTML === "Night"){
-            lightingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
-            lightingCar1.diffuse = new Color(1., 1., 1., 1.);
-            lightingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lightingCar1.direction = [3., 10., 0.]
+        const cameraRotation = camRotation / 1000;
+        const position = [0, 0.0, -2.0];
+        const eye = [0, 1.0, 0];
+        const look = [Math.sin(cameraRotation), 1, -Math.cos(cameraRotation)]
 
-            lightingCar2.ambient = new Color(0.1, 0.1, 0.1, 0.1,);
-            lightingCar2.diffuse = new Color(1., 1., 1., 1.);
-            lightingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lightingCar2.direction = [-3., -10., 0.]
-        } else { // Beleuchtung Nacht
-            lightingCar1.ambient = new Color(0.1, 0.1, 0.1, 0.1);
-            lightingCar1.diffuse = new Color(0.6, 0.6, 0.6, 1.0);
-            lightingCar1.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lightingCar1.direction = [3., 10., 0.]
-
-            lightingCar2.ambient = new Color(0.0, 0.0, 0.0, 0.0,);
-            lightingCar2.diffuse = new Color(0.5, 0.5, 0.5, 1.);
-            lightingCar2.specular = new Color(0.1, 0.1, 0.1, 0.1);
-            lightingCar2.direction = [-3., -10., 0.]
+        // lighting settings day
+        let light1 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 1., 1.], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
+        let light2 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 1., 1.], [0.1, 0.1, 0.1, 0.1],[-3., 10., 0.]);
+        // lighting settings night
+        if (elements.dayOrNightInput.innerHTML === "Day") {
+            light1 = createLighting([0.1, 0.1, 0.1, 0.1],[0.6, 0.6, 0.6, 0.6], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
+            light2 = createLighting([0.0, 0.0, 0.0, 0.0],[0.5, 0.5, 0.5, 0.5], [0.1, 0.1, 0.1, 0.1],[-3., 10., 0.]);
         }
+        setLighting(allPrograms.car, light1, light2, 10.0, eye);
+        setLighting(allPrograms.dodgeCar, light1, light2, 10.0, eye);
 
-        setLighting(allPrograms.car, lightingCar1, lightingCar2, 10.0, eye);
-        setLighting(allPrograms.dodgeCar, lightingCar1, lightingCar2, 10.0, eye);
 
-
+        // skybox
         let skyboxTexture;
-        // skybox 
         const skyboxScaleFactor = 90.;
         const skyboxRotation = new Rotation(0, -160, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
-        const skybox = new DrawableObject(allPrograms.skybox, skyboxPosition,allVertices.skybox);
+        const skybox = new DrawableObject(allPrograms.skybox, skyboxPosition, allVertices.skybox);
 
-        if(elements.dayOrNightInput.innerHTML === "Night"){
-            skybox.setTexture(allTextures.skyboxDay);
-            skyboxTexture = allTextures.skyboxDay;
-            skybox.position.objectRotation = new Rotation(2, 201, 0);
-        } else {
+        // skybox texture day
+        skybox.setTexture(allTextures.skyboxDay);
+        skyboxTexture = allTextures.skyboxDay;
+        skybox.position.objectRotation = new Rotation(2, 201, 0);
+        // skybox texture night
+        if (elements.dayOrNightInput.innerHTML === "Day") {
             skybox.setTexture(allTextures.skyboxNight);
             skyboxTexture = allTextures.skyboxNight;
         }
@@ -154,6 +124,8 @@ async function init() {
 
         // Car
         // Inside
+        const scaleFactorCar = 0.1;
+        const carRotation = new Rotation(-90, 0, 0);
         const carPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const car = new DrawableObject(allPrograms.car, carPosition, allVertices.carInside)
         await car.draw(drawOnlyAt.DayAndNight)
@@ -170,20 +142,21 @@ async function init() {
         const carDoorLeftFront = new DrawableObject(allPrograms.car, carPosition, allVertices.carDoorLeftFront)
         await carDoorLeftFront.draw(drawOnlyAt.DayAndNight)
 
+
         // Cola
-        setIntUniform(allPrograms.cola,0,"texture");
-        setIntUniform(allPrograms.cola, 1, "scratch");
         const colaScaleFactor = 0.04;
-        const colaPosition = new Position(new Rotation(0., 0., 0.), [0., 0.55, -1.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
-        const cola = new DrawableObject(allPrograms.cola, colaPosition, allVertices.cola)
+        const colaPosition = new Position(new Rotation(0., 0., 0.), [0., 0.55, -1.], [colaScaleFactor, -colaScaleFactor * 2, colaScaleFactor], eye, look);
+        const cola = new DrawableObject(allPrograms.cola, colaPosition, allVertices.cola);
+        setIntUniform(allPrograms.cola, 0, "texture");
+        setIntUniform(allPrograms.cola, 1, "scratch");
         cola.setTexture(allTextures.cola);
         cola.setSecondTexture(allTextures.scratch);
         await cola.draw(drawOnlyAt.DayAndNight)
 
 
-        setIntUniform(allPrograms.carMirror, 0 , "u_texture");
         // Rear Mirror
         const carRearMirror = new DrawableObject(allPrograms.carMirror, carPosition, allVertices.carRearMirror)
+        setIntUniform(allPrograms.carMirror, 0, "u_texture");
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw(drawOnlyAt.DayAndNight);
 
@@ -197,31 +170,30 @@ async function init() {
         carRightMirror.setTexture(skyboxTexture);
         await carRightMirror.draw(drawOnlyAt.DayAndNight)
 
-        let movieTexture;
-        let textureVideo;
-        if(elements.dayOrNightInput.innerHTML === "Night"){
-           movieTexture = allTextures.movieDay;
-           textureVideo = elements.textureVideoDay;
-        }else{
+
+        // movie
+        // movie texture day
+        let movieTexture = allTextures.movieDay;
+        let textureVideo = elements.textureVideoDay;
+        // movie texture night
+        if (elements.dayOrNightInput.innerHTML === "Day") {
             movieTexture = allTextures.movieNight;
             textureVideo = elements.textureVideoNight;
         }
 
-        // movie
         const movieScaleFactor = 1.5;
-        const moviePos =[-7., -2., -60.];
+        const moviePos = [-7., -2., -60.];
         const movieRotation = new Rotation(0., 30, 0)
-        const moviePosition = new Position(movieRotation, moviePos,  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
-        const movie = new DrawableObject(allPrograms.movie, moviePosition,  allVertices.movie)
+        const moviePosition = new Position(movieRotation, moviePos, [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const movie = new DrawableObject(allPrograms.movie, moviePosition, allVertices.movie)
         movie.setTexture(movieTexture);
-        setIntUniform(allPrograms.movie,0,'texture');
-        gl.bindTexture(gl.TEXTURE_2D, movieTexture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureVideo)
+        setIntUniform(allPrograms.movie, 0, 'texture');
+        bindVideoTexture(movieTexture, textureVideo)
         await movie.draw(drawOnlyAt.DayAndNight);
 
-        const structurePosition = new Position(movieRotation, moviePos,  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
-        const structure = new DrawableObject(allPrograms.movie, structurePosition,  allVertices.structure)
-        await structure.draw(drawOnlyAt.DayAndNight);
+        const movieFramePosition = new Position(movieRotation, moviePos, [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
+        const movieFrame = new DrawableObject(allPrograms.movie, movieFramePosition, allVertices.movieFrame)
+        await movieFrame.draw(drawOnlyAt.DayAndNight);
 
 
         // Dodge Car outside
@@ -270,19 +242,19 @@ async function init() {
         await airship.draw(drawOnlyAt.Day)
 
 
-        // Firefly
+        // firefly counter
         posCounter += 1;
-        if(posCounter >= fireflyPos.pos1.length)
+        if (posCounter >= fireflyPos.pos1.length)
             posCounter = 0;
 
         let scaleFactorFirefly = 0.005;
         let fireflyCount = 2;
 
         // draw firefly
-        for (let i = 0; i < fireflyCount ; i++) {
+        for (let i = 0; i < fireflyCount; i++) {
             // firefly bloom in framebuffer
             let pos = fireflyPos.pos1;
-            if(i === 1) {
+            if (i === 1) {
                 pos = fireflyPos.pos2;
             }
 
@@ -301,13 +273,13 @@ async function init() {
         }
 
 
-        // draw transparent objects
+        // ++++++++++++++++++++ DRAW TRANSPARENT OBJECTS ++++++++++++++++++++
+        enableTransparency(1.);
         // firefly canvas
         for (let i = 0; i < fireflyCount; i++) {
             let pos = fireflyPos.pos1;
-            if(i === 1)
+            if (i === 1)
                 pos = fireflyPos.pos2;
-            enableTransparency(1.);
             scaleFactorFirefly = 1.;
             const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
             const canvasFirefly = new DrawableObject(allPrograms.firefly, canvasFireflyPosition, [{vertices: canvasFireflyVertices}]);
@@ -316,18 +288,18 @@ async function init() {
         }
 
         enableTransparency(0.8);
-        setVec3Uniform(allPrograms.carWindow, [0.1,0.1,0.1],'windowColor', gl);
+        setVec3Uniform(allPrograms.carWindow, [0.1, 0.1, 0.1], 'windowColor', gl);
         // Windscreen
         const carWindscreen = new DrawableObject(allPrograms.carWindow, carPosition, allVertices.carWindscreen)
         await carWindscreen.draw(drawOnlyAt.DayAndNight)
 
         // Door Window Left Front
-        const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowPosition/1000 * 0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowPosition / 1000 * 0.419, windowPosition / 1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowLeftFront = new DrawableObject(allPrograms.carWindow, carDoorWindowLeftFrontPosition, allVertices.carDoorWindowLeftFront)
         await carDoorWindowLeftFront.draw(drawOnlyAt.DayAndNight)
 
         // Door Window Right Front
-        const carDoorWindowRightFrontPosition = new Position(carRotation, [windowPosition/1000 * -0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
+        const carDoorWindowRightFrontPosition = new Position(carRotation, [windowPosition / 1000 * -0.419, windowPosition / 1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const carDoorWindowRightFront = new DrawableObject(allPrograms.carWindow, carDoorWindowRightFrontPosition, allVertices.carDoorWindowRightFront)
         await carDoorWindowRightFront.draw(drawOnlyAt.DayAndNight)
     }
