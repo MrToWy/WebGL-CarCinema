@@ -19,20 +19,6 @@ function checkKey(e) {
 }
 document.onkeydown = checkKey;
 
-const colaPath = "objects/cola/"
-const skyboxPath = "objects/skybox/"
-const carPath = "objects/car/"
-const carMirrorPath = "objects/car/rear_mirror/"
-const carWindowPath = "objects/car/window/"
-const moviePath = "objects/movie/"
-const dodgeCarPath = "objects/car_dodge/"
-const airshipPath = "objects/airship/"
-const treePath = "objects/tree/"
-const fireflyPath = "objects/firefly/"
-const fireflyFbPath = "objects/firefly/framebuffer/"
-const birdPath = "objects/birds/day/"
-const batPath = "objects/birds/night/"
-
 const fogNearInput = document.getElementById("fogNear")
 const fogFarInput = document.getElementById("fogFar")
 const dayOrNightInput = document.getElementById("dayOrNight")
@@ -71,16 +57,17 @@ const drawOnlyAt  = {
 }
 
 async function init() {
-    let allPrograms = await getPrograms();
-    let allVertices = await getAllVertices();
+    let allPaths = getAllPaths();
+    let allPrograms = await getPrograms(allPaths);
+    let allVertices = await getAllVertices(allPaths);
 
     // materials
-    const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
-    const dodgeGreenCarMaterials = await getMTL(dodgeCarPath + "GreenDodgeChallengerSRTHellcat2015.mtl");
-    const treeMaterials = await getMTL(treePath + "Tree_obj.mtl");
-    const airshipMaterials = await getMTL(airshipPath + "Low-Poly_airship.mtl");
-    const birdMaterials = await getMTL(birdPath + "bird.mtl");
-    const batMaterials = await getMTL(batPath + "bird.mtl");
+    const dodgeCarMaterials = await getMTL(allPaths.dodgeCar + "DodgeChallengerSRTHellcat2015.mtl");
+    const dodgeGreenCarMaterials = await getMTL(allPaths.dodgeCar + "GreenDodgeChallengerSRTHellcat2015.mtl");
+    const treeMaterials = await getMTL(allPaths.tree + "Tree_obj.mtl");
+    const airshipMaterials = await getMTL(allPaths.airship + "Low-Poly_airship.mtl");
+    const birdMaterials = await getMTL(allPaths.bird + "bird.mtl");
+    const batMaterials = await getMTL(allPaths.bat + "bird.mtl");
 
 
     let fireflyTexture = getFireflyTexture();
