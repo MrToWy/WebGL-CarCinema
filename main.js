@@ -60,14 +60,7 @@ async function init() {
     let allPaths = getAllPaths();
     let allPrograms = await getPrograms(allPaths);
     let allVertices = await getAllVertices(allPaths);
-
-    // materials
-    const dodgeCarMaterials = await getMTL(allPaths.dodgeCar + "DodgeChallengerSRTHellcat2015.mtl");
-    const dodgeGreenCarMaterials = await getMTL(allPaths.dodgeCar + "GreenDodgeChallengerSRTHellcat2015.mtl");
-    const treeMaterials = await getMTL(allPaths.tree + "Tree_obj.mtl");
-    const airshipMaterials = await getMTL(allPaths.airship + "Low-Poly_airship.mtl");
-    const birdMaterials = await getMTL(allPaths.bird + "bird.mtl");
-    const batMaterials = await getMTL(allPaths.bat + "bird.mtl");
+    let allMaterials = await getAllMaterials(allPaths);
 
 
     let fireflyTexture = getFireflyTexture();
@@ -281,32 +274,32 @@ async function init() {
 
         // Dodge Car outside
         const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -50.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const dodgeCar = new DrawableObject(allPrograms.dodgeCar, dodgeCarPosition, allVertices.dodgeCar, dodgeCarMaterials)
+        const dodgeCar = new DrawableObject(allPrograms.dodgeCar, dodgeCarPosition, allVertices.dodgeCar, allMaterials.dodgeCar)
         await dodgeCar.draw(drawOnlyAt.DayAndNight)
 
         // green dodge
         const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -55.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const greenDodgeCar = new DrawableObject(allPrograms.dodgeCar, greenDodgeCarPosition, allVertices.dodgeCar, dodgeGreenCarMaterials)
+        const greenDodgeCar = new DrawableObject(allPrograms.dodgeCar, greenDodgeCarPosition, allVertices.dodgeCar, allMaterials.dodgeGreenCar)
         await greenDodgeCar.draw(drawOnlyAt.DayAndNight)
 
 
         // tree
         const scaleFactorTree = 1.4;
         const treePosition = new Position(new Rotation(0, 60, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
-        const tree = new DrawableObject(allPrograms.tree, treePosition, allVertices.tree, treeMaterials)
+        const tree = new DrawableObject(allPrograms.tree, treePosition, allVertices.tree, allMaterials.tree)
         await tree.draw(drawOnlyAt.DayAndNight)
 
 
         // bat
         const scaleFactorBirds = 0.2;
         const birdsPosition = new Position(new Rotation(0, 0, 0), [17., 13.5, -70.0], [scaleFactorBirds, scaleFactorBirds, scaleFactorBirds], eye, look)
-        const bat = new DrawableObject(allPrograms.bat, birdsPosition, allVertices.bat, batMaterials)
+        const bat = new DrawableObject(allPrograms.bat, birdsPosition, allVertices.bat, allMaterials.bat)
         const birdsRotation = new Rotation(0, counter / 2, 0);
         bat.setRotationAfterTranslation(birdsRotation);
         await bat.draw(drawOnlyAt.Night)
 
         // bird
-        const bird = new DrawableObject(allPrograms.bird, birdsPosition, allVertices.bird, birdMaterials)
+        const bird = new DrawableObject(allPrograms.bird, birdsPosition, allVertices.bird, allMaterials.bird)
         bird.setRotationAfterTranslation(birdsRotation);
         await bird.draw(drawOnlyAt.Day)
 
@@ -314,7 +307,7 @@ async function init() {
         // airship
         const scaleFactorAirship = 1;
         const airshipPosition = new Position(new Rotation(0, 200, 0), [-30., 15.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
-        const airship = new DrawableObject(allPrograms.airship, airshipPosition, allVertices.airship, airshipMaterials)
+        const airship = new DrawableObject(allPrograms.airship, airshipPosition, allVertices.airship, allMaterials.airship)
         const airshipRotation = new Rotation(0, -counter / 10, 0);
         airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw(drawOnlyAt.Day)
