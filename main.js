@@ -19,18 +19,18 @@ function checkKey(e) {
 }
 document.onkeydown = checkKey;
 
-const fogNearInput = document.getElementById("fogNear")
-const fogFarInput = document.getElementById("fogFar")
-const dayOrNightInput = document.getElementById("dayOrNight")
-const windowInput = document.getElementById("window")
-const textureVideoDay = document.getElementById("videoTextureDay")
-const textureVideoNight = document.getElementById("videoTextureNight")
+const fogNearInput = document.getElementById("fogNear");
+const fogFarInput = document.getElementById("fogFar");
+const dayOrNightInput = document.getElementById("dayOrNight");
+const windowInput = document.getElementById("window");
+const textureVideoDay = document.getElementById("videoTextureDay");
+const textureVideoNight = document.getElementById("videoTextureNight");
 const errorInput = document.getElementById("errors")
 const fpsLabel = document.getElementById("fps");
 const fpsAvgLabel = document.getElementById("fpsAvg");
 const fpsSlider = document.getElementById("fpsSlider");
-const canvas = document.getElementById("canvas")
-const cola = document.getElementById("cola")
+const canvas = document.getElementById("canvas");
+const cola = document.getElementById("cola");
 const gl = canvas.getContext("webgl");
 
 const windowLowerLimit = -1000;
@@ -63,23 +63,12 @@ async function init() {
     let allMaterials = await getAllMaterials(allPaths);
     let allTextures = getAllTextures();
 
-    const fb = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, allTextures.firefly, 0);
-
-    const depthBuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
-
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
-
+    const fb = createFramebuffer(allTextures.firefly);
 
     gl.useProgram(allPrograms.cola);
-    const colatextureLocation = gl.getUniformLocation(allPrograms.cola, "texture");
-    gl.uniform1i(colatextureLocation, 0);
-    const scratchTextureLocation = gl.getUniformLocation(allPrograms.cola, "scratch");
-    gl.uniform1i(scratchTextureLocation, 1);
 
+    setIntUniform(allPrograms.cola,0,"texture");
+    setIntUniform(allPrograms.cola, 1, "scratch");
 
     gl.enable(gl.DEPTH_TEST);
 
@@ -188,7 +177,7 @@ async function init() {
             skybox.position.objectRotation = new Rotation(2, 201, 0);
         } else {
             skybox.setTexture(allTextures.skyboxNight);
-            skyboxTexture = allTextures.skybox;
+            skyboxTexture = allTextures.skyboxNight;
         }
         await skybox.draw(drawOnlyAt.DayAndNight)
 
