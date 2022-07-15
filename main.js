@@ -72,7 +72,7 @@ const drawOnlyAt  = {
 
 async function init() {
     await getPrograms();
-    await getAllVertices();
+    let allVertices = await getAllVertices();
 
     // materials
     const dodgeCarMaterials = await getMTL(dodgeCarPath + "DodgeChallengerSRTHellcat2015.mtl");
@@ -209,7 +209,7 @@ async function init() {
         const skyboxScaleFactor = 90.;
         const skyboxRotation = new Rotation(0, -160, 0);
         const skyboxPosition = new Position(skyboxRotation, position, [skyboxScaleFactor, skyboxScaleFactor, skyboxScaleFactor], eye, look)
-        const skybox = new DrawableObject(skyboxProgram, skyboxPosition,skyboxVertices)
+        const skybox = new DrawableObject(skyboxProgram, skyboxPosition,allVertices.skybox);
 
         if(dayOrNightInput.innerHTML === "Night"){
             skybox.setTexture(skyboxDayTexture);
@@ -225,25 +225,25 @@ async function init() {
         // Car
         // Inside
         const carPosition = new Position(carRotation, position, [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const car = new DrawableObject(carProgram, carPosition, carInsideVertices)
+        const car = new DrawableObject(carProgram, carPosition, allVertices.carInside)
         await car.draw(drawOnlyAt.DayAndNight)
 
         // Airing
-        const carAiring = new DrawableObject(carProgram, carPosition, carAiringVertices)
+        const carAiring = new DrawableObject(carProgram, carPosition, allVertices.carAiring)
         await carAiring.draw(drawOnlyAt.DayAndNight)
 
         // Door Right Front
-        const carDoorRightFront = new DrawableObject(carProgram, carPosition, carDoorRightFrontVertices)
+        const carDoorRightFront = new DrawableObject(carProgram, carPosition, allVertices.carDoorRightFront)
         await carDoorRightFront.draw(drawOnlyAt.DayAndNight)
 
         // Door Left Front
-        const carDoorLeftFront = new DrawableObject(carProgram, carPosition, carDoorLeftFrontVertices)
+        const carDoorLeftFront = new DrawableObject(carProgram, carPosition, allVertices.carDoorLeftFront)
         await carDoorLeftFront.draw(drawOnlyAt.DayAndNight)
 
         // Cola
         const colaScaleFactor = 0.04;
         const colaPosition = new Position(new Rotation(0., 0., 0.), [0., 0.55, -1.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
-        const cola = new DrawableObject(colaProgram, colaPosition, colaVertices)
+        const cola = new DrawableObject(colaProgram, colaPosition, allVertices.cola)
         cola.setTexture(colaTexture);
         cola.setSecondTexture(scratchTexture);
         await cola.draw(drawOnlyAt.DayAndNight)
@@ -251,17 +251,17 @@ async function init() {
 
         setIntUniform(carMirrorProgram, 0 , "u_texture");
         // Rear Mirror
-        const carRearMirror = new DrawableObject(carMirrorProgram, carPosition, carRearMirrorVertices)
+        const carRearMirror = new DrawableObject(carMirrorProgram, carPosition, allVertices.carRearMirror)
         carRearMirror.setTexture(skyboxTexture);
         await carRearMirror.draw(drawOnlyAt.DayAndNight);
 
         // Left Mirror
-        const carLeftMirror = new DrawableObject(carMirrorProgram, carPosition, carLeftMirrorVertices)
+        const carLeftMirror = new DrawableObject(carMirrorProgram, carPosition, allVertices.carLeftMirror)
         carLeftMirror.setTexture(skyboxTexture);
         await carLeftMirror.draw(drawOnlyAt.DayAndNight)
 
         // Right Mirror
-        const carRightMirror = new DrawableObject(carMirrorProgram, carPosition, carRightMirrorVertices)
+        const carRightMirror = new DrawableObject(carMirrorProgram, carPosition, allVertices.carRightMirror)
         carRightMirror.setTexture(skyboxTexture);
         await carRightMirror.draw(drawOnlyAt.DayAndNight)
 
@@ -280,7 +280,7 @@ async function init() {
         const moviePos =[-7., -2., -60.] ;
         const movieRotation = new Rotation(0., 30, 0)
         const moviePosition = new Position(movieRotation, moviePos,  [-movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
-        const movie = new DrawableObject(movieProgram, moviePosition,  movieVertices)
+        const movie = new DrawableObject(movieProgram, moviePosition,  allVertices.movie)
         movie.setTexture(movieTexture);
         setIntUniform(movieProgram,0,'texture');
         gl.bindTexture(gl.TEXTURE_2D, movieTexture);
@@ -288,38 +288,38 @@ async function init() {
         await movie.draw(drawOnlyAt.DayAndNight);
 
         const structurePosition = new Position(movieRotation, moviePos,  [movieScaleFactor, movieScaleFactor, movieScaleFactor], eye, look)
-        const structure = new DrawableObject(movieProgram, structurePosition,  structureVertices)
+        const structure = new DrawableObject(movieProgram, structurePosition,  allVertices.structure)
         await structure.draw(drawOnlyAt.DayAndNight);
 
 
         // Dodge Car outside
         const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -50.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, dodgeCarVertices, dodgeCarMaterials)
+        const dodgeCar = new DrawableObject(dodgeCarProgram, dodgeCarPosition, allVertices.dodgeCar, dodgeCarMaterials)
         await dodgeCar.draw(drawOnlyAt.DayAndNight)
 
         // green dodge
         const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -55.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, dodgeCarVertices, dodgeGreenCarMaterials)
+        const greenDodgeCar = new DrawableObject(dodgeCarProgram, greenDodgeCarPosition, allVertices.dodgeCar, dodgeGreenCarMaterials)
         await greenDodgeCar.draw(drawOnlyAt.DayAndNight)
 
 
         // tree
         const scaleFactorTree = 1.4;
         const treePosition = new Position(new Rotation(0, 60, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
-        const tree = new DrawableObject(treeProgram, treePosition, treeVertices, treeMaterials)
+        const tree = new DrawableObject(treeProgram, treePosition, allVertices.tree, treeMaterials)
         await tree.draw(drawOnlyAt.DayAndNight)
 
 
         // bat
         const scaleFactorBirds = 0.2;
         const birdsPosition = new Position(new Rotation(0, 0, 0), [17., 13.5, -70.0], [scaleFactorBirds, scaleFactorBirds, scaleFactorBirds], eye, look)
-        const bat = new DrawableObject(batProgram, birdsPosition, batVertices, batMaterials)
+        const bat = new DrawableObject(batProgram, birdsPosition, allVertices.bat, batMaterials)
         const birdsRotation = new Rotation(0, counter / 2, 0);
         bat.setRotationAfterTranslation(birdsRotation);
         await bat.draw(drawOnlyAt.Night)
 
         // bird
-        const bird = new DrawableObject(birdProgram, birdsPosition, birdVertices, birdMaterials)
+        const bird = new DrawableObject(birdProgram, birdsPosition, allVertices.bird, birdMaterials)
         bird.setRotationAfterTranslation(birdsRotation);
         await bird.draw(drawOnlyAt.Day)
 
@@ -327,7 +327,7 @@ async function init() {
         // airship
         const scaleFactorAirship = 1;
         const airshipPosition = new Position(new Rotation(0, 200, 0), [-30., 15.0, -70.], [scaleFactorAirship, scaleFactorAirship, scaleFactorAirship], eye, look)
-        const airship = new DrawableObject(airshipProgram, airshipPosition, airshipVertices, airshipMaterials)
+        const airship = new DrawableObject(airshipProgram, airshipPosition, allVertices.airship, airshipMaterials)
         const airshipRotation = new Rotation(0, -counter / 10, 0);
         airship.setRotationAfterTranslation(airshipRotation);
         await airship.draw(drawOnlyAt.Day)
@@ -355,7 +355,7 @@ async function init() {
             }
 
             const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0., 1., -1.])
-            const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, fireflyVertices, null, true);
+            const fireflyFb = new DrawableObject(fireflyFbProgram, fireflyFbPosition, allVertices.firefly, null, true);
             setVec4Uniform(fireflyFbProgram, [1., 1., 0., 1.], 'color');
             fireflyFb.setTexture(fireflyTexture);
             fireflyFb.setFramebuffer(fb);
@@ -363,7 +363,7 @@ async function init() {
 
             // firefly without bloom
             const fireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, look)
-            const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, fireflyVertices);
+            const firefly = new DrawableObject(fireflyFbProgram, fireflyPosition, allVertices.firefly);
             setVec4Uniform(fireflyFbProgram, [0.5, 1., 0., 1.], 'color');
             await firefly.draw(drawOnlyAt.Night)
         }
@@ -386,17 +386,17 @@ async function init() {
         enableTransparency(0.8);
         setVec3Uniform(carWindowProgram, [0.1,0.1,0.1],'windowColor', gl);
         // Windscreen
-        const carWindscreen = new DrawableObject(carWindowProgram, carPosition, carWindscreenVertices)
+        const carWindscreen = new DrawableObject(carWindowProgram, carPosition, allVertices.carWindscreen)
         await carWindscreen.draw(drawOnlyAt.DayAndNight)
 
         // Door Window Left Front
         const carDoorWindowLeftFrontPosition = new Position(carRotation, [windowPosition/1000 * 0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, carDoorWindowLeftFrontVertices)
+        const carDoorWindowLeftFront = new DrawableObject(carWindowProgram, carDoorWindowLeftFrontPosition, allVertices.carDoorWindowLeftFront)
         await carDoorWindowLeftFront.draw(drawOnlyAt.DayAndNight)
 
         // Door Window Right Front
         const carDoorWindowRightFrontPosition = new Position(carRotation, [windowPosition/1000 * -0.419,windowPosition/1000, -2.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
-        const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, carDoorWindowRightFrontVertices)
+        const carDoorWindowRightFront = new DrawableObject(carWindowProgram, carDoorWindowRightFrontPosition, allVertices.carDoorWindowRightFront)
         await carDoorWindowRightFront.draw(drawOnlyAt.DayAndNight)
     }
 
