@@ -18,7 +18,7 @@
     </video>
 </div>
 <div>
-    Fog: <br>
+    <label for="fogNear">Fog:</label><br>
     <input type="range" min="995" max="1000" value="1000" class="slider" id="fogNear">
     <input hidden type="range" min="950" max="1000" value="1000" class="slider" id="fogFar"><br>
     <button id="dayOrNight" onclick="dayOrNight()">Day</button>
@@ -29,25 +29,25 @@
 <div hidden id="settings">
     <br>
     <input type="checkbox" id="errors">
-    Hide errors
+    <label for="errors">Hide errors</label>
     <br>
-    FPS-Limit:
+    <label for="fpsSlider">FPS-Limit:</label>
     <input type="range" min="1" max="100" value="20" class="slider" id="fpsSlider">
 
     <br>
 
     FPS:
-    <l id="fps"></l>
+    <label id="fps"></label>
     <br>
     Durchschnitt:
-    <l id="fpsAvg"></l>
+    <label id="fpsAvg"></label>
 </div>
 <br>
 <canvas width="800" height="800" id="canvas"></canvas>
 
 <br>
 
-<img id="skyboxDay" src="objects/skybox/day.jpg" width="0">
+<img id="skyboxDay" src="objects/skybox/day.jpg" width="0" >
 <img id="skyboxNight" src="objects/skybox/night.jpg" width="0">
 <img id="cola" src="objects/cola/cola.png" width="0">
 <img id="colaScratch" src="objects/cola/cola_scratches.png" width="0">
