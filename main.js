@@ -30,8 +30,6 @@ let tolerance = 0.01;
 let updateId;
 let previousDelta = 0;
 let fpsLimit = 15;
-const targetTextureWidth = 1024;
-const targetTextureHeight = targetTextureWidth;
 let camRotation = 0;
 const keyRotationStrength = 10;
 
@@ -45,6 +43,7 @@ const drawOnlyAt  = {
     Night: 1,
     DayAndNight: 2
 }
+
 
 async function init() {
     gl.enable(gl.DEPTH_TEST);
@@ -62,22 +61,7 @@ async function init() {
     let posCounter = 0;
     
     // calc firefly positions
-    let positions = []
-    for (let i = 0; i < 200; i++) {
-        positions.push(calcFireflyPosition(i));
-    }
-    for (let i = 200; i > 0; i--) {
-        positions.push(calcFireflyPosition(i));
-    }
-
-    // calc firefly positions
-    let positions2 = []
-    for (let i = -100; i < 100; i++) {
-        positions2.push(calcFireflyPosition2(i));
-    }
-    for (let i = 100; i > -100; i--) {
-        positions2.push(calcFireflyPosition2(i));
-    }
+    let fireflyPos = getFireflyPosition();
     
 
     async function loop(currentDelta) {
@@ -288,7 +272,7 @@ async function init() {
 
         // Firefly
         posCounter += 1;
-        if(posCounter >= positions.length)
+        if(posCounter >= fireflyPos.pos1.length)
             posCounter = 0;
 
         let scaleFactorFirefly = 0.005;
@@ -297,9 +281,9 @@ async function init() {
         // draw firefly
         for (let i = 0; i < fireflyCount ; i++) {
             // firefly bloom in framebuffer
-            let pos = positions;
+            let pos = fireflyPos.pos1;
             if(i === 1) {
-                pos = positions2;
+                pos = fireflyPos.pos2;
             }
 
             const fireflyFbPosition = new Position(new Rotation(0, 0, 0), [0, 1.0, -2.0], [scaleFactorFirefly, scaleFactorFirefly / 2, scaleFactorFirefly], eye, [0., 1., -1.])
@@ -317,12 +301,12 @@ async function init() {
         }
 
 
-        // draw transperent objects
+        // draw transparent objects
         // firefly canvas
         for (let i = 0; i < fireflyCount; i++) {
-            let pos = positions;
+            let pos = fireflyPos.pos1;
             if(i === 1)
-                pos = positions2;
+                pos = fireflyPos.pos2;
             enableTransparency(1.);
             scaleFactorFirefly = 1.;
             const canvasFireflyPosition = new Position(new Rotation(0, 0, 0), pos[posCounter], [scaleFactorFirefly, scaleFactorFirefly, scaleFactorFirefly], eye, look)
