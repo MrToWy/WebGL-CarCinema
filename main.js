@@ -57,6 +57,8 @@ const drawOnlyAt  = {
 }
 
 async function init() {
+    gl.enable(gl.DEPTH_TEST);
+
     let allPaths = getAllPaths();
     let allPrograms = await getPrograms(allPaths);
     let allVertices = await getAllVertices(allPaths);
@@ -64,13 +66,6 @@ async function init() {
     let allTextures = getAllTextures();
 
     const fb = createFramebuffer(allTextures.firefly);
-
-    gl.useProgram(allPrograms.cola);
-
-    setIntUniform(allPrograms.cola,0,"texture");
-    setIntUniform(allPrograms.cola, 1, "scratch");
-
-    gl.enable(gl.DEPTH_TEST);
 
     let counter = 0;
     let windowPosition = 0;
@@ -131,9 +126,10 @@ async function init() {
             windowPosition -= windowSpeed;
         }
 
+
+
         // draw opaque objects
         disableTransparency();
-
         const lightingCar1 = new Lighting();
         const lightingCar2 = new Lighting();
 
@@ -201,6 +197,8 @@ async function init() {
         await carDoorLeftFront.draw(drawOnlyAt.DayAndNight)
 
         // Cola
+        setIntUniform(allPrograms.cola,0,"texture");
+        setIntUniform(allPrograms.cola, 1, "scratch");
         const colaScaleFactor = 0.04;
         const colaPosition = new Position(new Rotation(0., 0., 0.), [0., 0.55, -1.], [colaScaleFactor, -colaScaleFactor*2, colaScaleFactor], eye, look)
         const cola = new DrawableObject(allPrograms.cola, colaPosition, allVertices.cola)
