@@ -199,12 +199,19 @@ async function init() {
         // Dodge Car outside
         const dodgeCarPosition = new Position(new Rotation(-90, 0, 155), [-45, -13.0, -50.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const dodgeCar = new DrawableObject(allPrograms.dodgeCar, dodgeCarPosition, allVertices.dodgeCar, allMaterials.dodgeCar)
-        await dodgeCar.draw(drawOnlyAt.DayAndNight)
+        await dodgeCar.draw(drawOnlyAt.Day)
+        
+        // Dodge Car outside night
+        const dodgeCarNight = new DrawableObject(allPrograms.dodgeCar, dodgeCarPosition, allVertices.dodgeCar, allMaterials.dodgeCarNight)
+        await dodgeCarNight.draw(drawOnlyAt.Night)
 
         // green dodge
         const greenDodgeCarPosition = new Position(new Rotation(-90, 0, -155), [45, -10.0, -55.0], [scaleFactorCar, scaleFactorCar, scaleFactorCar], eye, look)
         const greenDodgeCar = new DrawableObject(allPrograms.dodgeCar, greenDodgeCarPosition, allVertices.dodgeCar, allMaterials.dodgeGreenCar)
-        await greenDodgeCar.draw(drawOnlyAt.DayAndNight)
+        await greenDodgeCar.draw(drawOnlyAt.Day)
+
+        const greenDodgeCarNight = new DrawableObject(allPrograms.dodgeCar, greenDodgeCarPosition, allVertices.dodgeCar, allMaterials.dodgeGreenCarNight)
+        await greenDodgeCarNight.draw(drawOnlyAt.Night)
 
 
         // tree
