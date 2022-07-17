@@ -92,12 +92,12 @@ async function init() {
         const look = [Math.sin(cameraRotation), 1, -Math.cos(cameraRotation)]
 
         // lighting settings day
-        let light1 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 1., 1.], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
-        let light2 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 1., 1.], [0.1, 0.1, 0.1, 0.1],[-3., 10., 0.]);
+        let light1 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 0.9, 1.], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
+        let light2 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 1., 1.], [0.1, 0.1, 0.1, 0.1],[-3., -10., 0.]);
         // lighting settings night
         if (elements.dayOrNightInput.innerHTML === "Day") {
-            light1 = createLighting([0.1, 0.1, 0.1, 0.1],[0.6, 0.6, 0.6, 0.6], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
-            light2 = createLighting([0.0, 0.0, 0.0, 0.0],[0.5, 0.5, 0.5, 0.5], [0.1, 0.1, 0.1, 0.1],[-3., 10., 0.]);
+            light1 = createLighting([0.1, 0.1, 0.1, 0.1],[0.6, 0.7, 0.6, 0.6], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
+            light2 = createLighting([0.0, 0.0, 0.0, 0.0],[0.5, 0.5, 0.5, 0.5], [0.1, 0.1, 0.1, 0.1],[-3., -10., 0.]);
         }
         setLighting(allPrograms.car, light1, light2, 10.0, eye);
         setLighting(allPrograms.dodgeCar, light1, light2, 10.0, eye);
@@ -211,7 +211,12 @@ async function init() {
         const scaleFactorTree = 1.4;
         const treePosition = new Position(new Rotation(0, 60, 0), [17., -5.0, -90.0], [scaleFactorTree, scaleFactorTree, scaleFactorTree], eye, look)
         const tree = new DrawableObject(allPrograms.tree, treePosition, allVertices.tree, allMaterials.tree)
-        await tree.draw(drawOnlyAt.DayAndNight)
+        await tree.draw(drawOnlyAt.Day)
+        
+        // tree night
+        const treeNight = new DrawableObject(allPrograms.tree, treePosition, allVertices.tree, allMaterials.treeNight)
+        await treeNight.draw(drawOnlyAt.Night)
+        
 
 
         // bat
