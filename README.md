@@ -1,7 +1,7 @@
 CG 1 Projektarbeit
 -
 
-Tobias Wylega
+Tobias Wylega,
 Sophie Fürhoff
 
 Start des Programms:
