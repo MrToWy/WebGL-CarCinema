@@ -37,6 +37,7 @@ https://www.cgtrader.com/free-3d-models/plant/other/simple-tree-low-poly-3d-mode
 - Coca Cola Textur:
 https://pngset.com/download-free-png-atbkz
 
+
 - Skybox Textur:
 https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloppenheim_02.jpg, 
 https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloppenheim_03.jpg
@@ -45,8 +46,10 @@ https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloppenheim
 - Bird:
 https://www.cgtrader.com/free-3d-models/animals/bird/hanging-wooden-bird
 
+
 - Bat:
 https://www.cgtrader.com/free-3d-models/animals/bird/bird-low-poly-3d-model-dac69081-34a0-44e8-af2b-7df94801e606
+
 
 - Videos:
 https://pixabay.com/de/videos/horror-spuk-geisterschloss-112406/,
