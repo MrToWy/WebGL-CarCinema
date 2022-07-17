@@ -91,13 +91,14 @@ async function init() {
         const eye = [0, 1.0, 0];
         const look = [Math.sin(cameraRotation), 1, -Math.cos(cameraRotation)]
 
+
         // lighting settings day
-        let light1 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 0.9, 1.], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
+        let light1 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 1., 1.], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
         let light2 = createLighting([0.1, 0.1, 0.1, 0.1],[1., 1., 1., 1.], [0.1, 0.1, 0.1, 0.1],[-3., -10., 0.]);
         // lighting settings night
         if (elements.dayOrNightInput.innerHTML === "Day") {
-            light1 = createLighting([0.1, 0.1, 0.1, 0.1],[0.6, 0.7, 0.6, 0.6], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
-            light2 = createLighting([0.0, 0.0, 0.0, 0.0],[0.5, 0.5, 0.5, 0.5], [0.1, 0.1, 0.1, 0.1],[-3., -10., 0.]);
+            light1 = createLighting([0.1, 0.1, 0.1, 0.1],[0.6, 0.6, 0.6, 1.0], [0.1, 0.1, 0.1, 0.1],[3., 10., 0.]);
+            light2 = createLighting([0.0, 0.0, 0.0, 0.0],[0.5, 0.5, 0.5, 1.0], [0.1, 0.1, 0.1, 0.1],[-3., -10., 0.]);
         }
         setLighting(allPrograms.car, light1, light2, 10.0, eye);
         setLighting(allPrograms.dodgeCar, light1, light2, 10.0, eye);
