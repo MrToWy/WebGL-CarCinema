@@ -6,7 +6,7 @@ Sophie Fürhoff
 
 Start des Programms:
 -
-Dateien aus Webserver laden und die index.html öffnen.
+Dateien auf Webserver laden und die index.html öffnen.
 
 
 Bedienung des Programms:
